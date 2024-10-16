@@ -7,10 +7,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.get("/api", (req,res) =>{
-    res.json({ comment: ["example response"]});
+app.get("/api", (req, res) => {
+    res.json({ comment: ["example response"] });
 });
 
 app.listen(8080, () => {
     console.log("Server is running on port 8080")
 });
+
