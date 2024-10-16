@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect } from "react";
+import './App.css';
 import NavBarW from "./components/NavBarW"
 
 function App() {
