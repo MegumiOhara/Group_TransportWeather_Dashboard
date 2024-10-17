@@ -1,16 +1,23 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-require('dotenv').config(); //to use environment variables.
+import express from "express";
+import axios from "axios";
+import cors from "cors";
+import dotenv from "dotenv"; //to use environment variables.
+//import instead of const
 
-const app = express();
-const port = 3000;
+//const app = express();
+//const port = 3000;
 
+// Load env vairables frmo .env file
+dotenv.config();
+
+//Router instead of app 
+const router = express.Router();
 //Middleware
-app.use(express.json());//to parse incoming JSON requests
+//app.use(cors());
+//app.use(express.json());//to parse incoming JSON requests
 
 //Route to fetch latitude and long for a given address 
-app.post("/address", async (req,res) =>{
+router.post("/address", async (req,res) =>{
     const { address } = req.body;
     console.log(address);
 
@@ -41,3 +48,5 @@ app.post("/address", async (req,res) =>{
 app.listen(port, () => {
     console.log(`Server is runnong on port ${port}`);
 });
+
+export default router;
