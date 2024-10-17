@@ -6,6 +6,8 @@ import cors from "cors";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
 
+dotenv.config(); //Load env variables from .env file
+
 const app = express();
 const corsOptions = {
    origin: ["http://localhost:5173"],

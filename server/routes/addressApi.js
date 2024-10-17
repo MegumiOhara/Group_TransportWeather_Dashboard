@@ -33,8 +33,8 @@ router.post("/address", async (req,res) =>{
 
         const data = response.data;
         if (data.status === 'OK') {
-            const {lat, lng} = data.results[0].geometry.location;
-            res.json({lat,lng});
+            const { lat, lng } = data.results[0].geometry.location;
+            res.json({ lat,lng });
         } else {
             res.status(400).json({error: 'Unable to geocode the address'})
         }
@@ -45,8 +45,5 @@ router.post("/address", async (req,res) =>{
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is runnong on port ${port}`);
-});
 
 export default router;
