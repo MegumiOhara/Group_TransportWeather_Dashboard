@@ -10,6 +10,7 @@ import dotenv from "dotenv"
 dotenv.config(); //Load env variables from .env file
 
 const app = express();
+const port = 3000;
 const corsOptions = {
    origin: ["http://localhost:5173"],
 };
@@ -26,6 +27,6 @@ app.get("/api", (req, res) => {
 });
 
 // Start server
-app.listen(8080, () => {
-   console.log("Server is running on port 8080");
+app.listen(port, () => {
+   console.log(`Server is running on port ${port}`);
 });

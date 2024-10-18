@@ -1,6 +1,5 @@
 import express from "express";
 import axios from "axios";
-import cors from "cors";
 import dotenv from "dotenv"; //to use environment variables.
 //import instead of const
 
@@ -17,7 +16,7 @@ const router = express.Router();
 //app.use(express.json());//to parse incoming JSON requests
 
 //Route to fetch latitude and long for a given address 
-router.post("/address", async (req,res) =>{
+router.post("/", async (req,res) =>{
     const { address } = req.body;
     console.log(address);
 
@@ -27,7 +26,7 @@ router.post("/address", async (req,res) =>{
 
     try {
         const API_GEO_KEY = process.env.GOOGLE_GEOCODE_API_KEY;
-        const reponse = await axios.get(
+        const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${API_GEO_KEY}`
         );
 
