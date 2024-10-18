@@ -20,18 +20,18 @@ function AddressInput (){
 
         try {
             const response = await axios.post<{ lat: number; lng: number }>
-            (`http://localhost:3000/address, ${address}`);
+            ("http://localhost:3000/api/address", {address});
             const {lat, lng} = response.data;
             setLat(lat);
             setLng(lng);
         } catch (error) {
+            console.error('Error fetching location:');
             setError('Error fetching location. Please try again');
         }
     };
 
     return(
         <div>
-            <h1>Local Traffic & Weather Dashboard</h1>
             <form onSubmit={handleFormSubmit}>
                 <input
                     type= "text"
