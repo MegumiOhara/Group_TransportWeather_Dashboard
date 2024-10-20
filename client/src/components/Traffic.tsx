@@ -6,3 +6,15 @@ const TrafficStatusUpdates = () => {
     const [longitude, setLongitude] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [trafficData, setTrafficData] = useState<any>(null);
+
+    onLocationSuccess = (position: GeolocationPosition) => {
+        const { latitude, longitude } = position.coords;
+        setLatitude(latitude);
+        setLongitude(longitude);
+        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+
+        submitLocationData(latitude, longitude);
+
+};
+
+export default TrafficStatusUpdates;
