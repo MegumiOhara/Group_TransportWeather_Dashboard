@@ -7,7 +7,7 @@ const TrafficStatusUpdates = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [trafficData, setTrafficData] = useState<any>(null);
 
-    onLocationSuccess = (position: GeolocationPosition) => {
+    const onLocationSuccess = (position: GeolocationPosition) => {
         const { latitude, longitude } = position.coords;
         setLatitude(latitude);
         setLongitude(longitude);
@@ -27,8 +27,31 @@ const TrafficStatusUpdates = () => {
             }
         );
         } else {
-            alert('Cannot find your location.');
+            alert('Geolocation is not supported by your browser.');
             setLoading(false);
         }
+    };
+    
+    const submitLocationData = async (latitude: number, longitude: number) => {
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:8080/api/traffic', {
+                 latitude, longitude 
+                });
+            setTrafficData(response.data);
+        } catch (error) {
+            console.error('Error fetching traffic data from server:', error);
+        } finally {    
+            setLoading(false);
+        }
+    };
+    
+    useEffect(() => {
+        if (trafficData) {
+            console.log('Latest traffic updates:', trafficData);
+        } 
+    }, [trafficData]);    
+
+};
 
 export default TrafficStatusUpdates;
