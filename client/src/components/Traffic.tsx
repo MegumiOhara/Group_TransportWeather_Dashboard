@@ -14,7 +14,21 @@ const TrafficStatusUpdates = () => {
         console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 
         submitLocationData(latitude, longitude);
-
 };
+
+    const fetchCurrentLocation = () => {
+        setLoading(true);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                onLocationSuccess, 
+                (error) => {
+                console.error('Error fetching geolocation:', error); 
+                setLoading(false);
+            }
+        );
+        } else {
+            alert('Cannot find your location.');
+            setLoading(false);
+        }
 
 export default TrafficStatusUpdates;
