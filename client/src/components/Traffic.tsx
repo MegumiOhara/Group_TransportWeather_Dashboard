@@ -50,7 +50,7 @@ const TrafficStatusUpdates = () => {
         if (trafficData) {
             console.log('Latest traffic updates:', trafficData);
         } 
-    }, [trafficData]);    
+    }, [trafficData]);   
 
 };
 
