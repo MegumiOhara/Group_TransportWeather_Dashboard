@@ -14,9 +14,9 @@ function App() {
 
     //Function to handle address geocode result
 
-    const handleGeocode = (latitude: number, longitude: number) =>{
-      setLat(latitude);
-      setLng(longitude);
+    const handleGeocode = (lat: number, lng: number) =>{
+      setLat(lat);
+      setLng(lng);
       setError(null); //clear any previous error
     };
 
@@ -35,6 +35,15 @@ function App() {
       <h1>Local Transport and Weather Dashboard</h1>
       {/*Pass the geocode handlers to AddressInput */}
       <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
+
+      {/*below just showing the lat and lng is retrived, can delete later*/}
+      {lat && lng && ( // Show coordinates only if lat/lng are available
+                <div>
+                    <h2>Coordinates:</h2>
+                    <p><strong>Latitude:</strong> {lat}</p>
+                    <p><strong>Longitude:</strong> {lng}</p>
+                </div>
+            )}
 
       {/*Conditionally render components if lat/lng are available*/}
       {lat && lng && (

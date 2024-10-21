@@ -7,7 +7,7 @@ interface AddressInputProps {
     onError: (errorMessage: string) => void;
 }
 
-function AddressInput ({ onGeocode, onError}: AddressInputProps){
+function AddressInput ({ onGeocode, onError} : AddressInputProps){
     const [address, setAddress] = useState<string>("");
 
     const handleAddressChange = (e: ChangeEvent<HTMLInputElement>): void => {
