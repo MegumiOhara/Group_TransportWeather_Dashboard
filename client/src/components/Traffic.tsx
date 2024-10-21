@@ -52,6 +52,16 @@ const TrafficStatusUpdates = () => {
         } 
     }, [trafficData]);   
 
+    return (
+        <div className="traffic-updates">
+            <h2>Traffic Status Updates</h2>
+            <button onClick={fetchCurrentLocation} disabled={loading}>
+                {loading? 'Loading...' : 'Get current location'}
+            </button>
+
+
+        </div>
+    )
 };
 
 export default TrafficStatusUpdates;
