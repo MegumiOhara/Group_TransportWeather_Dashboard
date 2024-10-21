@@ -11,6 +11,7 @@ const TrafficStatusUpdates = () => {
         const { latitude, longitude } = position.coords;
         setLatitude(latitude);
         setLongitude(longitude);
+
         console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 
         submitLocationData(latitude, longitude);
@@ -59,7 +60,26 @@ const TrafficStatusUpdates = () => {
                 {loading? 'Loading...' : 'Get current location'}
             </button>
 
+            {latitude && longitude && (
+                <p>Your current location: {latitude}, {longitude}</p>
+            )}
 
+            {trafficData && (
+                <div>
+                    <h3>Recent Traffic Updates:</h3>
+                    <ul>
+                    {trafficData.updates.map((update: any, index: number) => (
+                        <li key={index}>
+                            <strong>{update.timestamp}</strong>: {update.status} {update.description} {update.location}
+                        </li>
+                    ))}
+                    </ul>   
+                </div>
+            )}
+            {/* Show timestamp of last traffic update */}
+            {!loading && trafficData && trafficData.timestamp && (
+                <p>Last updated: {new Date(trafficData.timestamp).toLocaleString()}</p>
+            )}
         </div>
     )
 };
