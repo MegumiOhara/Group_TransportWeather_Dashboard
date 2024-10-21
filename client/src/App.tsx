@@ -8,16 +8,17 @@ function App() {
     //logic that handles the geocodeAPI request to parent component API.tsx
     //so that lat and lng state can be passed to other components.
 
+    //state to store latitude and longitude. Initially set to null.
     const [lat, setLat] = useState<number | null>(null);
     const [lng, setLng] = useState<number| null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);//stores potential error messages
 
-    //Function to handle address geocode result
-
+    //Function will be passed to the AddressInput component.
+    //it will update the lat/lng state when geocoding is successful
     const handleGeocode = (lat: number, lng: number) =>{
       setLat(lat);
       setLng(lng);
-      setError(null); //clear any previous error
+      setError(null); //clear any previous error when success.
     };
 
     //Function to handle geocoding errors
@@ -33,7 +34,7 @@ function App() {
   return (
     <div>
       <h1>Local Transport and Weather Dashboard</h1>
-      {/*Pass the geocode handlers to AddressInput */}
+      {/*Pass the geocode handlers and error handler as props to AddressInput */}
       <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
 
       {/*below just showing the lat and lng is retrived, can delete later*/}
@@ -45,7 +46,8 @@ function App() {
                 </div>
             )}
 
-      {/*Conditionally render components if lat/lng are available*/}
+      {/*Conditionally render components if lat/lng are available
+      can only use if valid coordinates are available*/}
       {lat && lng && (
         <>
           {/*<Weather lat={lat} lng={lng}/>*/}
