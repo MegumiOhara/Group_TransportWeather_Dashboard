@@ -1,24 +1,52 @@
+import React, { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import AddressInput from "./components/Address";
 
 function App() {
   
-  const fetchApi = async() => {
-    const response= await axios.get("http://localhost:3000/api");
-    console.log(response);
-  };
+    //logic that handles the geocodeAPI request to parent component API.tsx
+    //so that lat and lng state can be passed to other components.
 
-  useEffect(() => {
-    fetchApi();
-  }, [])
- 
+    const [lat, setLat] = useState<number | null>(null);
+    const [lng, setLng] = useState<number| null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    //Function to handle address geocode result
+
+    const handleGeocode = (latitude: number, longitude: number) =>{
+      setLat(latitude);
+      setLng(longitude);
+      setError(null); //clear any previous error
+    };
+
+    //Function to handle geocoding errors
+    const handleGeocodeError = (errorMessage: string) =>{
+      setError(errorMessage);
+      setLat(null);
+      setLng(null);
+    };
+
+   // const response= await axios.get("http://localhost:3000/api");
+  //console.log(response);
+  
   return (
     <div>
       <h1>Local Transport and Weather Dashboard</h1>
-      <AddressInput/>
+      {/*Pass the geocode handlers to AddressInput */}
+      <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
+
+      {/*Conditionally render components if lat/lng are available*/}
+      {lat && lng && (
+        <>
+          {/*<Weather lat={lat} lng={lng}/>*/}
+          {/*<Departures lat={lat} lng={lng}/> */}
+        </>
+      )}
+
+      {error && <p>{error}</p>}
     </div>
-  )
+  );
 }
 
 export default App
