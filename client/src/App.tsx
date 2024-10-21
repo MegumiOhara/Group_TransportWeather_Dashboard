@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import AddressInput from "./components/Address";
@@ -50,6 +50,7 @@ function App() {
         <>
           {/*<Weather lat={lat} lng={lng}/>*/}
           {/*<Departures lat={lat} lng={lng}/> */}
+          {/*<Traffic lat={lat} lng={lng}/> */}
         </>
       )}
 
