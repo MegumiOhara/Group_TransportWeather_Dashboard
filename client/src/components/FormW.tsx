@@ -1,19 +1,33 @@
 import { useState } from "react";
-import React from "react";
 
-const Form = () => {
-    const [city, setCity] = useState[""];
+const FormW = ({ newLocation }) => {
+    const [city, setCity] = useState("");
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        console.log("City submitted:", city);
+        if (city === "" || !city) return
+
+        newLocation(city);
+    };
 
     return (
         <div className="container">
-            <form onSubmit={onsubmit}>
+            <form onSubmit={onSubmit}>
                 <div className="input-group mb-3 mx-auto">
-                    <input type="text" className="form-control" placeholder="city" onChange={(e) => setCity.target.value} />
-                    <button className="btn btn-primary input-group-text" type="submit"></button>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="city"
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+                    <button className="btn btn-primary input-group-text" type="submit">
+                        Submit
+                    </button>
                 </div>
             </form>
         </div>
-    ):
-}
+    );
+};
 
-export default Form
+export default FormW;

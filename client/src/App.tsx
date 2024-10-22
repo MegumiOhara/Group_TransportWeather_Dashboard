@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import './App.css';
 import NavBarW from "./components/NavBarW"
+import WeatherPanel from "./components/WeatherPanel";
+
 
 function App() {
 
@@ -20,6 +22,8 @@ function App() {
       //add components after exporting//
 
       <NavBarW />
+      <WeatherPanel />
+
 
 
     </div>
