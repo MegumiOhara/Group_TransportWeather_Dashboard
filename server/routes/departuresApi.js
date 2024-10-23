@@ -24,6 +24,7 @@ const getNearestStationId = async (latitude, longitude) => {
             accessId: apiKey,
             originCoordLat: latitude,
             originCoordLong: longitude,
+            lang: "en",
          },
       });
 
@@ -52,6 +53,7 @@ const getDepartureBoard = async (stationId) => {
          format: "json", // Response format: JSON
          duration: 60, // Time interval for departures
          passlist: 0,
+         lang: "en", // Lang. set to English
       };
 
       // Make the API request
