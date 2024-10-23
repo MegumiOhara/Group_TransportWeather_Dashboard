@@ -1,8 +1,13 @@
 import express from "express";
 import cors from "cors";
 import departuresApi from "./routes/departuresApi.js";
+import addressApi from "./routes/addressApi.js";
+import dotenv from "dotenv";
+
+dotenv.config(); //Load env variables from .env file
 
 const app = express();
+const port = 3000;
 const corsOptions = {
    origin: ["http://localhost:5173"],
 };
@@ -17,13 +22,13 @@ app.use((req, res, next) => {
 
 // Use the departures API routes
 app.use("/api", departuresApi);
+app.use("/api/address", addressApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
 });
 
 // Start server
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-   console.log(`Server is running on ${PORT}`);
+app.listen(port, () => {
+   console.log(`Server is running on port ${port}`);
 });

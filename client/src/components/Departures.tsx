@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import AddressInput from "./Address";
 import axios from "axios";
 
-interface Location {
-   latitude: number;
-   longitude: number;
-}
+// Interfaces for data types
+// interface Location {
+//    latitude: number;
+//    longitude: number;
+// }
 
 interface Departure {
    name: string;
@@ -13,71 +15,84 @@ interface Departure {
    destination: string;
 }
 
-const DepartureBoard: React.FC = () => {
-   const [location, setLocation] = useState<Location | null>(null);
-   const [departures, setDepartures] = useState<Departure[]>([]);
-   const [error, setError] = useState<string>("");
+interface StationInfo {
+   name: string;
+   id: string;
+   lat: number;
+   lon: number;
+}
 
-   // Get user's current location using geolocation API
-   useEffect(() => {
-      if (navigator.geolocation) {
-         navigator.geolocation.getCurrentPosition(
-            (position) => {
-               const { latitude, longitude } = position.coords;
-               setLocation({ latitude, longitude });
-            },
-            (err) => {
-               console.error("Geolocation error:", err);
-               setError("Error fetching geolocation");
+const Departures: React.FC = () => {
+   // State to store departures, station info, and error message
+   const [departures, setDepartures] = useState<Departure[]>([]);
+   const [error, setError] = useState<string | null>(null);
+   const [stationInfo, setStationInfo] = useState<StationInfo | null>(null);
+
+   // Function to fetch departures based on latitude and longitude
+   const fetchDepartures = async (lat: number, lng: number): Promise<void> => {
+      try {
+         const response = await axios.post(
+            "http://localhost:3000/api/location",
+            {
+               latitude: lat,
+               longitude: lng,
             }
          );
-      } else {
-         setError("Geolocation not supported by this browser");
-      }
-   }, []);
 
-   // Fetch nearest station and departures when location is available
-   useEffect(() => {
-      if (location) {
-         axios
-            .get("http://localhost:8080/api/location", {
-               params: {
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-               },
-            })
-            .then((response) => {
-               console.log("API response:", response.data);
-               setDepartures(response.data.departures);
-            })
-            .catch((error) => {
-               console.error("Error fetching departures:", error);
-               setError("Error fetching departures");
-            });
-      }
-   }, [location]);
+         const data = response.data;
 
-   if (error) {
-      return <div>{error}</div>;
-   }
+         setDepartures(data.departures); // Update departures state
+         setStationInfo(data.nearestStation); // Update station info state
+      } catch (error) {
+         console.error("Error fetching departures:", error);
+         setError("An error occurred while fetching departures");
+      }
+   };
+
+   // Handle error from AddressInput component
+   const handleError = (errorMessage: string): void => {
+      setError(errorMessage);
+   };
 
    return (
       <div>
-         <h1>Nearest Departures</h1>
+         <h1>Find Public Transport Departures</h1>
+
+         {/* AddressInput component to get coordinates based on address */}
+         <AddressInput
+            onGeocode={(lat, lng) => {
+               setError(null); // Clear any previous error
+               fetchDepartures(lat, lng); // Fetch departures for given coordinates
+            }}
+            onError={handleError}
+         />
+
+         {/* Show station information */}
+         {stationInfo && (
+            <div>
+               <h2>Nearest Station: {stationInfo.name}</h2>
+               <p>
+                  Location: {stationInfo.lat}, {stationInfo.lon}
+               </p>
+            </div>
+         )}
+
+         {/* Display departures or error */}
+         {error && <p style={{ color: "red" }}>{error}</p>}
          {departures.length > 0 ? (
             <ul>
                {departures.map((departure, index) => (
                   <li key={index}>
-                     {departure.name} - {departure.line} - {departure.time} to{" "}
+                     {departure.name} - {departure.time} -{" "}
                      {departure.destination}
                   </li>
                ))}
             </ul>
          ) : (
-            <p>Loading...</p>
+            !error && <p>No departures found.</p>
          )}
       </div>
    );
 };
 
-export default DepartureBoard;
+export default Departures;
