@@ -76,7 +76,6 @@ const TrafficStatusUpdates = () => {
                     </ul>   
                 </div>
             )}
-            {/* Show timestamp of last traffic update */}
             {!loading && trafficData && trafficData.timestamp && (
                 <p>Last updated: {new Date(trafficData.timestamp).toLocaleString()}</p>
             )}
