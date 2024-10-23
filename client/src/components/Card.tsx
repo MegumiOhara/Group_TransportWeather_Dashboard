@@ -1,5 +1,5 @@
 import React from 'react';
-import Spinner from './SpinnerW';
+import SpinnerW from './SpinnerW';
 
 const Card = ({ loadingData, showData, weather, forecast }) => {
 
@@ -21,7 +21,7 @@ const Card = ({ loadingData, showData, weather, forecast }) => {
     var forecastDate9 = "";
 
     if (loadingData) {
-        return <Spinner />;
+        return <SpinnerW />;
     }
 
     if (showData) {
