@@ -1,11 +1,10 @@
 import React from 'react';
-import './SpinnerW';
+import '../Spinner.css'; // Asegúrate de que el archivo CSS esté en la misma carpeta
 
-const SpinnerW = () => {
-
+const Spinner = () => {
     return (
-        <div class="lds-dual-ring"></div>
+        <div className="lds-dual-ring"></div> // Usa className en lugar de class
     );
 }
 
-export default SpinnerW;
+export default Spinner;
