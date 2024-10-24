@@ -9,12 +9,12 @@ interface TrafficUpdate {
     location: string;
     severity: string;
 }
-
-const TrafficStatusUpdates = () => {
-    const [latitude, setLatitude] = useState<number | null>(null);
-    const [longitude, setLongitude] = useState<number | null>(null);
+//Function to fetch and display traffic updates
+const TrafficStatusUpdates: React.FC = () => {
+    const [trafficData, setTrafficData] = useState<{updates: TrafficUpdate[], timestamp: string } | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [trafficData, setTrafficData] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+    
 
     const onLocationSuccess = (position: GeolocationPosition) => {
         const { latitude, longitude } = position.coords;
