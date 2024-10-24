@@ -6,7 +6,7 @@ import cors from "cors";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
 import trafficApi from "./routes/trafficApi.js";
-import dotenv from "dotenv"
+
 
 dotenv.config(); //Load env variables from .env file
 
