@@ -39,8 +39,10 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
 
    return (
       <div>
-         <form onSubmit={handleFormSubmit}>
+         <h1>Local Transport and Weather Dashboard</h1>
+         <form className="bg-white shadow-md" onSubmit={handleFormSubmit}>
             <input
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                type="text"
                value={address}
                onChange={handleAddressChange} //handle user input changes.

@@ -32,7 +32,6 @@ function App() {
 
    return (
       <div>
-         <h1>Local Transport and Weather Dashboard</h1>
          {/*Pass the geocode handlers and error handler as props to AddressInput */}
          <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError} />
 
