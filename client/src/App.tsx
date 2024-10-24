@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import AddressInput from "./components/Address";
+import TrafficStatusUpdates from "./components/Traffic";
 
 function App() {
   
