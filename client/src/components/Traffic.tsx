@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AddressInput from './Address';
 
+interface TrafficUpdate {
+    timestamp: number;
+    status: string;
+    description: string;
+    location: string;
+    severity: string;
+}
+
 const TrafficStatusUpdates = () => {
     const [latitude, setLatitude] = useState<number | null>(null);
     const [longitude, setLongitude] = useState<number | null>(null);
