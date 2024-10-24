@@ -14,6 +14,9 @@ module.exports = {
 
         'lg' : '1601px',
         //=> @mesia (min-width: 1601px) for desktops
+      },
+      colors: {
+        'custom-bg': "#F5EEE6"
       }
      },
   },
