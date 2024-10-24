@@ -1,11 +1,8 @@
-// Change to import
 import express from "express";
 import cors from "cors";
-//const express = require("express");
-//const cors = require("cors");
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config(); //Load env variables from .env file
 
@@ -17,6 +14,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+app.use((req, res, next) => {
+   console.log(`${req.method} ${req.url}`);
+   next(); // Gå vidare till nästa middleware eller route
+});
 
 // Use the departures API routes
 app.use("/api", departuresApi);
