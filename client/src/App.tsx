@@ -1,7 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
+//import axios from "axios";
+//import { useEffect } from "react";
 import AddressInput from "./components/Address";
+import Departures from "./components/Departures";
 
 function App() {
    //logic that handles the geocodeAPI request to parent component API.tsx
@@ -54,7 +55,7 @@ function App() {
          {lat && lng && (
             <>
                {/*<Weather lat={lat} lng={lng}/>*/}
-               {/*<Departures lat={lat} lng={lng}/> */}
+               <Departures lat={lat} lng={lng} />
                {/*<Traffic lat={lat} lng={lng}/> */}
             </>
          )}
