@@ -52,15 +52,15 @@ const fetchDataFromResRobot = async (url, params) => {
 };
 
 // Function to fetch departure data
-const getDepartureBoard = async (stationId, products = 0) => {
+const getDepartureBoard = async (stationId) => {
    const params = {
       accessId: apiKey,
       id: stationId,
       format: "json",
       duration: 60,
-      passlist: 0,
+      passlist: 1,
       lang: "en",
-      products,
+      products: 0,
    };
 
    const data = await fetchDataFromResRobot(departureBoardApiUrl, params);
@@ -68,7 +68,51 @@ const getDepartureBoard = async (stationId, products = 0) => {
    console.log("Departure data:", data); // Log the data for debugging
 
    return data.Departure.map((departure) => {
-      const product = departure.ProductAtStop || {}; // Extract ProductAtStop for product info
+      const product = departure.ProductAtStop || {};
+
+      // Extracting information for the journey including arrival times
+      const stops =
+         departure.Stops && departure.Stops.Stop ? departure.Stops.Stop : [];
+      const finalStop = stops.length > 0 ? stops[stops.length - 1] : null;
+
+      // Arrival time at the final destination
+      let arrivalTime = finalStop ? finalStop.arrTime : "Unknown";
+      if (arrivalTime !== "Unknown") {
+         arrivalTime = arrivalTime.slice(0, 5);
+      }
+
+      // Extracting departure date if available
+      const departureDate =
+         finalStop && finalStop.depDate ? finalStop.depDate : null;
+
+      // Extracting arrival date if available
+      const arrivalDate =
+         finalStop && finalStop.arrDate ? finalStop.arrDate : null;
+
+      // Calculating the duration (if both times are available)
+      let duration = "Unknown";
+      if (departureDate && arrivalDate && departure.time && arrivalTime) {
+         try {
+            const departureDateTime = new Date(
+               `${departureDate}T${departure.time}:00`
+            );
+            const arrivalDateTime = new Date(
+               `${arrivalDate}T${finalStop.arrTime}:00`
+            );
+
+            // Ensure we only calculate if both times are valid
+            if (
+               !isNaN(departureDateTime.getTime()) &&
+               !isNaN(arrivalDateTime.getTime())
+            ) {
+               duration =
+                  Math.abs((arrivalDateTime - departureDateTime) / 60000) +
+                  " min";
+            }
+         } catch (error) {
+            console.error("Error calculating duration:", error);
+         }
+      }
 
       return {
          name: product.name || "Unknown",
@@ -79,9 +123,11 @@ const getDepartureBoard = async (stationId, products = 0) => {
          realTime: departure.rtTime ? departure.rtTime.slice(0, 5) : "On time",
          track: departure.rtTrack || "Unknown",
          depTrack: departure.rtDepTrack || "Unknown",
-         line: departure.transportNumber,
+         line: product.num || "Unknown",
          type: departure.transportCategory,
          destination: departure.direction,
+         arrivalTime: arrivalTime,
+         duration: duration,
       };
    }).filter((departure) => departure.scheduledTime);
 };
