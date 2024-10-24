@@ -16,15 +16,20 @@ const TrafficStatusUpdates: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     
 
-    const onLocationSuccess = (position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
-        setLatitude(latitude);
-        setLongitude(longitude);
-
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-
-        submitLocationData(latitude, longitude);
-};
+     // Function to fetch traffic updates based on latitude and longitude
+    const fetchTrafficData = async (lat: number, lgn: number) => {
+        try {
+            setLoading(true); 
+            const response = await axios.post('http://localhost:3000/api/traffic', { latitude: lat, longitude: lgn });
+            setTrafficData(response.data); 
+            setError(null); // Clear any previous errors
+        } catch (error) {
+            console.error('Error fetching traffic data:', error);
+            setError('Failed to fetch traffic updates. Please try again.');
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
 
     const fetchCurrentLocation = () => {
         setLoading(true);
