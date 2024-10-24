@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AddressInput from './Address';
 
 const TrafficStatusUpdates = () => {
     const [latitude, setLatitude] = useState<number | null>(null);
