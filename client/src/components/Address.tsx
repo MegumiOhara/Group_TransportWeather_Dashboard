@@ -39,7 +39,7 @@ function AddressInput ({ onGeocode, onError} : AddressInputProps){
 
     return(
         <div className = "w-full h-full pb-2 bg-custom-bg w-full .box-border flex flex-col items-center overflow-x-hidden">
-            <div className = "w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly md:grid grid-cols-6">
+            <div className = "w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly sm:justify-normal sm:p-3 md:grid grid-cols-6">
                 <img 
                     className= "w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
                     src = {mapImg} 
