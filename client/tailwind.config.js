@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
      extend: {
+      fontFamily: {
+        lato: ["Lato", "sans-serif"], // Lägg till Lato som font
+     },
       screens: {
         'sm': '481px',
         //=> @media (min-width: 481px) for tablet

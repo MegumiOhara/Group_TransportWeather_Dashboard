@@ -52,17 +52,19 @@ function AddressInput ({ onGeocode, onError} : AddressInputProps){
             </div>
             <div>
                 <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
-                <form className = "m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded shadow-inner" onSubmit={handleFormSubmit}>
+                <form 
+                    className = "m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded shadow-inner hover:border-orange-200 transition-colors duration-300" 
+                    onSubmit={handleFormSubmit}>
                     <button 
                         className= "m-auto h-[40px] w-[40px] cursor-pointer"
                         type="submit">
                     <img 
-                        className= "h-[16px] w-[16px] md:w-[25px] m-auto hover:fill-slate-950"
+                        className= "h-[16px] w-[16px] md:w-[25px] m-auto"
                         src = {searchImg} 
                         alt = "search"/>
                     </button>
                     <input
-                        className = "w-full .box-border text-xs .border-none rounded   py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                        className = "w-full text-xs rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline border border-transparent"
                         type= "text"
                         value= {address}
                         onChange= {handleAddressChange}//handle user input changes.

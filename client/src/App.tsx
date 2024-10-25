@@ -37,7 +37,7 @@ function App() {
       <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
 
       {/*below just showing the lat and lng is retrived, can delete later*/}
-      {lat && lng && ( // Show coordinates only if lat/lng are available
+      {/*lat && lng && ( // Show coordinates only if lat/lng are available
                 <div>
                     <h2>Coordinates:</h2>
                     <p><strong>Latitude:</strong> {lat}</p>
