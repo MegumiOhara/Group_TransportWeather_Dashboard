@@ -31,35 +31,16 @@ const TrafficStatusUpdates: React.FC = () => {
         }
     };
 
-    const fetchCurrentLocation = () => {
-        setLoading(true);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                onLocationSuccess, 
-                (error) => {
-                console.error('Error fetching geolocation:', error); 
-                setLoading(false);
-            }
-        );
-        } else {
-            alert('Geolocation is not supported by your browser.');
-            setLoading(false);
-        }
+    // Handle successful geocoding from AddressInput
+    const handleGeocode = (lat: number, lng: number) => {
+        setError(null); // Clear any previous error
+        fetchTrafficData(lat, lng); // Fetch traffic data for the given lat/lng
     };
-    
-    const submitLocationData = async (latitude: number, longitude: number) => {
-        try {
-            setLoading(true);
-            const response = await axios.post('http://localhost:8080/api/traffic', {
-                 latitude, longitude 
-                });
-            setTrafficData(response.data);
-        } catch (error) {
-            console.error('Error fetching traffic data from server:', error);
-        } finally {    
-            setLoading(false);
-        }
+       
+    const handleError = (errorMessage: string) => {
+        setError(errorMessage);
     };
+   
     
     useEffect(() => {
         if (trafficData) {
