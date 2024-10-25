@@ -1,40 +1,91 @@
-body {
-    background-color: #2F3544;
-}
-
-.App {
-    text-align: center;
-
-}
-
-.input-group {
-    width: 60%;
-}
-
 .card {
     max-width: 60%;
+    margin: 20px auto;
+    border: 2px solid #E4602F;
+    /* Borde naranja */
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.card-title {
-    position: absolute;
-    padding: 20px;
+.card-body {
+    width: 100%;
+    /* Ajustar al 100% del contenedor principal */
+    height: auto;
+    /* Permitir que el alto se ajuste al contenido */
+    padding: 10px;
+    /* Espacio interno */
+    overflow: hidden;
+    /* Ocultar desbordamiento */
 }
 
-.card-date {
-    position: absolute;
-    padding-left: 20px;
-    margin-top: 60px;
+.card-content {
+    overflow-y: hidden;
+    /* Permitir que el contenido no se desborde */
+    flex-grow: 1;
+    /* Expandir este contenedor */
 }
 
-.card-temp {
-    position: absolute;
-    padding-left: 20px;
-    margin-top: 260px;
-    font-size: 50px;
+.title {
+    color: #E4602F;
+    font-size: 20px;
+    margin-left: 10px;
+
 }
 
-.card-desc {
-    position: absolute;
-    padding-left: 20px;
-    margin-top: 320px;
+.weather-row {
+    display: flex;
+    justify-content: space-between;
+    /* Alinear el contenido */
+    align-items: center;
+    padding: 4px 0;
+    /* Espaciado vertical */
+    border-bottom: 1px solid #E4602F;
+}
+
+.weather-icon {
+    display: flex;
+    /* Usar flexbox para alinear elementos */
+    align-items: center;
+    /* Alinear verticalmente al centro */
+    margin-right: 8px;
+}
+
+.weather-icon img {
+    width: 30px;
+    /* Tamaño del ícono */
+    height: auto;
+    /* Mantener la proporción de la imagen */
+}
+
+.pop {
+    margin-left: 5px;
+    /* Espacio entre el ícono y el porcentaje */
+    font-size: 14px;
+    /* Ajustar tamaño de fuente si es necesario */
+}
+
+.temperature {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Media Queries para Responsividad */
+@media (min-width: 481px) {
+    .card {
+        max-width: 80%;
+    }
+}
+
+@media (min-width: 1201px) {
+    .card {
+        max-width: 70%;
+    }
+}
+
+@media (min-width: 1601px) {
+    .card {
+        max-width: 50%;
+    }
 }

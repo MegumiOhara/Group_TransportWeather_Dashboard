@@ -24,51 +24,36 @@ const Card = ({ loadingData, showData, weather, forecast }) => {
     return (
         <div className="mt-5">
             <div className="container">
-                <div className="card mb-3 mx-auto bg-dark text-light">
-                    <div className="row g-0">
-                        <div className="col-md-12">
-                            <h4>LOCAL WEATHER</h4> {/* Título principal */}
-                        </div>
+                <div className="card mb-3 mx-auto bg-light text-dark weather-card">
+                    <h4 className='title'>Local Weather</h4> {/* Título principal */}
+                    <div className="card-body p-2">
 
-                        <div className="col-md-12">
-                            <div className="card-body text-start mt-2">
-                                <h5 className="card-text">Max Temperature: {(weather.main.temp_max - 273.15).toFixed(1)}ºC</h5>
-                                <h5 className="card-text">Min Temperature: {(weather.main.temp_min - 273.15).toFixed(1)}ºC</h5>
-                            </div>
-                            <hr />
+                        {/* Mostrar pronósticos en filas */}
+                        <div className="card-content"> {/* Contenedor para el contenido */}
+                            {forecastData.map((forecastItem, index) => (
+                                <div key={index} className="weather-row" style={{ justifyContent: 'center' }}>
+                                    {/* Columna para el día */}
+                                    <div className="week">{weekDays[index]}</div>
 
-                            {/* Mostrar pronósticos en filas */}
-                            <div className="row">
-                                {forecastData.map((forecastItem, index) => (
-                                    <div key={index} className="col-12 mb-3">
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            {/* Columna para el día */}
-                                            <div className="col-3">
-                                                <h5>{weekDays[index]}</h5> {/* Muestra "Today" para el primer día y otros días para el resto */}
-                                            </div>
-
-                                            {/* Columna para la información del clima */}
-                                            <div className="col-9 d-flex justify-content-between align-items-center">
-                                                <div className="d-flex align-items-center">
-                                                    <img src={`${url}${forecastItem.weather[0].icon}.png`} alt="icon" className="me-2" />
-                                                    <p className="m-0">{(forecastItem.pop * 100).toFixed(0)}%</p> {/* Probabilidad de lluvia al lado del ícono */}
-                                                </div>
-                                                <p className="m-0">{(forecastItem.main.temp - 273.15).toFixed(1)}ºC</p> {/* Temperatura en la otra columna */}
-                                            </div>
-                                        </div>
+                                    {/* Ícono y probabilidad de lluvia */}
+                                    <div className="weather-icon">
+                                        <img src={`${url}${forecastItem.weather[0].icon}.png`} alt="icon" />
+                                        <p className="pop">{(forecastItem.pop * 100).toFixed(0)}%</p> {/* Porcentaje al lado del ícono */}
                                     </div>
-                                ))}
-                            </div>
+
+                                    {/* Temperaturas máxima y mínima */}
+                                    <div className="temperature">
+                                        <p className="temp-min">↓ {(forecastItem.main.temp_min - 273.15).toFixed(1)}ºC</p>
+                                        <p className="temp-max">↑ {(forecastItem.main.temp_max - 273.15).toFixed(1)}ºC</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default Card;
-
-
-
-
