@@ -23,7 +23,7 @@ app.use(express.json());
 // Use the departures API routes
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
-app.use("/api/traffic", trafficApi);
+app.use("/api/", trafficApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
