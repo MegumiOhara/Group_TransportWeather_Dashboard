@@ -32,6 +32,7 @@ const getNearestStationId = async (latitude, longitude) => {
             originCoordLat: latitude,
             originCoordLong: longitude,
             lang: "en",
+            maxNo: 1,
          },
       });
 
@@ -62,90 +63,95 @@ const fetchDataFromResRobot = async (url, params) => {
    }
 };
 
-// Function to fetch departure data
+// Function to fetch departure from the nearest station
 const getDepartureBoard = async (stationId) => {
    const params = {
       accessId: apiKey,
       id: stationId,
       format: "json",
-      duration: 60,
-      passlist: 1,
+      duration: 60, // Get departures for the next hour
+      maxJourneys: 5, // Limit to 5 departures
+      passlist: 1, // Include passlist to get arrival times
       lang: "en",
-      products: 0,
+      //products: 0,
    };
 
    const data = await fetchDataFromResRobot(departureBoardApiUrl, params);
 
    console.log("Departure data:", data); // Log the data for debugging
 
-   return data.Departure.map((departure) => {
+   if (!data.Departure || data.Departure.length === 0) {
+      return null;
+   }
+
+   // Extract information for each departure
+   const departures = data.Departure.map((departure) => {
       const product = departure.ProductAtStop || {};
+      const vehicleCode = product.catOutL || product.catOuts || "Unknown";
+      let vehicleType = "Unknown";
+      let vehicleIcon = "fa-circle-question";
 
-      // Extracting information for the journey including arrival times
-      const stops =
-         departure.Stops && departure.Stops.Stop ? departure.Stops.Stop : [];
-      const finalStop = stops.length > 0 ? stops[stops.length - 1] : null;
-
-      // Arrival time at the final destination
-      let arrivalTime = finalStop ? finalStop.arrTime : "Unknown";
-      if (arrivalTime !== "Unknown") {
-         arrivalTime = arrivalTime.slice(0, 5);
+      // Map vehicle code to type and icon
+      for (const key in vehicleTypeIcons) {
+         if (vehicleCode && vehicleCode.includes(key)) {
+            vehicleType = vehicleTypeIcons[key].type;
+            vehicleIcon = vehicleTypeIcons[key].icon;
+            break;
+         }
       }
 
-      // Extracting departure date if available
-      const departureDate =
-         finalStop && finalStop.depDate ? finalStop.depDate : null;
-
-      // Extracting arrival date if available
-      const arrivalDate =
-         finalStop && finalStop.arrDate ? finalStop.arrDate : null;
-
-      // Calculating the duration (if both times are available)
+      // Extract arrival time and calculate journey duration
+      let arrivalTime = "Unknown";
       let duration = "Unknown";
-      if (departureDate && arrivalDate && departure.time && arrivalTime) {
-         try {
+
+      if (departure.Stops && departure.Stops.Stop) {
+         const stops = departure.Stops.Stop;
+         const lastStop = stops[stops.length - 1];
+
+         if (lastStop && lastStop.arrTime && lastStop.arrDate) {
+            arrivalTime = lastStop.arrTime; // Only time part
+
+            // Calculate duration
             const departureDateTime = new Date(
-               `${departureDate}T${departure.time}:00`
+               `${departure.date}T${departure.time}`
             );
             const arrivalDateTime = new Date(
-               `${arrivalDate}T${finalStop.arrTime}:00`
+               `${lastStop.arrDate}T${lastStop.arrTime}`
             );
 
-            // Ensure we only calculate if both times are valid
-            if (
-               !isNaN(departureDateTime.getTime()) &&
-               !isNaN(arrivalDateTime.getTime())
-            ) {
-               duration =
-                  Math.abs((arrivalDateTime - departureDateTime) / 60000) +
-                  " min";
+            if (!isNaN(departureDateTime) && !isNaN(arrivalDateTime)) {
+               const diffMs = arrivalDateTime - departureDateTime;
+               const diffMins = Math.round(diffMs / 60000);
+               const hours = Math.floor(diffMins / 60);
+               const minutes = diffMins % 60;
+               if (hours > 0) {
+                  duration = `${hours} h ${minutes} min`;
+               } else {
+                  duration = `${minutes} min`;
+               }
             }
-         } catch (error) {
-            console.error("Error calculating duration:", error);
          }
       }
 
       return {
-         name: product.name || "Unknown",
-         displayNumber: product.displayNumber || "Unknown",
-         transportType: product.catOutL || "Unknown",
+         departureStation: departure.stop,
+         arrivalStation: departure.direction,
+         departureTime: departure.time, // Only time part
+         arrivalTime, // Only time part
+         duration,
+         vehicleType,
+         vehicleIcon,
+         displayNumber: product.displayNumber || product.num || "Unknown",
          operator: product.operator || "Unknown",
-         scheduledTime: departure.time ? departure.time.slice(0, 5) : "Unknown",
-         realTime: departure.rtTime ? departure.rtTime.slice(0, 5) : "On time",
-         track: departure.rtTrack || "Unknown",
-         depTrack: departure.rtDepTrack || "Unknown",
-         line: product.num || "Unknown",
-         type: departure.transportCategory,
-         destination: departure.direction,
-         arrivalTime: arrivalTime,
-         duration: duration,
       };
-   }).filter((departure) => departure.scheduledTime);
+   });
+
+   return departures;
 };
 
-// Unified route to handle both stations and departures based on coordinates
+// Route to handle departures based on coordinates
 router.post("/location", async (req, res) => {
-   console.log("Request received for departures and arrivals", req.body);
+   console.log("Request received for departures", req.body);
 
    // Extract latitude and longitude from request body
    const { latitude, longitude } = req.body;
@@ -167,10 +173,14 @@ router.post("/location", async (req, res) => {
       // 2. Fetch departures for nearest station
       const departures = await getDepartureBoard(nearestStation.id);
 
+      if (!departures) {
+         return res.status(400).json({ message: "No departures found" });
+      }
+
       // Send station info and departures as response
       return res.json({
          station: nearestStation.name,
-         departures,
+         departures: departures,
       });
    } catch (error) {
       console.error("Error fetching location data", error);
