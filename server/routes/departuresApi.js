@@ -109,7 +109,7 @@ const getDepartureBoard = async (stationId) => {
          const lastStop = stops[stops.length - 1];
 
          if (lastStop && lastStop.arrTime && lastStop.arrDate) {
-            arrivalTime = lastStop.arrTime; // Only time part
+            arrivalTime = lastStop.arrTime.slice(0, 5); // Only time part
 
             // Calculate duration
             const departureDateTime = new Date(
@@ -133,10 +133,12 @@ const getDepartureBoard = async (stationId) => {
          }
       }
 
+      const formattedDepartureTime = departure.time.slice(0, 5); // Only hours and minutes
+
       return {
          departureStation: departure.stop,
          arrivalStation: departure.direction,
-         departureTime: departure.time, // Only time part
+         departureTime: formattedDepartureTime,
          arrivalTime, // Only time part
          duration,
          vehicleType,
