@@ -6,23 +6,19 @@ import {
    faTrain,
    faTrainTram,
    faTrainSubway,
-   faShip,
+   faFerry,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface Departure {
-   name: string;
-   displayNumber: string;
-   transportType: string;
-   operator: string;
-   scheduledTime: string;
-   realTime: string;
-   track: string;
-   depTrack: string;
-   line: string;
-   type: string;
-   destination: string;
+   departureStation: string;
+   arrivalStation: string;
+   departureTime: string;
    arrivalTime: string;
    duration: string;
+   vehicleType: string;
+   vehicleIcon: string;
+   displayNumber: string;
+   operator: string;
 }
 
 interface DepartureProps {
@@ -96,7 +92,7 @@ function Departures({ lat, lng }: DepartureProps) {
             );
          case "ferry":
          case "färja":
-            return <FontAwesomeIcon icon={faShip} className="text-gray-700" />;
+            return <FontAwesomeIcon icon={faFerry} className="text-gray-700" />;
          default:
             return <FontAwesomeIcon icon={faBus} className="text-gray-700" />; // Default to bus if type unknown
       }
@@ -127,24 +123,21 @@ function Departures({ lat, lng }: DepartureProps) {
                      className="p-4 border-t border-b border-gray-400 bg-white">
                      <div className="flex items-center justify-between mb-2">
                         <span className="font-bold text-lg">
-                           {departure.scheduledTime} {departure.realTime}
+                           {departure.departureTime} {departure.arrivalStation}
                         </span>
                         <span className="text-sm text-gray-500">
                            {departure.duration}
                         </span>
                         <div className="text-base font-medium mb-1">
-                           {departure.name} - {departure.destination}
-                           <span className="text-sm text-gray-500">
-                              {departure.track || departure.depTrack}
-                           </span>
+                           {departure.departureStation} -{" "}
+                           {departure.arrivalStation}
                         </div>
                         <div className="flex items-center space-x-2 text-gray-600">
                            <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-300 rounded-full p-2">
-                              {getTransportIcon(departure.type)}
+                              {getTransportIcon(departure.vehicleType)}
                            </span>
                            <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
-                              {departure.transportType}{" "}
-                              {departure.displayNumber}
+                              {departure.vehicleType} {departure.displayNumber}
                            </span>
                         </div>
                      </div>
