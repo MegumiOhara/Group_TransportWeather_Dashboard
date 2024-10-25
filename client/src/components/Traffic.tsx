@@ -7,7 +7,6 @@ interface TrafficUpdate {
     status: string;
     description: string;
     location: string;
-    severity: string;
 }
 //Function to fetch and display traffic updates
 const TrafficStatusUpdates: React.FC = () => {
@@ -56,10 +55,11 @@ const TrafficStatusUpdates: React.FC = () => {
                 onGeocode={handleGeocode} // Pass geocode handler
                 onError={handleError} // Pass error handler
             />
+            
+            {/* Display error message if any */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            {latitude && longitude && (
-                <p>Your current location: {latitude}, {longitude}</p>
-            )}
+            {/* Display traffic updates if available */}
 
             {trafficData && (
                 <div>
@@ -73,9 +73,13 @@ const TrafficStatusUpdates: React.FC = () => {
                     </ul>   
                 </div>
             )}
+            
+            {/* Display last updated timestamp if available */}
             {!loading && trafficData && trafficData.timestamp && (
                 <p>Last updated: {new Date(trafficData.timestamp).toLocaleString()}</p>
             )}
+
+             {loading && <p>Loading traffic updates...</p>}
         </div>
     )
 };
