@@ -41,7 +41,7 @@ const TrafficStatusUpdates: React.FC = () => {
         setError(errorMessage);
     };
    
-    
+    // Log traffic data when it is updated (for debugging)
     useEffect(() => {
         if (trafficData) {
             console.log('Latest traffic updates:', trafficData);
@@ -51,9 +51,11 @@ const TrafficStatusUpdates: React.FC = () => {
     return (
         <div className="traffic-updates">
             <h2>Traffic Status Updates</h2>
-            <button onClick={fetchCurrentLocation} disabled={loading}>
-                {loading? 'Loading...' : 'Get current location'}
-            </button>
+            {loading && <p>Loading...</p>} 
+            <AddressInput
+                onGeocode={handleGeocode} // Pass geocode handler
+                onError={handleError} // Pass error handler
+            />
 
             {latitude && longitude && (
                 <p>Your current location: {latitude}, {longitude}</p>
