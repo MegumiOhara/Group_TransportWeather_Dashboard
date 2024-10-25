@@ -38,26 +38,26 @@ function AddressInput ({ onGeocode, onError} : AddressInputProps){
     };
 
     return(
-        <div className = "m-auto pb-2 bg-custom-bg w-full .box-border flex flex-col items-center">
-            <div className = "m-auto w-full .box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly md:justify">
+        <div className = "w-full h-full pb-2 bg-custom-bg w-full .box-border flex flex-col items-center overflow-x-hidden">
+            <div className = "w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly md:grid grid-cols-6">
                 <img 
-                    className= "w-[50px] h-[44px] mr-3"
+                    className= "w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
                     src = {mapImg} 
                     alt = "logo"
                 />
-                <h1 className = "text-[20px] md:text-[30px] text-slate-950 font-bold w-[223px] h-[28px]">
+                <h1 className = "text-[20px] md:text-[32px] text-slate-950 font-bold w-[223px] h-[28px] md:col-start-3 justify-self-end md:mr-5 ">
                     <span className = "block sm:hidden">Local Traffic & Weather</span>
                     <span className = "hidden sm:block w-[513px] h-[45px]"> Local Traffic & Weather Dashboard</span>
                 </h1>
             </div>
             <div>
                 <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
-                <form className = "m-auto .box-border w-[287px] h-[40px] md:w-[513px] md:h-[45px] bg-white flex border rounded shadow-inner" onSubmit={handleFormSubmit}>
+                <form className = "m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded shadow-inner" onSubmit={handleFormSubmit}>
                     <button 
                         className= "m-auto h-[40px] w-[40px] cursor-pointer"
                         type="submit">
                     <img 
-                        className= "h-[16px] w-[16px] m-auto hover:fill-slate-950"
+                        className= "h-[16px] w-[16px] md:w-[25px] m-auto hover:fill-slate-950"
                         src = {searchImg} 
                         alt = "search"/>
                     </button>
