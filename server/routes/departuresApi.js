@@ -11,6 +11,17 @@ const apiKey = process.env.RESROBOT_API_KEY;
 const nearbyStopsApiUrl = `https://api.resrobot.se/v2.1/location.nearbystops`;
 const departureBoardApiUrl = `https://api.resrobot.se/v2.1/departureBoard`;
 
+// Mapping of vehicle types to Font Awesome icons
+const vehicleTypeIcons = {
+   Flygbuss: { type: "Airport Bus", icon: "fa-bus-alt" },
+   Buss: { type: "Bus", icon: "fa-bus" },
+   Tåg: { type: "Train", icon: "fa-train" },
+   Tunnelbana: { type: "Metro", icon: "fa-train-subway" },
+   Spårvagn: { type: "Tram", icon: "fa-train-tram" },
+   Tvärbana: { type: "Tram", icon: "fa-train-tram" },
+   Färja: { type: "Ferry", icon: "fa-ferry" },
+};
+
 // Function to get nearest station ID based on coordinates
 const getNearestStationId = async (latitude, longitude) => {
    try {
