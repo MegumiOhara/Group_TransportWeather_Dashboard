@@ -2,87 +2,57 @@ import React, { useState } from 'react';
 import FormW from "./FormW";
 import Card from './Card';
 
+const WeatherPanel: React.FC = () => {
+    const apiKey = "182a20365632cbbb6415b782c8fe08c5"; // Es una buena práctica almacenar la API Key de esta manera
+    const [weather, setWeather] = useState<any>(null); // Cambia 'any' por un tipo más específico si lo conoces
+    const [forecast, setForecast] = useState<any>(null); // Cambia 'any' por un tipo más específico si lo conoces
+    const [loading, setLoading] = useState<boolean>(false);
+    const [show, setShow] = useState<boolean>(false);
+    const [location, setLocation] = useState<string>("");
 
-const WeatherPanel = () => {
-
-    let urlWeather = "https://api.openweathermap.org/data/2.5/weather?appid=182a20365632cbbb6415b782c8fe08c5&lang=es";
-
-    const cityUrl = "&q=";
-
-    let urlForecast = "https://api.openweathermap.org/data/2.5/forecast?appid=182a20365632cbbb6415b782c8fe08c5&lang=es";
-
-
-    const [weather, setWeather] = useState([]);
-    const [forecast, setForecast] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [show, setShow] = useState(false);
-    const [location, setLocation] = useState("");
-
-    const getLocation = async (loc) => {
+    const getLocation = async (loc: string) => {
         setLoading(true);
         setLocation(loc);
 
-        //weather
+        // Weather
+        const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&lang=es&q=${loc}`;
+        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${apiKey}&lang=es&q=${loc}`;
 
-        urlWeather = urlWeather + cityUrl + loc;
-
-        await fetch(urlWeather).then((response) => {
-            if (!response.ok) throw { response }
-            return response.json();
-        }).then((weatherData) => {
+        try {
+            const weatherResponse = await fetch(urlWeather);
+            if (!weatherResponse.ok) throw new Error("Error fetching weather data");
+            const weatherData = await weatherResponse.json();
             console.log(weatherData);
             setWeather(weatherData);
-        }).catch(error => {
+        } catch (error) {
             console.log(error);
             setLoading(false);
             setShow(false);
-        });
+        }
 
-        //Forecast
-
-        urlForecast = urlForecast + cityUrl + loc;
-
-        await fetch(urlForecast).then((response) => {
-            if (!response.ok) throw { response }
-            return response.json();
-        }).then((forecastData) => {
+        // Forecast
+        try {
+            const forecastResponse = await fetch(urlForecast);
+            if (!forecastResponse.ok) throw new Error("Error fetching forecast data");
+            const forecastData = await forecastResponse.json();
             console.log(forecastData);
             setForecast(forecastData);
-
-            setLoading(false);
             setShow(true);
-
-        }).catch(error => {
+        } catch (error) {
             console.log(error);
             setLoading(false);
             setShow(false);
-        });
-
-
+        } finally {
+            setLoading(false);
+        }
     }
 
-
     return (
-
         <React.Fragment>
-
-            <FormW
-                newLocation={getLocation}
-            />
-
-
-            <Card
-                showData={show}
-                loadingData={loading}
-                weather={weather}
-                forecast={forecast}
-            />
-
-
+            <FormW newLocation={getLocation} />
+            <Card showData={show} loadingData={loading} weather={weather} forecast={forecast} />
         </React.Fragment>
-
     );
-
 }
 
 export default WeatherPanel;

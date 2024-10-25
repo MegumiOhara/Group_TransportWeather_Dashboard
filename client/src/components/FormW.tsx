@@ -1,14 +1,18 @@
 import { useState } from "react";
 
-const FormW = ({ newLocation }) => {
-    const [city, setCity] = useState("");
+interface FormWProps {
+    newLocation: (city: string) => void; // Tipo para la prop newLocation
+}
 
-    const onSubmit = (e) => {
+const FormW = ({ newLocation }: FormWProps) => {
+    const [city, setCity] = useState<string>(""); // Estado tipado como string
+
+    const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("City submitted:", city);
-        if (city === "" || !city) return
+        if (!city) return; // Comprobación simplificada
 
-        newLocation(city);
+        newLocation(city); // Llama a la función newLocation con el valor de city
     };
 
     return (
@@ -19,7 +23,7 @@ const FormW = ({ newLocation }) => {
                         type="text"
                         className="form-control"
                         placeholder="city"
-                        onChange={(e) => setCity(e.target.value)}
+                        onChange={(e) => setCity(e.target.value)} // take the change of the entrance
                     />
                     <button className="btn btn-primary input-group-text" type="submit">
                         Submit
