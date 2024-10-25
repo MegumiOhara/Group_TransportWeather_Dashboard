@@ -25,7 +25,7 @@ const TrafficStatusUpdates: React.FC<TrafficProps> = ({lat, lng}) => {
     const fetchTrafficData = async () => {
         try {
             setLoading(true); 
-            const response = await axios.post('http://localhost:3000/api/traffic', { latitude: lat, longitude: lgn });
+            const response = await axios.post('http://localhost:3000/api/traffic', { latitude: lat, longitude: lng });
             setTrafficData(response.data); 
             setError(null); // Clear any previous errors
         } catch (error) {
