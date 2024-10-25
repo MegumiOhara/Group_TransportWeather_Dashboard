@@ -52,7 +52,7 @@ function App() {
         <>
           {/*<Weather lat={lat} lng={lng}/>*/}
           {/*<Departures lat={lat} lng={lng}/> */}
-          {/*<Traffic lat={lat} lng={lng}/> */}
+          <TrafficStatusUpdates lat={lat} lng={lng} />
         </>
       )}
 
