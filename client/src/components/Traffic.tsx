@@ -1,52 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AddressInput from './Address';
 
-const TrafficStatusUpdates = () => {
-    const [latitude, setLatitude] = useState<number | null>(null);
-    const [longitude, setLongitude] = useState<number | null>(null);
+interface TrafficUpdate {
+    timestamp: number;
+    status: string;
+    description: string;
+    location: string;
+}
+//Function to fetch and display traffic updates
+const TrafficStatusUpdates: React.FC = () => {
+    const [trafficData, setTrafficData] = useState<{updates: TrafficUpdate[], timestamp: string } | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [trafficData, setTrafficData] = useState<any>(null);
-
-    const onLocationSuccess = (position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
-        setLatitude(latitude);
-        setLongitude(longitude);
-
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-
-        submitLocationData(latitude, longitude);
-};
-
-    const fetchCurrentLocation = () => {
-        setLoading(true);
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                onLocationSuccess, 
-                (error) => {
-                console.error('Error fetching geolocation:', error); 
-                setLoading(false);
-            }
-        );
-        } else {
-            alert('Geolocation is not supported by your browser.');
-            setLoading(false);
-        }
-    };
+    const [error, setError] = useState<string | null>(null);
     
-    const submitLocationData = async (latitude: number, longitude: number) => {
+
+     // Function to fetch traffic updates based on latitude and longitude
+    const fetchTrafficData = async (lat: number, lgn: number) => {
         try {
-            setLoading(true);
-            const response = await axios.post('http://localhost:8080/api/traffic', {
-                 latitude, longitude 
-                });
-            setTrafficData(response.data);
+            setLoading(true); 
+            const response = await axios.post('http://localhost:3000/api/traffic', { latitude: lat, longitude: lgn });
+            setTrafficData(response.data); 
+            setError(null); // Clear any previous errors
         } catch (error) {
-            console.error('Error fetching traffic data from server:', error);
-        } finally {    
-            setLoading(false);
+            console.error('Error fetching traffic data:', error);
+            setError('Failed to fetch traffic updates. Please try again.');
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
-    
+
+    // Handle successful geocoding from AddressInput
+    const handleGeocode = (lat: number, lng: number) => {
+        setError(null); // Clear any previous error
+        fetchTrafficData(lat, lng); // Fetch traffic data for the given lat/lng
+    };
+       
+    const handleError = (errorMessage: string) => {
+        setError(errorMessage);
+    };
+   
+    // Log traffic data when it is updated (for debugging)
     useEffect(() => {
         if (trafficData) {
             console.log('Latest traffic updates:', trafficData);
@@ -56,13 +50,16 @@ const TrafficStatusUpdates = () => {
     return (
         <div className="traffic-updates">
             <h2>Traffic Status Updates</h2>
-            <button onClick={fetchCurrentLocation} disabled={loading}>
-                {loading? 'Loading...' : 'Get current location'}
-            </button>
+            {loading && <p>Loading...</p>} 
+            <AddressInput
+                onGeocode={handleGeocode} // Pass geocode handler
+                onError={handleError} // Pass error handler
+            />
+            
+            {/* Display error message if any */}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            {latitude && longitude && (
-                <p>Your current location: {latitude}, {longitude}</p>
-            )}
+            {/* Display traffic updates if available */}
 
             {trafficData && (
                 <div>
@@ -76,10 +73,13 @@ const TrafficStatusUpdates = () => {
                     </ul>   
                 </div>
             )}
-            {/* Show timestamp of last traffic update */}
+            
+            {/* Display last updated timestamp if available */}
             {!loading && trafficData && trafficData.timestamp && (
                 <p>Last updated: {new Date(trafficData.timestamp).toLocaleString()}</p>
             )}
+
+             {loading && <p>Loading traffic updates...</p>}
         </div>
     )
 };
