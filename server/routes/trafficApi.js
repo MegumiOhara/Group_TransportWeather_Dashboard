@@ -15,11 +15,14 @@ const xmlData = `
         <LOGIN authenticationkey="${API_Key}"/>
         <QUERY objecttype="Situation" schemaversion="1.5" limit="10">
             <FILTER>
+            <NEAR name="Deviation.Geometry.WGS84" value="57.78145 14.15618" maxdistance="5000"/>
+            <GT name="Deviation.CreationTime" value="2024-10-25T12:00:00.660+01:00"/>
+
             </FILTER>
         </QUERY>
     </REQUEST>
-`;        
-
+`;      
+console.log(xmlData);
 
 
 
