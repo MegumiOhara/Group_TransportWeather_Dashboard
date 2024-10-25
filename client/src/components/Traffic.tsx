@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AddressInput from './Address';
+
 
 interface TrafficUpdate {
     timestamp: number;
@@ -8,15 +8,21 @@ interface TrafficUpdate {
     description: string;
     location: string;
 }
+
+interface TrafficProps {
+    lat: number;
+    lgn: number;
+}
+
 //Function to fetch and display traffic updates
-const TrafficStatusUpdates: React.FC = () => {
+const TrafficStatusUpdates: React.FC<TrafficProps> = () => {
     const [trafficData, setTrafficData] = useState<{updates: TrafficUpdate[], timestamp: string } | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     
 
      // Function to fetch traffic updates based on latitude and longitude
-    const fetchTrafficData = async (lat: number, lgn: number) => {
+    const fetchTrafficData = async () => {
         try {
             setLoading(true); 
             const response = await axios.post('http://localhost:3000/api/traffic', { latitude: lat, longitude: lgn });
@@ -30,16 +36,6 @@ const TrafficStatusUpdates: React.FC = () => {
         }
     };
 
-    // Handle successful geocoding from AddressInput
-    const handleGeocode = (lat: number, lng: number) => {
-        setError(null); // Clear any previous error
-        fetchTrafficData(lat, lng); // Fetch traffic data for the given lat/lng
-    };
-       
-    const handleError = (errorMessage: string) => {
-        setError(errorMessage);
-    };
-   
     // Log traffic data when it is updated (for debugging)
     useEffect(() => {
         if (trafficData) {
