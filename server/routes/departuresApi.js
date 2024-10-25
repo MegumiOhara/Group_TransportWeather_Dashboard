@@ -87,7 +87,7 @@ const getDepartureBoard = async (stationId) => {
    // Extract information for each departure
    const departures = data.Departure.map((departure) => {
       const product = departure.ProductAtStop || {};
-      const vehicleCode = product.catOutL || product.catOuts || "Unknown";
+      const vehicleCode = product.catOutL || product.catOutS || "Unknown";
       let vehicleType = "Unknown";
       let vehicleIcon = "fa-circle-question";
 
