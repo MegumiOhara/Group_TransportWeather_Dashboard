@@ -7,6 +7,7 @@ import {
    faTrainTram,
    faTrainSubway,
    faFerry,
+   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface Departure {
@@ -64,13 +65,13 @@ function Departures({ lat, lng }: DepartureProps) {
    const formattedDate = `${today.toLocaleDateString("en-US", options)}`;
 
    // Function to return appropriate icon for transport type
-   const getTransportIcon = (type?: string) => {
-      if (!type) {
-         return <FontAwesomeIcon icon={faBus} className="text-gray-700" />; // Standard till bus-ikonen om `type` saknas
+   const getTransportIcon = (vehicleType?: string) => {
+      if (!vehicleType) {
+         return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
       }
-      switch (type.toLowerCase()) {
+      switch (vehicleType.toLowerCase()) {
          case "bus":
-         case "regionbus":
+         case "buss":
             return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
          case "train":
          case "pendeltåg":
@@ -94,7 +95,7 @@ function Departures({ lat, lng }: DepartureProps) {
          case "färja":
             return <FontAwesomeIcon icon={faFerry} className="text-gray-700" />;
          default:
-            return <FontAwesomeIcon icon={faBus} className="text-gray-700" />; // Default to bus if type unknown
+            return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
       }
    };
 
@@ -116,28 +117,34 @@ function Departures({ lat, lng }: DepartureProps) {
                {formattedDate}
             </p>
 
-            <div className="space-y-4">
+            <div>
                {departures.slice(0, 5).map((departure, i) => (
                   <div
                      key={i}
-                     className="p-4 border-t border-b border-gray-400 bg-white">
-                     <div className="flex items-center justify-between mb-2">
-                        <span className="font-bold text-lg">
-                           {departure.departureTime} {departure.arrivalStation}
+                     className="p-2 border-t border-gray-400 bg-white">
+                     <div className="flex flex-col justify-between">
+                        <span className="font-bold text-lg font-lato">
+                           {departure.departureTime}
+                           <FontAwesomeIcon
+                              icon={faArrowRight}
+                              className="mx-2 text-black"
+                           />{" "}
+                           {departure.arrivalTime}
+                           <span className="text-black font-lato text-[10px] font-normal ml-2">
+                              {departure.duration}
+                           </span>
                         </span>
-                        <span className="text-sm text-gray-500">
-                           {departure.duration}
-                        </span>
-                        <div className="text-base font-medium mb-1">
+                        <div className="text-black font-lato text-[14px] font-normal mb-1">
                            {departure.departureStation} -{" "}
                            {departure.arrivalStation}
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-600">
-                           <span className="inline-flex items-center justify-center w-8 h-8 bg-gray-300 rounded-full p-2">
+                        <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4]">
+                           <span className="inline-flex items-center justify-center px-4 py-4 w-8 h-8 p-2">
                               {getTransportIcon(departure.vehicleType)}
                            </span>
-                           <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
-                              {departure.vehicleType} {departure.displayNumber}
+                           <span className="rounded-full text-xs">
+                              {departure.vehicleType} {departure.displayNumber}{" "}
+                              {departure.operator}
                            </span>
                         </div>
                      </div>
