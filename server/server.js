@@ -1,6 +1,7 @@
 // Change to import
 import express from "express";
 import cors from "cors";
+import addressApi from "./routes/addressApi.js";
 import trafficApi from "./routes/trafficApi.js";
 import dotenv from "dotenv";
 
