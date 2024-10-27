@@ -151,6 +151,21 @@ router.post("/location", async (req, res) => {
 
         const deviation = situation.Deviation?.[0] || {};
 
+        return {
+          id: situation.Id || String(Math.random()),
+          type: incidentTypes[deviation.Type] || deviation.Type || "Unknown",
+          description: situation.HeaderText?.Value || deviation.Message || "No description available",
+          location: situation.LocationText?.Value || "Location not specified",
+          coordinates,
+          startTime: formatDateTime(deviation.StartTime || situation.CreationTime),
+          endTime: formatDateTime(deviation.EndTime),
+          severity: getSeverity(situation.Priority),
+          status: deviation.Status || "Active"
+       };
+    }).filter(incident => incident !== null); // Remove null entries
+
+    console.log(`Found ${incidents.length} valid incidents with POINT geometry`);
+
 
 
 
