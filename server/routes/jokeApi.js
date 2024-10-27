@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", async(req,res) => {
     try{
-        const response = await axios.get("https://icanhazdadjoke.com/api", {
+        const response = await axios.get("https://icanhazdadjoke.com/", {
             headers: { Accept: "application/json"},
         });
         const joke = response.data;

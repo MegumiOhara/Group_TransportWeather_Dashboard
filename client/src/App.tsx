@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import AddressInput from "./components/Address";
+import Joke from "./components/Joke";
 
 function App() {
   
@@ -12,6 +13,7 @@ function App() {
     const [lat, setLat] = useState<number | null>(null);
     const [lng, setLng] = useState<number| null>(null);
     const [error, setError] = useState<string | null>(null);//stores potential error messages
+    const [fetchJoke, setFetchJoke] = useState<boolean>(false);//New state for triggering jokes
 
     //Function will be passed to the AddressInput component.
     //it will update the lat/lng state when geocoding is successful
@@ -19,6 +21,7 @@ function App() {
       setLat(lat);
       setLng(lng);
       setError(null); //clear any previous error when success.
+      setFetchJoke((prev) => !prev);
     };
 
     //Function to handle geocoding errors
@@ -54,6 +57,8 @@ function App() {
           {/*<Traffic lat={lat} lng={lng}/> */}
         </>
       )}
+
+      <Joke fetchNewJoke={fetchJoke} />
 
       {error && <p>{error}</p>}
     </div>
