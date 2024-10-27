@@ -166,6 +166,29 @@ router.post("/location", async (req, res) => {
 
     console.log(`Found ${incidents.length} valid incidents with POINT geometry`);
 
+    return res.json({ 
+      incidents,
+      source: "Trafikverket"
+   });
+
+} catch (error) {
+   console.error("Error fetching traffic data:", error);
+   if (error.response) {
+      console.error("API Error Details:", {
+         status: error.response.status,
+         statusText: error.response.statusText,
+         data: error.response.data
+      });
+   }
+   
+   return res.status(500).json({ 
+      error: 'Failed to fetch traffic data',
+      message: error.message,
+      details: error.response?.data || 'No additional details available'
+   });
+}
+});
+
 
 
 
