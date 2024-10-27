@@ -5,6 +5,7 @@ import cors from "cors";
 //const cors = require("cors");
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
+import jokeApi from "./routes/jokeApi.js";
 import dotenv from "dotenv"
 
 dotenv.config(); //Load env variables from .env file
@@ -21,6 +22,7 @@ app.use(express.json());
 // Use the departures API routes
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
+app.use("/api/joke", jokeApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
