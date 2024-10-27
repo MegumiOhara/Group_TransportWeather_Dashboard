@@ -76,12 +76,12 @@ router.get("/location", async (req, res) => {
           title: dev.Message || dev.Header || 'No title',
           description: dev.LocationDescriptor || 'No description',
           location: coordinates,
-          severity: dev.SeverityText,
+          severity: dev.SafetyRelatedMessage ? 'high' : 'medium',
           startTime: dev.StartTime,
           endTime: dev.EndTime || null,
           roadNumber: dev.RoadNumber || '',
           messageType: dev.MessageTypeValue || '',
-          affectedDirection: 'Both directions'
+          affectedDirection: 'Båda riktningarna'
         };
       })
       .filter(incident => incident.location.lat !== null && incident.location.lng !== null);
