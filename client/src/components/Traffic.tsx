@@ -27,8 +27,8 @@ interface TrafficIncident {
     description: string;
     location: Location;
     severity: 'high' | 'medium' | 'low';
-    startTime: string;
-    endTime: string | null;
+    startTime: Date;
+    endTime: Date | null;
     roadNumber: string;
     messageType: string;
     affectedDirection: string;

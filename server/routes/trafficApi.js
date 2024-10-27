@@ -76,7 +76,7 @@ router.get("/location", async (req, res) => {
           title: dev.Message || dev.Header || 'No title',
           description: dev.LocationDescriptor || 'No description',
           location: coordinates,
-          severity: dev.SafetyRelatedMessage ? 'high' : 'medium',
+          severity: dev.SeverityText,
           startTime: dev.StartTime,
           endTime: dev.EndTime || null,
           roadNumber: dev.RoadNumber || '',
