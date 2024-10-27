@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-<<<<<<< HEAD
 import './App.css';
 import NavBarW from "./components/NavBarW";
 import WeatherPanel from "./components/WeatherPanel";
