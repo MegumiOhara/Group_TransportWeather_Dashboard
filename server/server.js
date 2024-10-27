@@ -47,7 +47,6 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-    console.log('Available endpoints:');
     console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
     console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
 });
