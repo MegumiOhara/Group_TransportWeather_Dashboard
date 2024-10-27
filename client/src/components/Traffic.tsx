@@ -73,59 +73,54 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
         </div>
         );
     }
- 
-        
-        if (error) {
-            return (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-700">Failed to load traffic data. Please try again later.</p>
-                </div>
-              );
-            }
 
-          return (
-    <div className="max-w-full mx-auto p-4 border border-[#E4602F] rounded-md bg-white">
-      <h2 className="text-[#E4602F] font-lato text-base font-semibold mb-2">
-        Traffic Updates
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Traffic Information */}
-        <div className="space-y-4">
-          {data?.incidents?.map((incident: TrafficIncident) => (
-            <div
-              key={incident.id}
-              className="p-2 border-t border-gray-400 bg-white"
-            >
-              <div className="flex flex-col justify-between">
-                <span className="font-bold text-lg font-lato">
-                  {new Date(incident.startTime).toLocaleTimeString('sv-SE', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                  })}
-                </span>
-                <div className="text-black font-lato text-[14px] font-normal mb-1">
-                  {incident.description}
-                </div>
-                <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4] p-2">
-                  <span className="text-xs">
-                    {incident.roadNumber} - {incident.type}
-                  </span>
-                  {incident.severity === 'high' && (
-                    <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
-                      INSTÄLD
+    return (
+        <div className="max-w-full mx-auto p-4 border border-[#E4602F] rounded-md bg-white">
+          <h2 className="text-[#E4602F] font-lato text-base font-semibold mb-2">
+            Traffic Updates
+          </h2>
+    
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Traffic updates lists  */}
+            <div className="space-y-4">
+              {data?.incidents?.map((incident: TrafficIncident) => (
+                <div
+                  key={incident.id}
+                  className="p-2 border-t border-gray-400 bg-white"
+                >
+                  <div className="flex flex-col justify-between">
+                    <span className="font-bold text-lg font-lato">
+                      {new Date(incident.startTime).toLocaleTimeString('sv-SE', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
                     </span>
-                  )}
+                    <div className="text-black font-lato text-[14px] font-normal mb-1">
+                      {incident.description}
+                    </div>
+                    <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4] p-2">
+                      <span className="text-xs">
+                        {incident.roadNumber} - {incident.type}
+                      </span>
+                      {incident.severity === 'high' && (
+                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
+                          INSTÄLD
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
+              {(!data?.incidents || data.incidents.length === 0) && (
+                <p className="text-gray-500 text-center py-4 font-lato">
+                  No traffic incidents reported in this area
+                </p>
+              )}
             </div>
-          ))}
-          {(!data?.incidents || data.incidents.length === 0) && (
-            <p className="text-gray-500 text-center py-4 font-lato">
-              No traffic incidents reported in this area
-            </p>
-          )}
-        </div>
 
-               
-export default TrafficSituation;
+            
+ 
+ 
+
+ 
+ export default TrafficSituation;      
