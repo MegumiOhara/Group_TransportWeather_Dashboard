@@ -10,6 +10,7 @@ function Joke ({ fetchNewJoke}: JokeProps){
     const [joke, setJoke] = useState<string>("");
 
     useEffect(() => {
+        if(!fetchNewJoke) return; //Exit early if no new fetch required
         const getJoke = async () => {
             try {
                 const response = await axios.get("http://localhost:3000/api/joke");
@@ -20,15 +21,22 @@ function Joke ({ fetchNewJoke}: JokeProps){
             }
         };
 
-        if (fetchNewJoke) {
         getJoke();
-    }
+    
     } ,[fetchNewJoke]);
 
     return (
-        <div>
-            <h2>Dad joke of the day</h2>
-            <p>{joke}</p>
+        <div className = "p-4">
+            <div className = "max-w-md mx-auto p-4 border border-[#E4602F] rounded-md bg-white">
+                <h2 className="text-[#E4602F] font-lato text-base font-semibold mb-2">
+                    Dad joke of the day
+                </h2>
+                <div className = "max-w-md mx-auto p-4 border border-[#DEDBD4] rounded-md bg-white">
+                    <p className="text-black font-lato text-sm font-semibold mb-4">
+                        {joke}
+                    </p>
+                </div>
+            </div>
         </div>
     )
    
