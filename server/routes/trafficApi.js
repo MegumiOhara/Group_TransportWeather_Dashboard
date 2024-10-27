@@ -71,7 +71,33 @@ const response = await axios.post(
         const [lng, lat] = Deviation.Geometry.WGS84.split(' ').map(Number);
         coordinates = { lat, lng };
       }
-  
+      
+      // Extract the first image URL if available
+      let imageUrl = null;
+      if (Deviation?.IconId) {
+        imageUrl = `https://api.trafikinfo.trafikverket.se/v2/icon/${Deviation.IconId}`;
+      }
+      
+      // Return the transformed data
+      return {
+        id: situation.Id,
+        modifiedTime: situation.ModifiedTime,
+        publicationTime: situation.PublicationTime,
+        headerText: Deviation?.Header,
+        severityText: Deviation?.SeverityText,
+        locationDescriptor: Deviation?.LocationDescriptor,
+        roadNumber: Deviation?.RoadNumber,
+        startTime: Deviation?.StartTime,
+        endTime: Deviation?.EndTime || null,
+        affectedDirection: Deviation?.AffectedDirection,
+        numberOfLanesRestricted: Deviation?.NumberOfLanesRestricted,
+        messageType: Deviation?.MessageType,
+        messageCode: Deviation?.MessageCode,
+        imageUrl,
+        coordinates,
+      };
+    }) || [];  
+    
 
 
 
