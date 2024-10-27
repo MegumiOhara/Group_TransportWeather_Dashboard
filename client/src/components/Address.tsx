@@ -4,6 +4,7 @@ import { useState } from "react";
 import  searchImg from "../images/magnifying-glass-solid.svg";
 import mapImg from "../images/map-location-dot-solid.svg";
 
+
 //component takes user's input and make a request to backend for geocode.
 
 interface AddressInputProps {
