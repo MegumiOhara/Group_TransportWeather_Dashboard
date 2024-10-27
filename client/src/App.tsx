@@ -1,64 +1,85 @@
-import { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
-import AddressInput from "./components/Address";
-import TrafficStatusUpdates from "./components/Traffic";
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AddressInput from './components/Address';
+import Traffic from './components/Traffic';
+import Weather from './components/Weather';
+import Departures from './components/Departures';
+import mapIcon from './images/map-location-dot-solid.svg';
+
+const queryClient = new QueryClient();
+
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
 
 function App() {
-  
-    //logic that handles the geocodeAPI request to parent component API.tsx
-    //so that lat and lng state can be passed to other components.
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [error, setError] = useState<string>('');
 
-    //state to store latitude and longitude. Initially set to null.
-    const [lat, setLat] = useState<number | null>(null);
-    const [lng, setLng] = useState<number| null>(null);
-    const [error, setError] = useState<string | null>(null);//stores potential error messages
+  const handleGeocode = (lat: number, lng: number) => {
+    setCoordinates({ lat, lng });
+    setError('');
+  };
 
-    //Function will be passed to the AddressInput component.
-    //it will update the lat/lng state when geocoding is successful
-    const handleGeocode = (lat: number, lng: number) =>{
-      setLat(lat);
-      setLng(lng);
-      setError(null); //clear any previous error when success.
-    };
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
+    setCoordinates(null);
+  };
 
-    //Function to handle geocoding errors
-    const handleGeocodeError = (errorMessage: string) =>{
-      setError(errorMessage);
-      setLat(null);
-      setLng(null);
-    };
-
-   // const response= await axios.get("http://localhost:3000/api");
-  //console.log(response);
-  
   return (
-    <div>
-      {/*Pass the geocode handlers and error handler as props to AddressInput */}
-      <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-pink-50">
+        {/* Header */}
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-start mb-4">
+            <img
+              src={mapIcon}
+              alt="Map Location Icon"
+              className="w-[50px] h-[44px] mr-3"
+            />
+            <h1 className="text-[30px] text-slate-950 font-bold">
+              Local Traffic & Weather Dashboard
+            </h1>
+          </div>
 
-      {/*below just showing the lat and lng is retrived, can delete later*/}
-      {lat && lng && ( // Show coordinates only if lat/lng are available
-                <div>
-                    <h2>Coordinates:</h2>
-                    <p><strong>Latitude:</strong> {lat}</p>
-                    <p><strong>Longitude:</strong> {lng}</p>
-                </div>
-            )}
+          {/* Search Box */}
+          <div className="mb-8">
+            <AddressInput onGeocode={handleGeocode} onError={handleError} />
+          </div>
 
-      {/*Conditionally render components if lat/lng are available
-      can only use if valid coordinates are available*/}
-      {lat && lng && (
-        <>
-          {/*<Weather lat={lat} lng={lng}/>*/}
-          {/*<Departures lat={lat} lng={lng}/> */}
-          <TrafficStatusUpdates lat={lat} lng={lng} />
-        </>
-      )}
+          {error && (
+            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
 
-      {error && <p>{error}</p>}
-    </div>
+          {/* Main Content Grid */}
+          {coordinates && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Transport Departures</h2>
+                <Departures coordinates={coordinates} />
+              </div>
+
+              {/* Right Column */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Local Weather</h2>
+                <Weather coordinates={coordinates} />
+              </div>
+
+              {/* Full Width Traffic Section */}
+              <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Traffic Updates</h2>
+                <Traffic coordinates={coordinates} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </QueryClientProvider>
   );
 }
 
-export default App
+export default App;
