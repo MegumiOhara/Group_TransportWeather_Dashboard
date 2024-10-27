@@ -26,7 +26,19 @@ const incidentTypes = {
   "Begränsad framkomlighet": "Limited Accessibility"
 };
 
-
+const getSeverity = (priority) => {
+  if (!priority) return 'low';
+  const priorityNum = parseInt(priority);
+  switch (priorityNum) {
+     case 1:
+     case 2:
+        return 'high';
+     case 3:
+        return 'medium';
+     default:
+        return 'low';
+  }
+};
 
 
 
