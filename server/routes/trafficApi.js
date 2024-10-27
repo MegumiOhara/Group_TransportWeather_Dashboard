@@ -23,8 +23,55 @@ router.get("/location", async (req, res) => {
   }
 
   try {
-    const
+    const creationTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
+    const generateXmlData = `
+    <REQUEST>
+      <LOGIN authenticationkey="${API_KEY}"/>
+        <QUERY objecttype="Situation" schemaversion="1.2" limit="10">
+          <FILTER>
+            <NEAR name="Deviation.Geometry.WGS84" value="${lng} ${lat}"/>
+            <GT name="Deviation.CreationTime" value="${creationTime}"/>
+          </FILTER>
+          <INCLUDE>
+          Id
+          ModifiedTime
+          PublicationTime
+          Deviation.IconId
+          Deviation.Header
+          TrafficRestrictionType
+          Deviation.SeverityText
+          Deviation.LocationDescriptor
+          Deviation.RoadNumber
+          Deviation.StartTime
+          Deviation.AffectedDirection
+          NumberOfLanesRestricted 
+          Deviation.MessageType
+          Deviation.MessageCode 
+          Deviation.EndTime  
+          </INCLUDE>
+      </QUERY>
+    </REQUEST>`;
+
+const response = await axios.post(
+      API_URL,
+      xmlData,
+      {
+        headers: { "Content-Type": "text/xml" },
+      }
+    );
+
+    // Parse and transform the response
+    const incidents = response.data?.RESPONSE?.RESULT[0]?.Situation?.map(situation => {
+      const { Deviation } = situation;
+
+      // Extract coordinates from WGS84 point if available
+      let coordinates = { lat: null, lng: null };
+      if (Deviation?.Geometry?.WGS84) {
+        const [lng, lat] = Deviation.Geometry.WGS84.split(' ').map(Number);
+        coordinates = { lat, lng };
+      }
+  
 
 
 
