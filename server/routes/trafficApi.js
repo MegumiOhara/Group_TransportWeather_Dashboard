@@ -3,7 +3,6 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 // Load environment variables
-
 dotenv.config();
 const router = express.Router();
 const API_KEY = process.env.TRAFIKVERKET_API_KEY;
@@ -15,180 +14,102 @@ if (!API_KEY) {
 
 const API_URL = 'https://api.trafikinfo.trafikverket.se/v2/data.json';
 
-// Mapping of Swedish incident types to English
-const incidentTypes = {
-  "Vägarbete": "Roadwork",
-  "Olycka": "Accident",
-  "Avstängd väg": "Road Closure",
-  "Trafikstörning": "Traffic Disruption",
-  "Kövarning": "Queue Warning",
-  "Hinder": "Obstacle",
-  "Begränsad framkomlighet": "Limited Accessibility"
-};
-
-const getSeverity = (priority) => {
-  if (!priority) return 'low';
-  const priorityNum = parseInt(priority);
-  switch (priorityNum) {
-     case 1:
-     case 2:
-        return 'high';
-     case 3:
-        return 'medium';
-     default:
-        return 'low';
-  }
-};
-
-const formatDateTime = (dateTimeString) => {
-  if (!dateTimeString) return null;
+// Helper function to parse the response with better error handling
+const parseTrafficIncidents = (data) => {
   try {
-     const date = new Date(dateTimeString);
-     return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-     });
-  } catch (error) {
-     console.error("Error formatting datetime:", error);
-     return dateTimeString;
-  }
-};
+    // Add debug logging
+    console.log('Starting to parse data:', JSON.stringify(data, null, 2));
 
-const extractCoordinates = (geometry) => {
-  try {
-     if (!geometry || !geometry.WGS84) {
-        return null;
-     }
-     
-     const pointMatch = geometry.WGS84.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
-     if (pointMatch) {
+    // Check if we have valid data
+    if (!data?.RESPONSE?.RESULT?.[0]?.Situation) {
+      console.log('No Situation data found in response');
+      return [];
+    }
+
+    return data.RESPONSE.RESULT[0].Situation.map(incident => {
+      // Add debug logging for each incident
+      console.log('Processing incident:', JSON.stringify(incident, null, 2));
+
+      try {
         return {
-           lng: parseFloat(pointMatch[1]),
-           lat: parseFloat(pointMatch[2])
+          id: incident?.Id || String(Math.random()),
+          type: incident?.SituationType || 'Unknown',
+          description: incident?.Description || 'No description available',
+          location: incident?.Geometry?.WGS84 ? {
+            lat: parseFloat(incident.Geometry.WGS84.split(' ')[1]),
+            lng: parseFloat(incident.Geometry.WGS84.split(' ')[0])
+          } : null,
+          severity: incident?.Severity === 'High' ? 'high' : 
+                   incident?.Severity === 'Medium' ? 'medium' : 'low',
+          startTime: incident?.StartTime || new Date().toISOString(),
+          endTime: incident?.EndTime || null
         };
-     }
-     
-     return null;
+      } catch (error) {
+        console.error('Error processing individual incident:', error);
+        return null;
+      }
+    }).filter(incident => incident !== null && incident.location !== null);
   } catch (error) {
-     console.error("Error parsing coordinates:", error);
-     return null;
+    console.error('Error parsing incidents:', error);
+    return [];
   }
 };
 
-// Health check route
-router.get("/health", (req, res) => {
-  res.json({ 
-      status: "ok", 
-      timestamp: new Date().toISOString() 
-  });
-});
+router.get("/location", (req, res) => {
+  // Get coordinates from query parameters
+  const { lat, lng } = req.query;
 
-router.post("/location", async (req, res) => {
-  if (!API_KEY) {
-     return res.status(500).json({
-        error: 'Server configuration error',
-        message: 'API key not configured'
-     });
+  if (!lat || !lng) {
+    return res.status(400).json({ error: 'Latitude and longitude are required' });
   }
 
-  console.log("Received traffic request for location:", req.body);
-  
-  const { latitude, longitude } = req.body;
-  
-  if (!latitude || !longitude) {
-     return res.status(400).json({ 
-        error: 'Latitude and longitude are required',
-        message: "Missing coordinates" 
-     });
-  }
+  // Calculate creation time as 24 hours ago
+  const creationTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  try {
-    const xmlRequest = `
-       <REQUEST>
-          <LOGIN authenticationkey="${API_KEY}" />
-          <QUERY objecttype="Situation" schemaversion="1.5" limit="10">
-             <FILTER>
-                <WITHIN name="Geometry.WGS84" shape="center" value="${longitude} ${latitude}" radius="50000" />
-                <AND>
-                   <EQ name="MessageType" value="Incident" />
-                   <EQ name="Deviation.MessageType" value="Incident" />
-                   <LIKE name="Geometry.WGS84" value="POINT%" />
-                </AND>
-             </FILTER>
-             <INCLUDE>Id,Deviation,CreationTime,StartTime,EndTime,HeaderText,LocationText,Geometry,Priority</INCLUDE>
-          </QUERY>
-       </REQUEST>
-    `;
+  // Using exact XML format that we know works
+  const xmlData = `<REQUEST>
+  <LOGIN authenticationkey="${API_KEY}"/>
+  <QUERY objecttype="Situation" schemaversion="1.2" limit="10">
+    <FILTER>
+      <NEAR name="Deviation.Geometry.WGS84" value="${lng} ${lat}"/>
+      <GT name="Deviation.CreationTime" value="${creationTime}"/>
+    </FILTER>
+    <INCLUDE>Deviation.Id,Deviation.Message,Deviation.Geometry.WGS84,Deviation.Type,Deviation.Priority,Deviation.StartTime,Deviation.EndTime</INCLUDE>
+  </QUERY>
+</REQUEST>`;
 
-    console.log("Sending request to Trafikverket API...");
+  console.log('Using coordinates:', { lat, lng });
+  console.log('XML Request:', xmlData);
 
-      // Make request to Trafikverket API with corrected URL
-      const response = await axios.post(
-         TRAFIKVERKET_API_URL,
-         xmlRequest,
-         {
-            headers: {
-               'Content-Type': 'text/xml',
-               'Accept': 'application/json'
-            }
-         }
-      );
+  axios
+    .post(API_URL, xmlData, {
+      headers: {
+        "Content-Type": "text/xml",
+      },
+    })
+    .then((response) => {
+      // Log the raw response
+      console.log('Raw API response:', JSON.stringify(response.data, null, 2));
 
-      console.log("Received response from Trafikverket API");
+      const incidents = parseTrafficIncidents(response.data);
+      console.log('Successfully parsed incidents:', incidents);
 
-      // Check if we have valid response data
-      if (!response.data || !response.data.RESPONSE || !response.data.RESPONSE.RESULT) {
-        return res.json({ incidents: [] });
-     }
-
-     // Extract and transform the incidents data
-     const situations = response.data.RESPONSE.RESULT[0].Situation || [];
-     const incidents = situations.map(situation => {
-        const coordinates = extractCoordinates(situation.Geometry);
-        // Skip if no valid POINT coordinates
-        if (!coordinates) return null;
-
-        const deviation = situation.Deviation?.[0] || {};
-
-        return {
-          id: situation.Id || String(Math.random()),
-          type: incidentTypes[deviation.Type] || deviation.Type || "Unknown",
-          description: situation.HeaderText?.Value || deviation.Message || "No description available",
-          location: situation.LocationText?.Value || "Location not specified",
-          coordinates,
-          startTime: formatDateTime(deviation.StartTime || situation.CreationTime),
-          endTime: formatDateTime(deviation.EndTime),
-          severity: getSeverity(situation.Priority),
-          status: deviation.Status || "Active"
-       };
-    }).filter(incident => incident !== null); // Remove null entries
-
-    console.log(`Found ${incidents.length} valid incidents with POINT geometry`);
-
-    return res.json({ 
-      incidents,
-      source: "Trafikverket"
-   });
-
-} catch (error) {
-   console.error("Error fetching traffic data:", error);
-   if (error.response) {
-      console.error("API Error Details:", {
-         status: error.response.status,
-         statusText: error.response.statusText,
-         data: error.response.data
+      res.json({
+        success: true,
+        count: incidents.length,
+        incidents: incidents,
+        timestamp: new Date().toISOString(),
+        coordinates: { lat, lng }
       });
-   }
-   
-   return res.status(500).json({ 
-      error: 'Failed to fetch traffic data',
-      message: error.message,
-      details: error.response?.data || 'No additional details available'
-   });
-}
+    })
+    .catch((error) => {
+      console.error("Request failed:", error);
+      res.status(500).json({
+        error: "Failed to fetch traffic data",
+        details: error.message,
+        coordinates: { lat, lng }
+      });
+    });
 });
-
 
 export default router;
-
