@@ -118,8 +118,19 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
               )}
             </div>
 
-            
- 
+            {/* Map Displaying Traffic Incidents */}
+            <div className="h-[400px] rounded-lg overflow-hidden border border-gray-200">
+            <MapContainer
+                center={[coordinates.lat, coordinates.lng]} // Center map on the provided coordinates
+                zoom={13}
+                className="h-full w-full"
+            >
+                <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; OpenStreetMap contributors'
+            />
+            </MapContainer>
+    
  
 
  
