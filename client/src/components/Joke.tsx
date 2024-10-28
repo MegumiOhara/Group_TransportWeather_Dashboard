@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+//Component fetches and displays joke from the backend server
+//when fetchNewJoke is "true"
+
+//Component props for fetchNewJoke prop
 interface JokeProps {
     fetchNewJoke: boolean; 
 }
@@ -9,20 +13,25 @@ function Joke ({ fetchNewJoke}: JokeProps){
     //local state to store joke
     const [joke, setJoke] = useState<string>("");
 
+    //useEffect will be triggered when fetchNewJoke changes
     useEffect(() => {
-        if(!fetchNewJoke) return; //Exit early if no new fetch required
+        //Exit early if fetchNewJoke is false
+        if(!fetchNewJoke) return; 
+        //asynchronous function to fetch a joke from the backend
         const getJoke = async () => {
             try {
+                //Get request to the backend joke route
                 const response = await axios.get("http://localhost:3000/api/joke");
-                setJoke(response.data.joke); //response frpm the backend
+                //if success -response from the backend.Store the joke in the 'joke'state
+                setJoke(response.data.joke); 
             } catch (error) {
                 console.error("Error fetching joke:", error);
                 setJoke("Joke could not load.");
             }
         };
-
+        //call the function
         getJoke();
-    
+    //only re-run this effect when fetchNewJoke changes
     } ,[fetchNewJoke]);
 
     return (

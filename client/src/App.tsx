@@ -13,7 +13,8 @@ function App() {
     const [lat, setLat] = useState<number | null>(null);
     const [lng, setLng] = useState<number| null>(null);
     const [error, setError] = useState<string | null>(null);//stores potential error messages
-    const [fetchJoke, setFetchJoke] = useState<boolean>(false);//New state for triggering jokes
+    ////New state for triggering jokes.initally set to false
+    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
 
     //Function will be passed to the AddressInput component.
     //it will update the lat/lng state when geocoding is successful
@@ -21,6 +22,8 @@ function App() {
       setLat(lat);
       setLng(lng);
       setError(null); //clear any previous error when success.
+      //toggle the joke fetch state to trigger a new joke
+      //prev ensures the last value of fetchJoke is used
       setFetchJoke((prev) => !prev);
     };
 
@@ -30,23 +33,11 @@ function App() {
       setLat(null);
       setLng(null);
     };
-
-   // const response= await axios.get("http://localhost:3000/api");
-  //console.log(response);
   
   return (
     <div>
       {/*Pass the geocode handlers and error handler as props to AddressInput */}
       <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError}/>
-
-      {/*below just showing the lat and lng is retrived, can delete later*/}
-      {/*lat && lng && ( // Show coordinates only if lat/lng are available
-                <div>
-                    <h2>Coordinates:</h2>
-                    <p><strong>Latitude:</strong> {lat}</p>
-                    <p><strong>Longitude:</strong> {lng}</p>
-                </div>
-            )}
 
       {/*Conditionally render components if lat/lng are available
       can only use if valid coordinates are available*/}
@@ -58,6 +49,7 @@ function App() {
         </>
       )}
 
+      {/*Render the Joke component, passing the fetchJoke state as a prop*/}
       <Joke fetchNewJoke={fetchJoke} />
 
       {error && <p>{error}</p>}
