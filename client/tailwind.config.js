@@ -16,7 +16,10 @@ module.exports = {
             //=> @media (min-width: 1201px) for laptops
 
             lg: "1601px",
-            //=> @media (min-width: 1601px) for desktops
+            //=> @mesia (min-width: 1601px) for desktops
+         },
+         colors: {
+            "custom-bg": "#F5EEE6",
          },
       },
    },

@@ -1,6 +1,8 @@
 import React, { ChangeEvent } from "react";
 import axios from "axios";
 import { useState } from "react";
+import searchImg from "../images/magnifying-glass-solid.svg";
+import mapImg from "../images/map-location-dot-solid.svg";
 
 //component takes user's input and make a request to backend for geocode.
 
@@ -38,18 +40,41 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
    };
 
    return (
-      <div>
-         <h1>Local Transport and Weather Dashboard</h1>
-         <form className="bg-white shadow-md" onSubmit={handleFormSubmit}>
-            <input
-               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               type="text"
-               value={address}
-               onChange={handleAddressChange} //handle user input changes.
-               placeholder="Enter your address..."
-            />
-            <button type="submit">Search</button>
-         </form>
+      <div className="m-auto pb-2 bg-custom-bg w-full .box-border flex flex-col items-center">
+         <div className="m-auto w-full .box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly md:justify">
+            <img className="w-[50px] h-[44px] mr-3" src={mapImg} alt="logo" />
+            <h1 className="text-[20px] md:text-[30px] text-slate-950 font-bold w-[223px] h-[28px]">
+               <span className="block sm:hidden">Local Traffic & Weather</span>
+               <span className="hidden sm:block w-[513px] h-[45px]">
+                  {" "}
+                  Local Traffic & Weather Dashboard
+               </span>
+            </h1>
+         </div>
+         <div>
+            <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
+            <form
+               className="m-auto .box-border w-[287px] h-[40px] md:w-[513px] md:h-[45px] bg-white flex border rounded shadow-inner"
+               onSubmit={handleFormSubmit}>
+               <button
+                  className="m-auto h-[40px] w-[40px] cursor-pointer"
+                  type="submit">
+                  <img
+                     className="h-[16px] w-[16px] m-auto hover:fill-slate-950"
+                     src={searchImg}
+                     alt="search"
+                  />
+               </button>
+               <input
+                  className="w-full .box-border text-xs .border-none rounded   py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                  type="text"
+                  value={address}
+                  onChange={handleAddressChange} //handle user input changes.
+                  placeholder="Enter your address..."
+               />
+            </form>
+            <hr className="hidden sm:block left-0 w-screen border-t border-zinc-600 my-4" />
+         </div>
       </div>
    );
 }

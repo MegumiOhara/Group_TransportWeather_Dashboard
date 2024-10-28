@@ -2,6 +2,8 @@ import { useState } from "react";
 //import axios from "axios";
 //import { useEffect } from "react";
 import AddressInput from "./components/Address";
+
+import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
 
 function App() {
@@ -56,7 +58,7 @@ function App() {
             <>
                {/*<Weather lat={lat} lng={lng}/>*/}
                <Departures lat={lat} lng={lng} />
-               {/*<Traffic lat={lat} lng={lng}/> */}
+               <TrafficStatusUpdates lat={lat} lng={lng} />
             </>
          )}
 
