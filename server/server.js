@@ -1,17 +1,34 @@
-const express = require("express");
+// Change to import
+import express from "express";
+import cors from "cors";
+//const express = require("express");
+//const cors = require("cors");
+import departuresApi from "./routes/departuresApi.js";
+import addressApi from "./routes/addressApi.js";
+import trafficApi from "./routes/trafficApi.js";
+
+
+dotenv.config(); //Load env variables from .env file
+
 const app = express();
-const cors = require("cors");
+const port = 3000;
 const corsOptions = {
-    origin: ["http://localhost:5173"],
+   origin: ["http://localhost:5173"],
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+
+// Use the departures API routes
+app.use("/api", departuresApi);
+app.use("/api/address", addressApi);
+app.use("/api/traffic", trafficApi);
 
 app.get("/api", (req, res) => {
-    res.json({ comment: ["example response"] });
+   res.json({ comment: ["example response"] });
 });
 
-app.listen(8080, () => {
-    console.log("Server is running on port 8080")
+// Start server
+app.listen(port, () => {
+   console.log(`Server is running on port ${port}`);
 });
-
