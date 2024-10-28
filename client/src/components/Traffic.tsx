@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
 // Fix for default Leaflet marker icons
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -129,9 +130,30 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors'
             />
+            {/* Place a marker for each traffic incident */}
+            {data?.incidents?.map((incident: TrafficIncident) => (
+              <Marker
+                key={incident.id}
+                position={[incident.location.lat, incident.location.lng]}
+              >
+                <Popup>
+                  {/* Popup with detailed information about each incident */}
+                  <div className="p-2 font-lato">
+                    <h3 className="font-bold text-sm">{incident.title}</h3>
+                    <p className="text-sm mt-1">{incident.description}</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {incident.roadNumber}
+                    </p>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
             </MapContainer>
+            </div>
+            </div>
+    </div>
+  );
+};
     
- 
-
  
  export default TrafficSituation;      
