@@ -1,27 +1,37 @@
-import React, { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AddressInput from './components/Address';
-import Traffic from './components/Traffic';
-import Weather from './components/Weather';
-import Departures from './components/Departures';
-import mapIcon from './images/map-location-dot-solid.svg';
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AddressInput from "./components/Address";
+import TrafficSituation from "./components/Traffic";
 
-const queryClient = new QueryClient();
+// Create Query Client for react-query, which allows caching and background updates for fetched data
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
+// Defines the structure for latitude and longitude coordinates
 interface Coordinates {
   lat: number;
   lng: number;
 }
 
+// Main App Component
 function App() {
+  // State management for coordinates and error messages
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
+  // Success handler for geocoding, sets coordinates and clears errors
   const handleGeocode = (lat: number, lng: number) => {
     setCoordinates({ lat, lng });
-    setError('');
+    setError("");
   };
 
+  // Error handler for geocoding, clears coordinates and sets error message
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
     setCoordinates(null);
@@ -29,54 +39,34 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-pink-50">
-        {/* Header */}
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-start mb-4">
-            <img
-              src={mapIcon}
-              alt="Map Location Icon"
-              className="w-[50px] h-[44px] mr-3"
-            />
-            <h1 className="text-[30px] text-slate-950 font-bold">
-              Local Traffic & Weather Dashboard
-            </h1>
+      <div className="min-h-screen bg-[#FEF4F1]">
+        {/* Address input field to fetch coordinates */}
+        <AddressInput onGeocode={handleGeocode} onError={handleError} />
+
+        {/* Error Display */}
+        {error && (
+          <div className="max-w-md mx-auto mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {error}
           </div>
+        )}
 
-          {/* Search Box */}
-          <div className="mb-8">
-            <AddressInput onGeocode={handleGeocode} onError={handleError} />
+        {/* Traffic Section, displays only when coordinates are available */}
+        {coordinates && (
+          <div className="container mx-auto px-4 py-6">
+            {/* [START] Weather Component Section */}
+            {/* Weather component will be added here */}
+            {/* [END] Weather Component Section */}
+
+            {/* [START] Departures Component Section */}
+            {/* Departures component will be added here */}
+            {/* [END] Departures Component Section */}
+
+            {/* Traffic Component */}
+            <div className="md:col-span-2">
+              <TrafficSituation coordinates={coordinates} />
+            </div>
           </div>
-
-          {error && (
-            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {/* Main Content Grid */}
-          {coordinates && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Transport Departures</h2>
-                <Departures coordinates={coordinates} />
-              </div>
-
-              {/* Right Column */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Local Weather</h2>
-                <Weather coordinates={coordinates} />
-              </div>
-
-              {/* Full Width Traffic Section */}
-              <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold text-[#FF4D00] mb-4">Traffic Updates</h2>
-                <Traffic coordinates={coordinates} />
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </QueryClientProvider>
   );
