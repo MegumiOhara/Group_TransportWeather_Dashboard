@@ -53,14 +53,7 @@ function App() {
         {/* Traffic Section, displays only when coordinates are available */}
         {coordinates && (
           <div className="container mx-auto px-4 py-6">
-            {/* [START] Weather Component Section */}
-            {/* Weather component will be added here */}
-            {/* [END] Weather Component Section */}
-
-            {/* [START] Departures Component Section */}
-            {/* Departures component will be added here */}
-            {/* [END] Departures Component Section */}
-
+            {/*  other components here */}
             {/* Traffic Component */}
             <div className="md:col-span-2">
               <TrafficSituation coordinates={coordinates} />
