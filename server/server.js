@@ -1,6 +1,7 @@
 // Change to import
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 //const express = require("express");
 //const cors = require("cors");
 import departuresApi from "./routes/departuresApi.js";
@@ -19,10 +20,20 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+<<<<<<< HEAD
+app.get("/api", (req, res) => {
+   res.json({ comment: ["example response"] });
+});
+
+app.listen(8080, () => {
+   console.log("Server is running on port 8080")
+});
+
+=======
 // Use the departures API routes
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
-app.use("/api/traffic", trafficApi);
+app.use("/api/", trafficApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
@@ -32,3 +43,4 @@ app.get("/api", (req, res) => {
 app.listen(port, () => {
    console.log(`Server is running on port ${port}`);
 });
+>>>>>>> Faustina
