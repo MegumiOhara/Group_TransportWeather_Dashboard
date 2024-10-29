@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
 import trafficApi from "./routes/trafficApi.js";
+import weatherApi from "./routes/weatherApi.js"
 
 
 dotenv.config(); //Load env variables from .env file
@@ -20,27 +21,19 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-<<<<<<< HEAD
-app.get("/api", (req, res) => {
-   res.json({ comment: ["example response"] });
-});
-
-app.listen(8080, () => {
-   console.log("Server is running on port 8080")
-});
-
-=======
 // Use the departures API routes
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
-app.use("/api/", trafficApi);
+app.use("/api/traffic", trafficApi);
+app.use("/api/weather", weatherApi);
+
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
 });
 
-// Start server
+// Start Server
 app.listen(port, () => {
    console.log(`Server is running on port ${port}`);
 });
->>>>>>> Faustina
+

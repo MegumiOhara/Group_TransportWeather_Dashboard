@@ -15,18 +15,18 @@ interface TrafficProps {
 }
 
 //Function to fetch and display traffic updates
-const TrafficStatusUpdates: React.FC<TrafficProps> = ({lat, lng}) => {
-    const [trafficData, setTrafficData] = useState<{updates: TrafficUpdate[], timestamp: string } | null>(null);
+const TrafficStatusUpdates: React.FC<TrafficProps> = ({ lat, lng }) => {
+    const [trafficData, setTrafficData] = useState<{ updates: TrafficUpdate[], timestamp: string } | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
 
-     // Function to fetch traffic updates based on latitude and longitude
+    // Function to fetch traffic updates based on latitude and longitude
     const fetchTrafficData = async () => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const response = await axios.post('http://localhost:3000/api/traffic', { lat, lng });
-            setTrafficData(response.data); 
+            setTrafficData(response.data);
             setError(null); // Clear any previous errors
         } catch (error) {
             console.error('Error fetching traffic data:', error);
@@ -41,12 +41,12 @@ const TrafficStatusUpdates: React.FC<TrafficProps> = ({lat, lng}) => {
         if (lat && lng) {
             fetchTrafficData();
         }
-    }, [lat, lng]);  
+    }, [lat, lng]);
 
     return (
         <div className="traffic-updates">
             <h2>Traffic Status Updates</h2>
-            {loading && <p>Loading...</p>} 
+            {loading && <p>Loading...</p>}
 
             {/* Display error message if any */}
             {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -57,12 +57,12 @@ const TrafficStatusUpdates: React.FC<TrafficProps> = ({lat, lng}) => {
                 <div>
                     <h3>Recent Traffic Updates:</h3>
                     <ul>
-                    {trafficData.updates.map((update: TrafficUpdate, index: number) => (
-                        <li key={index}>
-                            <strong>{update.timestamp}</strong>: {update.status} {update.description} {update.location}
-                        </li>
-                    ))}
-                    </ul>   
+                        {trafficData.updates.map((update: TrafficUpdate, index: number) => (
+                            <li key={index}>
+                                <strong>{update.timestamp}</strong>: {update.status} {update.description} {update.location}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
 
@@ -76,4 +76,3 @@ const TrafficStatusUpdates: React.FC<TrafficProps> = ({lat, lng}) => {
 };
 
 export default TrafficStatusUpdates;
-

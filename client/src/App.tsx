@@ -1,86 +1,49 @@
-import { useState } from "react";
-import { useState } from "react";
-import axios from "axios";
-import { useEffect } from "react";
-import AddressInput from "./components/Address";
-import TrafficStatusUpdates from "./components/Traffic";
-import './App.css';
-import NavBarW from "./components/NavBarW";
-import WeatherPanel from "./components/WeatherPanel";
-
-
+import React, { useState, useEffect } from 'react';
+import WeatherPanel from './components/WeatherPanel';
+import TrafficStatusUpdates from './components/Traffic';
 
 const App: React.FC = () => {
-  const fetchApi = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api");
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching API:", error); // manage of errors
-    }
-  };
-
-  useEffect(() => {
-    fetchApi();
-  }, [])
-
-  //logic that handles the geocodeAPI request to parent component API.tsx
-  //so that lat and lng state can be passed to other components.
-
-  //state to store latitude and longitude. Initially set to null.
   const [lat, setLat] = useState<number | null>(null);
   const [lng, setLng] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);//stores potential error messages
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  //Function will be passed to the AddressInput component.
-  //it will update the lat/lng state when geocoding is successful
-  const handleGeocode = (lat: number, lng: number) => {
-    setLat(lat);
-    setLng(lng);
-    setError(null); //clear any previous error when success.
-  };
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLat(position.coords.latitude);
+        setLng(position.coords.longitude);
+        setLoading(false); // Termina la carga al obtener las coordenadas
+      },
+      (error) => {
+        console.error("Error obteniendo la geolocalización:", error);
+        setError("No se pudo obtener la ubicación. Asegúrate de que los permisos de ubicación estén habilitados.");
+        setLoading(false); // Termina la carga en caso de error
+      }
+    );
+  }, []);
 
-  //Function to handle geocoding errors
-  const handleGeocodeError = (errorMessage: string) => {
-    setError(errorMessage);
-    setLat(null);
-    setLng(null);
-  };
+  if (loading) {
+    return <p>Loading location...</p>;
+  }
 
-  // const response= await axios.get("http://localhost:3000/api");
-  //console.log(response);
+  if (error) {
+    return <p>{error}</p>; // Muestra el mensaje de error si existe
+  }
+
   return (
     <div>
-      {/*Pass the geocode handlers and error handler as props to AddressInput */}
-      <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError} />
-
-      {/*below just showing the lat and lng is retrived, can delete later*/}
-      {lat && lng && ( // Show coordinates only if lat/lng are available
-        <div>
-          <h2>Coordinates:</h2>
-          <p><strong>Latitude:</strong> {lat}</p>
-          <p><strong>Longitude:</strong> {lng}</p>
-        </div>
-      )}
-
-      {/*Conditionally render components if lat/lng are available
-can only use if valid coordinates are available*/}
-      {lat && lng && (
+      {lat !== null && lng !== null ? (
         <>
-          {/*<Weather lat={lat} lng={lng}/>*/}
-          {/*<Departures lat={lat} lng={lng}/> */}
+          <WeatherPanel lat={lat} lng={lng} />
           <TrafficStatusUpdates lat={lat} lng={lng} />
         </>
+      ) : (
+        <p>Unable to fetch location.</p>
       )}
-
-      {error && <p>{error}</p>}
-
-      <NavBarW />
-      <WeatherPanel />
-
     </div>
-
   );
-}
+};
 
 export default App;
+
