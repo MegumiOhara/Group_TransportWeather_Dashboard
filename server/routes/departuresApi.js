@@ -13,13 +13,22 @@ const departureBoardApiUrl = `https://api.resrobot.se/v2.1/departureBoard`;
 
 // Mapping of vehicle types to Font Awesome icons
 const vehicleTypeIcons = {
-   Flygbuss: { type: "Airport Bus", icon: "fa-bus-alt" },
-   Buss: { type: "Bus", icon: "fa-bus" },
-   Tåg: { type: "Train", icon: "fa-train" },
-   Tunnelbana: { type: "Metro", icon: "fa-train-subway" },
-   Spårvagn: { type: "Tram", icon: "fa-train-tram" },
-   Tvärbana: { type: "Tram", icon: "fa-train-tram" },
-   Färja: { type: "Ferry", icon: "fa-ferry" },
+   BLT: { type: "Regional Bus", icon: "fa-bus" },
+   BXB: { type: "Express Bus", icon: "fa-bus-alt" },
+   BAX: { type: "Airport Express Bus", icon: "fa-bus-alt" },
+   BRE: { type: "Regional Bus", icon: "fa-bus" },
+   BBL: { type: "Train Replacement Bus", icon: "fa-bus" },
+   ULT: { type: "Metro", icon: "fa-train-subway" },
+   JAX: { type: "Airport Express Train", icon: "fa-train" },
+   JEX: { type: "Express Train", icon: "fa-train" },
+   JIC: { type: "InterCity Train", icon: "fa-train" },
+   JLT: { type: "Local Train", icon: "fa-train" },
+   JPT: { type: "PågaTåg", icon: "fa-train" },
+   JST: { type: "High-speed Train", icon: "fa-train" },
+   JRE: { type: "Regional Train", icon: "fa-train" },
+   SLT: { type: "Tram", icon: "fa-train-tram" },
+   FLT: { type: "Local Ferry", icon: "fa-ferry" },
+   FUT: { type: "International Ferry", icon: "fa-ferry" },
 };
 
 // Function to get nearest station ID based on coordinates
@@ -87,16 +96,24 @@ const getDepartureBoard = async (stationId) => {
    // Extract information for each departure
    const departures = data.Departure.map((departure) => {
       const product = departure.ProductAtStop || {};
-      const vehicleCode = product.catOutL || product.catOutS || "Unknown";
+
+      console.log("Product at Stop:", product);
+
+      const vehicleCode = product.catOut || product.catOutS || "Unknown";
+
+      console.log("Vehicle Code:", vehicleCode);
+
       let vehicleType = "Unknown";
       let vehicleIcon = "fa-circle-question";
 
       // Map vehicle code to type and icon
-      for (const key in vehicleTypeIcons) {
-         if (vehicleCode && vehicleCode.includes(key)) {
-            vehicleType = vehicleTypeIcons[key].type;
-            vehicleIcon = vehicleTypeIcons[key].icon;
-            break;
+      if (vehicleCode !== "Unknown") {
+         const matchingType = vehicleTypeIcons[vehicleCode.toUpperCase()];
+         if (matchingType) {
+            vehicleType = matchingType.type;
+            vehicleIcon = matchingType.icon;
+         } else {
+            console.log(`No match found for vehicle code: ${vehicleCode}`);
          }
       }
 
