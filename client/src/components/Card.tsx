@@ -50,49 +50,44 @@ const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast })
     const forecastData = forecast.list.slice(0, 7); // Solo tomamos los primeros 7 días
 
     return (
-        <div className="mt-5">
-            <div className="container">
-                <div className="card mb-3 mx-auto">
-                    <div className="card-body">
-                        <div className="card-header">
-                            <h4 className="title">Local Weather</h4>
-                            <div className="temperature">
-                                <h5 className="card-text">
-                                    Max: {toCelsius(weather.main.temp_max)}ºC
-                                </h5>
-                                <h5 className="card-text">
-                                    Min: {toCelsius(weather.main.temp_min)}ºC
-                                </h5>
-                            </div>
-                        </div>
+        <div className="mt-5 flex justify-center">
+            <div className="bg-white border-2 border-orange-500 rounded-lg p-5 shadow-lg max-w-[60%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[50%] mx-auto">
+                <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-orange-600 text-2xl font-bold">Local Weather</h4>
+                    <div className="flex flex-col text-gray-600 text-sm">
+                        <p>Max: {toCelsius(weather.main.temp_max)}ºC</p>
+                        <p>Min: {toCelsius(weather.main.temp_min)}ºC</p>
+                    </div>
+                </div>
 
-                        <div className="weather-container">
-                            <div className="week">
-                                {weekDays.map((day, index) => (
-                                    <div key={index} className="day">{day}</div>
-                                ))}
+                <div className="flex">
+                    <div className="flex flex-col justify-between w-1/4 mr-4">
+                        {weekDays.map((day, index) => (
+                            <div key={index} className="text-left text-lg font-semibold border-b border-orange-500 py-2">
+                                {day}
                             </div>
+                        ))}
+                    </div>
 
-                            <div className="weather-forecast">
-                                {forecastData.map((forecastItem, index) => (
-                                    <div key={index} className="weather-row">
-                                        <div className="weather-icon">
-                                            {forecastItem.weather[0] && (
-                                                <img
-                                                    src={`${url}${forecastItem.weather[0].icon}.png`}
-                                                    alt="icon"
-                                                />
-                                            )}
-                                            <p className="pop">{(forecastItem.pop * 100).toFixed(0)}%</p>
-                                        </div>
-                                        <div className="temperature">
-                                            <p className="temp-min">↓ {toCelsius(forecastItem.main.temp_min)}ºC</p>
-                                            <p className="temp-max">↑ {toCelsius(forecastItem.main.temp_max)}ºC</p>
-                                        </div>
-                                    </div>
-                                ))}
+                    <div className="flex flex-col justify-between w-3/4">
+                        {forecastData.map((forecastItem, index) => (
+                            <div key={index} className="flex justify-between items-center border-b border-orange-500 py-2">
+                                <div className="flex items-center mr-2">
+                                    {forecastItem.weather[0] && (
+                                        <img
+                                            src={`${url}${forecastItem.weather[0].icon}.png`}
+                                            alt="icon"
+                                            className="w-8 h-8"
+                                        />
+                                    )}
+                                    <p className="ml-2 text-sm">{(forecastItem.pop * 100).toFixed(0)}%</p>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <p className="text-blue-600">↓ {toCelsius(forecastItem.main.temp_min)}ºC</p>
+                                    <p className="text-red-600">↑ {toCelsius(forecastItem.main.temp_max)}ºC</p>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
