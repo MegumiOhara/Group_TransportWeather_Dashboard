@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,6 +9,7 @@ import {
    faFerry,
    faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { GlobalLoadingContext } from "./LoaderContext";
 
 interface Departure {
    departureStation: string;
@@ -32,8 +33,22 @@ function Departures({ lat, lng }: DepartureProps) {
    const [loading, setLoading] = useState<boolean>(true);
    const [error, setError] = useState<string | null>(null);
 
+   // Retrive the context
+   const context = useContext(GlobalLoadingContext);
+
+   // Check if it's undefined, if so throw an error
+   if (!context) {
+      throw new Error(
+         "GlobalLoadingContext must be used within a GlobalLoadingProvider"
+      );
+   }
+
+   // Access the global loading state
+   const { setIsLoading } = context;
+
    useEffect(() => {
       const fetchDepartures = async () => {
+         setIsLoading(true); // Start Loading
          try {
             const response = await axios.post(
                "http://localhost:3000/api/location",
@@ -48,11 +63,13 @@ function Departures({ lat, lng }: DepartureProps) {
             console.error("Error fetching departures:", error);
             setError("Error fetching departures.");
             setLoading(false);
+         } finally {
+            setIsLoading(false);
          }
       };
 
       fetchDepartures();
-   }, [lat, lng]);
+   }, [lat, lng, setIsLoading]);
 
    // Function to format current date
    const today = new Date();

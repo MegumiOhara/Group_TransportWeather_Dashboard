@@ -1,9 +1,8 @@
-import { useState } from "react";
-//import axios from "axios";
-//import { useEffect } from "react";
+import { useContext, useState } from "react";
 import AddressInput from "./components/Address";
-
-import TrafficStatusUpdates from "./components/Traffic";
+import { GlobalLoadingContext } from "./components/LoaderContext";
+import LoadingModal from "./components/LoadingModal";
+//import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
 import Joke from "./components/Joke";
 
@@ -15,8 +14,20 @@ function App() {
    const [lat, setLat] = useState<number | null>(null);
    const [lng, setLng] = useState<number | null>(null);
    const [error, setError] = useState<string | null>(null); //stores potential error messages
-    ////New state for triggering jokes.initally set to false
-    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   ////New state for triggering jokes.initally set to false
+   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+
+   // Access the loading state from context
+   const context = useContext(GlobalLoadingContext);
+
+   // A check for undefined before trying to access isLoading and setIsLoading
+   if (!context) {
+      throw new Error(
+         "GlobalLoadingContext must be used within a GlobalLoadingProvider"
+      );
+   }
+
+   const { isLoading } = context;
 
    //Function will be passed to the AddressInput component.
    //it will update the lat/lng state when geocoding is successful
@@ -40,25 +51,31 @@ function App() {
    //console.log(response);
 
    return (
-      <div>
-         {/*Pass the geocode handlers and error handler as props to AddressInput */}
-         <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError} />
+      <>
+         {isLoading && <LoadingModal />}
+         <div>
+            {/*Pass the geocode handlers and error handler as props to AddressInput */}
+            <AddressInput
+               onGeocode={handleGeocode}
+               onError={handleGeocodeError}
+            />
 
-      {/*Conditionally render components if lat/lng are available
+            {/*Conditionally render components if lat/lng are available
       can only use if valid coordinates are available*/}
-         {lat && lng && (
-            <>
-               {/*<Weather lat={lat} lng={lng}/>*/}
-               <Departures lat={lat} lng={lng} />
-               <TrafficStatusUpdates lat={lat} lng={lng} />
-            </>
-         )}
+            {lat && lng && (
+               <>
+                  {/*<Weather lat={lat} lng={lng}/>*/}
+                  <Departures lat={lat} lng={lng} />
+                  {/* <TrafficStatusUpdates lat={lat} lng={lng} /> */}
+               </>
+            )}
 
-          {/*Render the Joke component, passing the fetchJoke state as a prop*/}
-          <Joke fetchNewJoke={fetchJoke} />
+            {/*Render the Joke component, passing the fetchJoke state as a prop*/}
+            <Joke fetchNewJoke={fetchJoke} />
 
-         {error && <p>{error}</p>}
-      </div>
+            {error && <p>{error}</p>}
+         </div>
+      </>
    );
 }
 
