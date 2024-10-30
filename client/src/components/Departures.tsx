@@ -69,33 +69,36 @@ function Departures({ lat, lng }: DepartureProps) {
       if (!vehicleType) {
          return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
       }
+      // Match the vehicleType from Resrobot codes
       switch (vehicleType.toLowerCase()) {
          case "bus":
-         case "buss":
-            return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
+         case "regional bus":
+         case "express bus":
+         case "airport express bus":
+         case "train replacement bus":
+            return <FontAwesomeIcon icon={faBus} className="text-black " />;
          case "train":
-         case "pendeltåg":
-         case "tåg":
-            return <FontAwesomeIcon icon={faTrain} className="text-gray-700" />;
-         case "tram":
-         case "spårvagn":
-         case "tvärbanan":
-            return (
-               <FontAwesomeIcon icon={faTrainTram} className="text-gray-700" />
-            );
+         case "local train":
+         case "express train":
+         case "intercity train":
+         case "high-speed train":
+         case "regional train":
+         case "airport express train":
+         case "pågatåg":
+            return <FontAwesomeIcon icon={faTrain} className="text-black" />;
          case "metro":
-         case "tunnelbana":
             return (
-               <FontAwesomeIcon
-                  icon={faTrainSubway}
-                  className="text-gray-700"
-               />
+               <FontAwesomeIcon icon={faTrainSubway} className="text-black" />
             );
-         case "ferry":
-         case "färja":
-            return <FontAwesomeIcon icon={faFerry} className="text-gray-700" />;
+         case "tram":
+            return (
+               <FontAwesomeIcon icon={faTrainTram} className="text-black" />
+            );
+         case "international ferry":
+         case "local ferry":
+            return <FontAwesomeIcon icon={faFerry} className="text-black" />;
          default:
-            return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
+            return <FontAwesomeIcon icon={faBus} className="text-black" />;
       }
    };
 
@@ -109,47 +112,54 @@ function Departures({ lat, lng }: DepartureProps) {
 
    return (
       <>
-         <article className="max-w-md mx-auto p-4 border border-[#E4602F] rounded-md bg-white">
-            <h2 className="text-[#E4602F] font-lato text-base font-semibold mb-2">
-               Transport Departures
-            </h2>
-            <p className="text-black font-lato text-sm font-bold mb-4">
-               {formattedDate}
-            </p>
+         <article className="bg-custom-bg pt-2">
+            <div className="w-full max-w-[297px] sm:max-w-[449px] md:max-w-[669px] lg:max-w-[669px] xl:max-w-[669px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
+               <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
+                  Transport Departures
+               </h2>
+               <p className="text-black font-lato text-sm font-bold mb-[12px]">
+                  {formattedDate}
+               </p>
 
-            <div>
-               {departures.slice(0, 5).map((departure, i) => (
-                  <div
-                     key={i}
-                     className="p-2 border-t border-gray-400 bg-white">
-                     <div className="flex flex-col justify-between">
-                        <span className="font-bold text-lg font-lato">
-                           {departure.departureTime}
-                           <FontAwesomeIcon
-                              icon={faArrowRight}
-                              className="mx-2 text-black"
-                           />{" "}
-                           {departure.arrivalTime}
-                           <span className="text-black font-lato text-[10px] font-normal ml-2">
-                              {departure.duration}
-                           </span>
-                        </span>
-                        <div className="text-black font-lato text-[14px] font-normal mb-1">
-                           {departure.departureStation} -{" "}
-                           {departure.arrivalStation}
+               <div>
+                  {departures.slice(0, 5).map((departure, i) => (
+                     <div
+                        key={i}
+                        className="p-2 border-t border-gray-400 bg-white flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0 md:pt-[8px] md:pb-[8px]">
+                        {/* Departure and Arrival Information */}
+                        <div className="flex flex-col md:flex-row md:items-center md:space-x-2 md:order-2">
+                           <div className="font-bold text-[16px] font-lato">
+                              {departure.departureTime}
+                              <FontAwesomeIcon
+                                 icon={faArrowRight}
+                                 className="mx-2 text-black"
+                              />{" "}
+                              {departure.arrivalTime}
+                              <span className="text-black font-lato text-[10px] font-normal ml-2">
+                                 {departure.duration}
+                              </span>
+                           </div>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4]">
-                           <span className="inline-flex items-center justify-center px-4 py-4 w-8 h-8 p-2">
+                        {/* Departure and Arrival Information */}
+                        <div className="flex flex-col md:flex-row md:items-center md:w-[229px] md:order-1">
+                           <div className="text-black font-lato text-[14px] font-normal md:text-[16px]">
+                              {departure.departureStation} -{" "}
+                              {departure.arrivalStation}
+                           </div>
+                        </div>
+
+                        {/* Vehicle Type and Operator */}
+                        <div className="flex items-center space-x-2 text-black rounded-md bg-[#DEDBD4] md:w-[195px] md:bg-transparen md:order-3">
+                           <span className="inline-flex items-center justify-center pl-4 py-4 w-[11px] h-[15px] p-2">
                               {getTransportIcon(departure.vehicleType)}
                            </span>
-                           <span className="rounded-full text-xs">
-                              {departure.vehicleType} {departure.displayNumber}{" "}
-                              {departure.operator}
+                           <span className="rounded-full text-[14px]">
+                              {departure.displayNumber} {departure.operator}
                            </span>
                         </div>
                      </div>
-                  </div>
-               ))}
+                  ))}
+               </div>
             </div>
          </article>
       </>
