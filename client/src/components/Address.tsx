@@ -56,7 +56,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
             <div>
                 <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
                 <form 
-                    className = "m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded shadow-inner hover:border-orange-200 transition-colors duration-300" 
+                    className = "m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded hover:border-orange-200 transition-colors duration-300" 
                     onSubmit={handleFormSubmit}>
                     <button 
                         className= "m-auto h-[40px] w-[40px] cursor-pointer"
