@@ -12,6 +12,17 @@ if (!API_KEY) {
 
 const API_URL = 'https://api.trafikinfo.trafikverket.se/v2/data.json';
 
+// Helper to format dates in Swedish locale
+const formatDate = (date) => {
+  return new Date(date).toLocaleString('sv-SE', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
 // Fetch traffic data for a specific location
 router.get("/location", async (req, res) => {
   const { lat, lng } = req.query;
@@ -77,13 +88,13 @@ router.get("/location", async (req, res) => {
           description: dev.LocationDescriptor || 'No description',
           location: coordinates,
           severity: dev.SeverityText || 'Unknown',
-          startTime: dev.StartTime,
-          endTime: dev.EndTime || null,
+          startTime: formatDate(dev.StartTime),
+          endTime: dev.EndTime ? formatDate(dev.EndTime) :null,
           roadNumber: dev.RoadNumber || '',
           messageTypeValue: dev.MessageTypeValue,
           temporaryLimit: dev.TemporaryLimit,
           trafficRestrictionType: dev.TrafficRestrictionType,
-          modifiedTime: situation.ModifiedTime,
+          modifiedTime: formatDate(situation.ModifiedTime),
         };
       })
       .filter(incident => incident.location.lat !== null && incident.location.lng !== null);
