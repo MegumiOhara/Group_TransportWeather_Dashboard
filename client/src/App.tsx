@@ -2,7 +2,6 @@ import { useState } from "react";
 //import axios from "axios";
 //import { useEffect } from "react";
 import AddressInput from "./components/Address";
-
 import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
 import Joke from "./components/Joke";
@@ -54,9 +53,6 @@ function App() {
                <Joke fetchNewJoke={fetchJoke} />
             </>
          )}
-
-          {/*Render the Joke component, passing the fetchJoke state as a prop*/}
-          
 
          {error && <p>{error}</p>}
       </div>
