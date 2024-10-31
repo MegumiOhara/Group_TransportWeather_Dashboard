@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,7 +9,7 @@ import {
    faFerry,
    faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { GlobalLoadingContext } from "./LoaderContext";
+import SkeletonLoader from "./SkeletonLoader";
 
 interface Departure {
    departureStation: string;
@@ -33,22 +33,9 @@ function Departures({ lat, lng }: DepartureProps) {
    const [loading, setLoading] = useState<boolean>(true);
    const [error, setError] = useState<string | null>(null);
 
-   // Retrive the context
-   const context = useContext(GlobalLoadingContext);
-
-   // Check if it's undefined, if so throw an error
-   if (!context) {
-      throw new Error(
-         "GlobalLoadingContext must be used within a GlobalLoadingProvider"
-      );
-   }
-
-   // Access the global loading state
-   const { setIsLoading } = context;
-
    useEffect(() => {
       const fetchDepartures = async () => {
-         setIsLoading(true); // Start Loading
+         setLoading(true); // Start Loading
          try {
             const response = await axios.post(
                "http://localhost:3000/api/location",
@@ -64,12 +51,12 @@ function Departures({ lat, lng }: DepartureProps) {
             setError("Error fetching departures.");
             setLoading(false);
          } finally {
-            setIsLoading(false);
+            setLoading(false);
          }
       };
 
       fetchDepartures();
-   }, [lat, lng, setIsLoading]);
+   }, [lat, lng]);
 
    // Function to format current date
    const today = new Date();
@@ -84,7 +71,7 @@ function Departures({ lat, lng }: DepartureProps) {
    // Function to return appropriate icon for transport type
    const getTransportIcon = (vehicleType?: string) => {
       if (!vehicleType) {
-         return <FontAwesomeIcon icon={faBus} className="text-gray-700" />;
+         return <FontAwesomeIcon icon={faBus} className="text-black" />;
       }
       // Match the vehicleType from Resrobot codes
       switch (vehicleType.toLowerCase()) {
@@ -120,7 +107,27 @@ function Departures({ lat, lng }: DepartureProps) {
    };
 
    if (loading) {
-      return <p>Loading departures...</p>;
+      return (
+         <div className="w-full max-w-[297px] sm:max-w-[449px] md:max-w-[669px] lg:max-w-[669px] xl:max-w-[669px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
+            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
+               Transport Departures
+            </h2>
+            <p className="text-black font-lato text-sm font-bold mb-[12px]">
+               {formattedDate}
+            </p>
+            <div>
+               {[...Array(5)].map((_, i) => (
+                  <div
+                     key={i}
+                     className="p-2 border-t border-gray-400 bg-white flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0 md:pt-[8px] md:pb-[8px]">
+                     <SkeletonLoader width="w-full" height="h-6" />
+                     <SkeletonLoader width="w-1/2" height="h-4 mt-2" />
+                     <SkeletonLoader width="w-1/3" height="h-4 mt-2" />
+                  </div>
+               ))}
+            </div>
+         </div>
+      );
    }
 
    if (error) {

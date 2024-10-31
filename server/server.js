@@ -3,8 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
-//import jokeApi from "./routes/jokeApi.js";
-import trafficApi from "./routes/trafficApi.js";
+import jokeApi from "./routes/jokeApi.js";
+//import trafficApi from "./routes/trafficApi.js";
 
 dotenv.config(); //Load env variables from .env file
 

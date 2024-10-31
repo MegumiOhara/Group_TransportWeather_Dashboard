@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { GlobalLoadingContext } from "./LoaderContext";
 
 //Component fetches and displays joke from the backend server
 //when fetchNewJoke is "true"
@@ -14,24 +13,10 @@ function Joke({ fetchNewJoke }: JokeProps) {
    //local state to store joke
    const [joke, setJoke] = useState<string>("");
 
-   // Acces the global loading context
-   const context = useContext(GlobalLoadingContext);
-
-   if (!context) {
-      throw new Error(
-         "GlobalLoadingContext must be used within a GlobalLoadingProvider"
-      );
-   }
-
-   const { setIsLoading } = context;
-
    //useEffect will be triggered when fetchNewJoke changes
    useEffect(() => {
       //Exit early if fetchNewJoke is false
       if (!fetchNewJoke) return;
-
-      // Set global loading state tot true
-      setIsLoading(true);
 
       //asynchronous function to fetch a joke from the backend
       const getJoke = async () => {
@@ -43,8 +28,6 @@ function Joke({ fetchNewJoke }: JokeProps) {
          } catch (error) {
             console.error("Error fetching joke:", error);
             setJoke("Joke could not load.");
-         } finally {
-            setIsLoading(false);
          }
       };
       //call the function

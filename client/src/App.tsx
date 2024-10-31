@@ -1,7 +1,5 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import AddressInput from "./components/Address";
-import { GlobalLoadingContext } from "./components/LoaderContext";
-import LoadingModal from "./components/LoadingModal";
 //import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
 import Joke from "./components/Joke";
@@ -16,18 +14,7 @@ function App() {
    const [error, setError] = useState<string | null>(null); //stores potential error messages
    ////New state for triggering jokes.initally set to false
    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
-
-   // Access the loading state from context
-   const context = useContext(GlobalLoadingContext);
-
-   // A check for undefined before trying to access isLoading and setIsLoading
-   if (!context) {
-      throw new Error(
-         "GlobalLoadingContext must be used within a GlobalLoadingProvider"
-      );
-   }
-
-   const { isLoading } = context;
+   const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
    //Function will be passed to the AddressInput component.
    //it will update the lat/lng state when geocoding is successful
@@ -38,6 +25,7 @@ function App() {
       //toggle the joke fetch state to trigger a new joke
       //prev ensures the last value of fetchJoke is used
       setFetchJoke((prev) => !prev);
+      setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
    };
 
    //Function to handle geocoding errors
@@ -47,13 +35,19 @@ function App() {
       setLng(null);
    };
 
-   // const response= await axios.get("http://localhost:3000/api");
-   //console.log(response);
-
    return (
       <>
-         {isLoading && <LoadingModal />}
          <div>
+            {/* Show intro message until the user submits an address*/}
+            {!addressSubmitted && (
+               <div className="instructions bg-[#E4602F] text-white p-4">
+                  <p>
+                     Enter an address to see local traffic departures, traffic
+                     information and weather updates.
+                  </p>
+               </div>
+            )}
+
             {/*Pass the geocode handlers and error handler as props to AddressInput */}
             <AddressInput
                onGeocode={handleGeocode}
