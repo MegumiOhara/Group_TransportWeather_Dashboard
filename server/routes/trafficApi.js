@@ -1,5 +1,6 @@
 import express from "express";
 import axios from "axios";
+import { faHardHat, faExclamationTriangle, faCarCrash, faRoad, faMapMarker, faCloud } from '@fortawesome/free-solid-svg-icons';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,6 +23,20 @@ const formatDate = (date) => {
     minute: '2-digit',
   });
 };
+
+const incidentTypes = {
+  'Vägarbete': faHardHat,
+  'Trafikmeddelande': faExclamationTriangle,
+  'Olycka': faCarCrash,
+  'Hinder': faRoad,
+  'Avstängning': faRoad,
+  'Väder': faCloud,
+  'default': faMapMarker
+}
+
+const getIncidentIcon = (type) => {
+  return incidentTypes[type] || incidentTypes['default'];
+}
 
 // Fetch traffic data for a specific location
 router.get("/location", async (req, res) => {
@@ -95,6 +110,7 @@ router.get("/location", async (req, res) => {
           temporaryLimit: dev.TemporaryLimit,
           trafficRestrictionType: dev.TrafficRestrictionType,
           modifiedTime: formatDate(situation.ModifiedTime),
+          icon: getIncidentIcon(dev.MessageType)
         };
       })
       .filter(incident => incident.location.lat !== null && incident.location.lng !== null);

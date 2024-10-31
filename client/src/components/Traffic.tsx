@@ -35,7 +35,8 @@ interface TrafficIncident {
     endTime: string | null;
     roadNumber: string;
     messageType: string;
-    affectedDirection: string;
+    temporaryLimit: string | null;
+    trafficRestrictionType: string;
     modifiedTime: string;
 }
 
@@ -149,11 +150,9 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
                     {incident.description}
                 </div>
 
-                <div className="text-gray-600 text-sm font-lato">
+                <div className="text-gray-800 text-sm font-lato">
                     {incident.title}
-                </div>
-
-                {/* Modified time display to be on same line */}
+                </div>    
                 <div className="flex justify-between items-center text-sm font-lato mt-2">
                     <span>Starttid: {incident.startTime}</span>
                     {incident.endTime && <span>Sluttid: {incident.endTime}</span>}
