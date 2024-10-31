@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import axios from 'axios';
+import { fontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faCarCrash, 
+    faHardHat, 
+    faRoad, 
+    faExclamationTriangle,
+    faCloud,
+    faMapMarker
+    } from '@fortawesome/free-solid-svg-icons';
+
 
 interface Location {
     lat: number;
@@ -18,7 +28,6 @@ interface TrafficIncident {
     endTime: Date | null;
     roadNumber: string;
     messageType: string;
-    affectedDirection: string;
     modifiedTime: Date;
 }
 
