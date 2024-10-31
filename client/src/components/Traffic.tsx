@@ -30,7 +30,7 @@ interface TrafficIncident {
     title: string;
     description: string;
     location: Location;
-    severity: 'high' | 'medium' | 'low';
+    severity: string;
     startTime: Date;
     endTime: Date | null;
     roadNumber: string;
@@ -122,28 +122,44 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
                             key={incident.id}
                             className="p-2 border-t border-gray-400 bg-white"
                         >
-                            <div className="flex flex-col justify-between">
-                                <span className="font-bold text-lg font-lato">
-                                    {new Date(incident.startTime).toLocaleTimeString('sv-SE', { 
-                                        hour: '2-digit', 
-                                        minute: '2-digit' 
-                                    })}
-                                </span>
-                                <div className="text-black font-lato text-[14px] font-normal mb-1">
-                                    {incident.description}
-                                </div>
-                                <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4] p-2">
-                                    <span className="text-xs">
-                                        {incident.roadNumber} - {incident.type}
-                                    </span>
-                                    {incident.severity === 'high' && (
-                                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
-                                            INSTÄLD
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                             <div className="flex flex-col justify-between">                                 
+                <div className="flex flex-col space-y-1">
+                    <span className="font-bold text-lg font-lato">                                     
+                        Startar: {new Date(incident.startTime).toLocaleString('sv-SE', {                                          
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric',
+                            hour: '2-digit',                                          
+                            minute: '2-digit'                                      
+                        })}                                 
+                    </span>
+                    {incident.endTime && (
+                        <span className="text-gray-600 font-lato">
+                            Slutar: {new Date(incident.endTime).toLocaleString('sv-SE', {
+                                year: 'numeric',
+                                month: 'numeric',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}
+                        </span>
+                    )}
+                </div>
+                        <div className="text-black font-lato text-[14px] font-normal mb-1">
+                             {incident.description}
                         </div>
+                        <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4] p-2">
+                            <span className="text-xs">
+                                {incident.roadNumber} - {incident.type}
+                            </span>
+                            {incident.severity !== 'Unknown' && (                                         
+                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">                                             
+                            {incident.severity}                                         
+                        </span>                                     
+                    )}            
+                        </div>
+                    </div>
+                </div>
                     ))}
                     {(!data?.incidents || data.incidents.length === 0) && (
                         <p className="text-gray-500 text-center py-4 font-lato">
