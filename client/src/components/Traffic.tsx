@@ -36,6 +36,7 @@ interface TrafficIncident {
     roadNumber: string;
     messageType: string;
     affectedDirection: string;
+    modifiedTime: Date;
 }
 
 interface TrafficProps {
@@ -116,26 +117,62 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Traffic updates list */}
-                <div className="space-y-4">
-                    {data?.incidents?.map((incident: TrafficIncident) => (
-                        <div
-                            key={incident.id}
-                            className="p-2 border-t border-gray-400 bg-white"
-                        >
-                             <div className="flex flex-col justify-between">                                 
-                <div className="flex flex-col space-y-1">
-                    <span className="font-bold text-lg font-lato">                                     
-                        Startar: {new Date(incident.startTime).toLocaleString('sv-SE', {                                          
+<div className="space-y-4">
+    {data?.incidents?.map((incident: TrafficIncident) => (
+        <div
+            key={incident.id}
+            className="p-2 border-t border-gray-400 bg-white"
+        >
+            <div className="flex flex-col justify-between">
+                {/* Moved up and modified type, severity, and time block */}
+                <div className={`flex justify-between items-center p-2 mb-2 rounded-md text-white ${
+                    incident.severity === 'Mycket stor påverkan' ? 'bg-red-500' :
+                    incident.severity === 'Stor påverkan' ? 'bg-orange-500' :
+                    incident.severity === 'Liten påverkan' ? 'bg-green-500' :
+                    incident.severity === 'Planerat arbete' ? 'bg-blue-500' :
+                    'bg-gray-500' 
+                }`}>
+                    <div className="flex items-center space-x-2">
+                        <span className="font-bold text-lg">{incident.type}</span>
+                        {incident.severity !== 'Unknown' && (
+                            <span className="px-2 py-1 font-bold rounded-full text-sm">
+                                {incident.severity}
+                            </span>
+                        )}
+                    </div>
+                    <span className="font-bold text-sm">
+                        Uppdaterad {new Date(incident.modifiedTime).toLocaleString('sv-SE', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </span>
+                </div>
+
+                <div className="text-black font-lato text-[14px] font-bold mb-1">
+                    {incident.description}
+                </div>
+
+                <div className="text-gray-600 text-sm font-lato">
+                    {incident.title}
+                </div>
+
+                {/* Modified time display to be on same line */}
+                <div className="flex justify-between items-center text-sm font-lato mt-2">
+                    <span>
+                        Starttid: {new Date(incident.startTime).toLocaleString('sv-SE', {
                             year: 'numeric',
                             month: 'numeric',
                             day: 'numeric',
-                            hour: '2-digit',                                          
-                            minute: '2-digit'                                      
-                        })}                                 
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
                     </span>
                     {incident.endTime && (
-                        <span className="text-gray-600 font-lato">
-                            Slutar: {new Date(incident.endTime).toLocaleString('sv-SE', {
+                        <span>
+                            Sluttid: {new Date(incident.endTime).toLocaleString('sv-SE', {
                                 year: 'numeric',
                                 month: 'numeric',
                                 day: 'numeric',
@@ -145,28 +182,15 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
                         </span>
                     )}
                 </div>
-                        <div className="text-black font-lato text-[14px] font-normal mb-1">
-                             {incident.description}
-                        </div>
-                        <div className="flex items-center space-x-2 text-gray-600 rounded-md bg-[#DEDBD4] p-2">
-                            <span className="text-xs">
-                                {incident.roadNumber} - {incident.type}
-                            </span>
-                            {incident.severity !== 'Unknown' && (                                         
-                        <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">                                             
-                            {incident.severity}                                         
-                        </span>                                     
-                    )}            
-                        </div>
-                    </div>
-                </div>
-                    ))}
-                    {(!data?.incidents || data.incidents.length === 0) && (
-                        <p className="text-gray-500 text-center py-4 font-lato">
-                            No traffic incidents reported in this area
-                        </p>
-                    )}
-                </div>
+            </div>
+        </div>
+    ))}
+    {(!data?.incidents || data.incidents.length === 0) && (
+        <p className="text-gray-500 text-center py-4 font-lato">
+            No traffic incidents reported in this area
+        </p>
+    )}
+</div>
 
                 {/* Map Display */}
                 <div className="h-[400px] rounded-lg overflow-hidden border border-gray-200">

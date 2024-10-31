@@ -27,7 +27,7 @@ router.get("/location", async (req, res) => {
     const xmlData = `
     <REQUEST>
       <LOGIN authenticationkey="${API_KEY}"/>
-      <QUERY objecttype="Situation" schemaversion="1.2" limit="10">
+      <QUERY objecttype="Situation" schemaversion="1.2" limit="50">
         <FILTER>
         <NEAR name="Deviation.Geometry.WGS84" value="${lng} ${lat}"/>
         <GT name="Deviation.CreationTime" value="${creationTime}"/>
@@ -80,8 +80,10 @@ router.get("/location", async (req, res) => {
           startTime: dev.StartTime,
           endTime: dev.EndTime || null,
           roadNumber: dev.RoadNumber || '',
-          messageType: dev.MessageTypeValue || '',
-          affectedDirection: 'Båda riktningarna'
+          messageTypeValue: dev.MessageTypeValue,
+          temporaryLimit: dev.TemporaryLimit,
+          trafficRestrictionType: dev.TrafficRestrictionType,
+          modifiedTime: situation.ModifiedTime,
         };
       })
       .filter(incident => incident.location.lat !== null && incident.location.lng !== null);
