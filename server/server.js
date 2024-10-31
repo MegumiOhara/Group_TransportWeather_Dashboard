@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
-//import jokeApi from "./routes/jokeApi.js";
+import jokeApi from "./routes/jokeApi.js";
 import trafficApi from "./routes/trafficApi.js";
 
 dotenv.config(); //Load env variables from .env file
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
 app.use("/api/joke", jokeApi);
-//app.use("/api/traffic", trafficApi);
+app.use("/api/traffic", trafficApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });

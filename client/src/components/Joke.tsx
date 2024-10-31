@@ -35,9 +35,9 @@ function Joke ({ fetchNewJoke}: JokeProps){
     } ,[fetchNewJoke]);
 
     return (
-        <div className = "p-4">
-            <div className = "max-w-md mx-auto p-4 border border-[#E4602F] rounded-md bg-white">
-                <h2 className="text-[#E4602F] font-lato text-base font-semibold mb-2">
+        <div className = "p-4 bg-custom-bg">
+            <div className = "max-w-md mx-auto p-4 border-2 border-[#E4602F] rounded-md bg-white">
+                <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
                     Dad joke of the day
                 </h2>
                 <div className = "max-w-md mx-auto p-4 border border-[#DEDBD4] rounded-md bg-white">
