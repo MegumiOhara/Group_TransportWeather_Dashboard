@@ -14,8 +14,6 @@ function App() {
    const [error, setError] = useState<string | null>(null); //stores potential error messages
    ////New state for triggering jokes.initally set to false
    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
-   ////New state for triggering jokes.initally set to false
-   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
    const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
    //Function will be passed to the AddressInput component.
