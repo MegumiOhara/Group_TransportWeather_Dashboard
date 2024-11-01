@@ -45,11 +45,9 @@ function Departures({ lat, lng }: DepartureProps) {
                }
             );
             setDepartures(response.data.departures);
-            setLoading(false);
          } catch (error) {
             console.error("Error fetching departures:", error);
             setError("Error fetching departures.");
-            setLoading(false);
          } finally {
             setLoading(false);
          }
@@ -109,12 +107,13 @@ function Departures({ lat, lng }: DepartureProps) {
    if (loading) {
       return (
          <div className="w-full max-w-[297px] sm:max-w-[449px] md:max-w-[669px] lg:max-w-[669px] xl:max-w-[669px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
-            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
+            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px] bg-white">
                Transport Departures
             </h2>
-            <p className="text-black font-lato text-sm font-bold mb-[12px]">
+            <p className="text-black bg-white font-lato text-sm font-bold mb-[12px]">
                {formattedDate}
             </p>
+
             <div>
                {[...Array(5)].map((_, i) => (
                   <div
@@ -136,7 +135,7 @@ function Departures({ lat, lng }: DepartureProps) {
 
    return (
       <>
-         <article className="bg-custom-bg pt-2">
+         <article className="bg-custom-bg pt-2 md:pt-0">
             <div className="w-full max-w-[297px] sm:max-w-[449px] md:max-w-[669px] lg:max-w-[669px] xl:max-w-[669px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
                <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
                   Transport Departures
@@ -152,7 +151,7 @@ function Departures({ lat, lng }: DepartureProps) {
                         className="p-2 border-t border-gray-400 bg-white flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0 md:pt-[8px] md:pb-[8px]">
                         {/* Departure and Arrival Information */}
                         <div className="flex flex-col md:flex-row md:items-center md:space-x-2 md:order-2">
-                           <div className="font-bold text-[16px] font-lato">
+                           <div className="font-bold text-[14px] font-lato">
                               {departure.departureTime}
                               <FontAwesomeIcon
                                  icon={faArrowRight}
@@ -165,15 +164,15 @@ function Departures({ lat, lng }: DepartureProps) {
                            </div>
                         </div>
                         {/* Departure and Arrival Information */}
-                        <div className="flex flex-col md:flex-row md:items-center md:w-[229px] md:order-1">
-                           <div className="text-black font-lato text-[14px] font-normal md:text-[16px]">
-                              {departure.departureStation} -{" "}
+                        <div className="flex flex-col md:flex-row md:items-center md:w-[180px] md:order-1">
+                           <div className="text-black font-lato text-[14px] font-normal">
+                              {departure.departureStation} -<br></br>{" "}
                               {departure.arrivalStation}
                            </div>
                         </div>
 
                         {/* Vehicle Type and Operator */}
-                        <div className="flex items-center space-x-2 text-black rounded-md bg-[#DEDBD4] md:w-[195px] md:bg-transparen md:order-3">
+                        <div className="flex items-center space-x-2 text-black rounded-md bg-[#DEDBD4] md:w-[175px] md:bg-transparen md:order-3">
                            <span className="inline-flex items-center justify-center pl-4 py-4 w-[11px] h-[15px] p-2">
                               {getTransportIcon(departure.vehicleType)}
                            </span>

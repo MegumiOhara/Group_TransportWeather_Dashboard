@@ -1,7 +1,8 @@
 import { useState } from "react";
 import AddressInput from "./components/Address";
-//import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
+// import Weather from "/.components/Weather";
+//import TrafficStatusUpdates from "./components/Traffic";
 import Joke from "./components/Joke";
 
 function App() {
@@ -36,38 +37,69 @@ function App() {
    };
 
    return (
-      <>
-         <div>
-            {/* Show intro message until the user submits an address*/}
+      <div className="p-4 bg-custom-bg min-h-screen">
+         <div className="max-w-screen-xl mx-auto">
+            {/* Show instructional message until the user submits an address */}
             {!addressSubmitted && (
-               <div className="instructions bg-[#E4602F] text-white p-4">
+               <div className="instructions bg-[#E4602F] text-white p-4 rounded-md mb-4">
                   <p>
                      Enter an address to see local traffic departures, traffic
-                     information and weather updates.
+                     information, and weather updates.
                   </p>
                </div>
             )}
 
-            {/*Pass the geocode handlers and error handler as props to AddressInput */}
+            {/* Pass the geocode handlers and error handler as props to AddressInput */}
             <AddressInput
                onGeocode={handleGeocode}
                onError={handleGeocodeError}
             />
 
-            {/*Conditionally render components if lat/lng are available
-      can only use if valid coordinates are available*/}
+            {/* Flexbox Layout for Large Screens */}
             {lat && lng && (
-               <>
-                  {/*<Weather lat={lat} lng={lng}/>*/}
-                  <Departures lat={lat} lng={lng} />
-                  {/* <TrafficStatusUpdates lat={lat} lng={lng} /> */}
-                  <Joke fetchNewJoke={fetchJoke} />
-               </>
+               <div className="flex flex-col md:flex-row md:flex-wrap lg:flex-wrap mt-6 md:space-y-8 space-y-6">
+                  {/* First Row: Departures and Local Weather */}
+                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full lg:w-full">
+                     {/* Departures Component */}
+                     <div className="flex-1 mb-4 md:mb-0 lg:pt-0 md:pt-0">
+                        <Departures lat={lat} lng={lng} />
+                     </div>
+
+                     {/* Placeholder for Weather Component */}
+                     <div className="flex-1 mb-4 md:mb-0">
+                        <div className="p-4 border-2 border-[#E4602F] rounded-md bg-white">
+                           <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
+                              Local Weather
+                           </h2>
+                           {/* Replace with actual Weather component */}
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Second Row: Dad Jokes and Traffic Updates */}
+                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full">
+                     {/* Dad Jokes Component */}
+                     <div className="flex-1 mb-4 md:mb-0">
+                        <Joke fetchNewJoke={fetchJoke} />
+                     </div>
+
+                     {/* Placeholder for Traffic Updates Component */}
+                     <div className="flex-1 mb-4 md:mb-0">
+                        <div className="p-4 border-2 border-[#E4602F] rounded-md bg-white">
+                           <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
+                              Traffic Updates
+                           </h2>
+                           {/* Replace with actual Traffic Status Updates component */}
+                        </div>
+                     </div>
+                  </div>
+               </div>
             )}
 
-            {error && <p>{error}</p>}
+            {/* Display any errors */}
+            {error && <p className="text-red-500 mt-4">{error}</p>}
          </div>
-      </>
+      </div>
    );
 }
 
