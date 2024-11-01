@@ -14,6 +14,8 @@ function App() {
    const [error, setError] = useState<string | null>(null); //stores potential error messages
    ////New state for triggering jokes.initally set to false
    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   ////New state for triggering jokes.initally set to false
+   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
    const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
    //Function will be passed to the AddressInput component.
@@ -61,11 +63,9 @@ function App() {
                   {/*<Weather lat={lat} lng={lng}/>*/}
                   <Departures lat={lat} lng={lng} />
                   {/* <TrafficStatusUpdates lat={lat} lng={lng} /> */}
+                  <Joke fetchNewJoke={fetchJoke} />
                </>
             )}
-
-            {/*Render the Joke component, passing the fetchJoke state as a prop*/}
-            <Joke fetchNewJoke={fetchJoke} />
 
             {error && <p>{error}</p>}
          </div>
