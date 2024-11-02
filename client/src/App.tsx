@@ -12,11 +12,13 @@ function App() {
   const [error, setError] = useState<string>("");
 
   const handleGeocode = (lat: number, lng: number) => {
+    console.log('Received geocode:', { lat, lng }); // Log received coordinates
     setCoordinates({ lat, lng });
     setError("");
   };
 
   const handleError = (errorMessage: string) => {
+    console.error('Error from AddressInput:', errorMessage); // Log error message
     setError(errorMessage);
     setCoordinates(null);
   };
