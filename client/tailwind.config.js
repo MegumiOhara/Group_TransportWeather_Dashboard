@@ -12,7 +12,7 @@ module.exports = {
       },
       colors: {
         'custom-bg': "#F5EEE6",           
-        'custom-primary': "#E4602F",      
+        'custom-primary': "#D13C1D",      
         'custom-secondary': "#DEDBD4",    
         'custom-severity-high': "#FF0000",
         'custom-gray': "#F5EEE6",         
