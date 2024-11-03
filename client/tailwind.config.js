@@ -15,8 +15,7 @@ module.exports = {
         'custom-primary': "#D13C1D",      
         'custom-secondary': "#DEDBD4",    
         'custom-severity-high': "#FF0000",
-        'custom-gray': "#F5EEE6",         
-        'gray-500': "#6B7280",            
+        'custom-gray': "#F5EEE6",                     
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],     

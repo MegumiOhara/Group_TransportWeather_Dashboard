@@ -30,6 +30,7 @@ interface TrafficIncident {
     messageType: string;
     affectedDirection: string;
     modifiedTime: string;
+    publicationTime: string;
 }
 
 interface TrafficProps {
@@ -220,7 +221,8 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
                         <div className="p-2 font-lato">
                           <h3 className="font-bold text-sm">{incident.title}</h3>
                           <p className="text-sm mt-1">{incident.description}</p>
-                          <p className="text-xs text-gray-500 mt-2">{incident.roadNumber}</p>
+                          <p className="text-sm font-bold mt-2">{incident.roadNumber}</p>
+                          <p className="text-sm">Publicerad: {incident.publicationTime}</p>
                         </div>
                       </InfoWindow>
                     )}
