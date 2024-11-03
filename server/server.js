@@ -1,7 +1,10 @@
 import express from "express";
 import cors from "cors";
 import addressApi from "./routes/addressApi.js";
+import departureApi from "./routes/departureApi.js";
+import weatherApi from "./routes/weatherApi.js";
 import trafficApi from "./routes/trafficApi.js";
+import jokeApi from "./routes/jokeApi.js";
 import dotenv from "dotenv";
 
 
@@ -28,7 +31,10 @@ app.get("/test", (req, res) => {
 
 // API Routes
 app.use("/api/address", addressApi);
+app.use("/api/departure", departureApi);
+app.use("/api/weather", weatherApi);
 app.use("/api/traffic", trafficApi);
+app.use("/api/joke", jokeApi);
 
 // Health check endpoint
 app.get("/api/traffic/health", (req, res) => {
@@ -47,6 +53,6 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-    console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
-    console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
+    //console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
+    //console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
 });
