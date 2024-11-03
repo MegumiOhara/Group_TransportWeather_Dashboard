@@ -51,13 +51,13 @@ const WeatherPanel: React.FC = () => {
     };
 
     useEffect(() => {
-        getLocation(); // Llama a la función para obtener la ubicación al montar el componente
+        getLocation(); // call the function to obtain the location when obtain the component
     }, []);
 
     return (
         <React.Fragment>
             {loading ? (
-                <p>Loading...</p> // Mensaje de carga simple
+                <p>Loading...</p> // Messages when is loading
             ) : (
                 <Card showData={show} loadingData={loading} weather={weather} forecast={forecast} />
             )}

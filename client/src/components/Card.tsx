@@ -60,7 +60,7 @@ const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast })
                 <h4 className="text-orange-600 text-[14px] font-semibold mb-2">Local Weather</h4>
 
                 <div className="flex">
-                    {/* Columna de días de la semana alineada a la izquierda */}
+                    {/*of icons and weather  */}
                     <div className="flex flex-col w-1/4 text-left">
                         {weekDays.map((day, index) => (
                             <div key={index} className="text-gray-800 font-medium border-b border-gray-200 py-1">
@@ -69,18 +69,18 @@ const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast })
                         ))}
                     </div>
 
-                    {/* Columna de íconos de clima y temperaturas */}
+                    {/* Columna of icons and weather  */}
                     <div className="flex flex-col w-3/4">
                         {forecastData.map((forecastItem, index) => {
                             const icon = forecastItem.weather[0].icon.includes('01d') ? faSun : faCloudRain;
                             return (
                                 <div key={index} className="flex justify-between items-center border-b border-gray-200 py-1">
-                                    {/* Centrar ícono de clima y porcentaje de precipitación */}
+                                    {/* icons in the center */}
                                     <div className="flex items-center justify-center gap-1 text-[14px] w-1/2">
                                         <FontAwesomeIcon icon={icon} className="w-4 h-4 text-gray-700" />
                                         <span className="text-gray-600">{(forecastItem.pop * 100).toFixed(0)}%</span>
                                     </div>
-                                    {/* Temperaturas mínima y máxima */}
+                                    {/* Tempeture mínimun y máximun*/}
                                     <div className="flex items-center gap-2 text-[14px] text-gray-700 w-1/2 justify-end">
                                         <span>↓ {toCelsius(forecastItem.main.temp_min)}ºC</span>
                                         <span>↑ {toCelsius(forecastItem.main.temp_max)}ºC</span>
