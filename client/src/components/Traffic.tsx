@@ -222,7 +222,7 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
                           <h3 className="font-bold text-sm">{incident.title}</h3>
                           <p className="text-sm mt-1">{incident.description}</p>
                           <p className="text-sm font-bold mt-2">{incident.roadNumber}</p>
-                          <p className="text-sm">Publicerad: {incident.publicationTime}</p>
+                          <p className="text-sm mt-1">Publicerad: {incident.publicationTime}</p>
                         </div>
                       </InfoWindow>
                     )}
