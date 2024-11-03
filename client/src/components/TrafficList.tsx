@@ -112,7 +112,7 @@ const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
               <h3 className="font-bold text-gray-900">{incident.type}</h3>
             </div>
             <div className="flex items-center text-xs text-gray-900">
-              <FontAwesomeIcon icon={faClock} className="mr-1" />
+              {/*<FontAwesomeIcon icon={faClock} className="mr-1" />*/}
               <span>Uppdaterad: {incident.modifiedTime}</span>
             </div>
           </div>

@@ -1,50 +1,84 @@
 import { useState } from "react";
 import AddressInput from "./components/Address";
+//import Departures from "./components/Departures";
+// import Weather from "./components/Weather";
 import TrafficSituation from "./components/Traffic";
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
+//import Joke from "./components/Joke";
 
 function App() {
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
-  const [error, setError] = useState<string>("");
+   //state to store latitude and longitude. Initially set to null.
+   const [lat, setLat] = useState<number | null>(null);
+   const [lng, setLng] = useState<number | null>(null);
+   const [error, setError] = useState<string | null>(null); //stores potential error messages
+   //const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   //const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
-  const handleGeocode = (lat: number, lng: number) => {
-    console.log('Received geocode:', { lat, lng }); // Log received coordinates
-    setCoordinates({ lat, lng });
-    setError("");
-  };
+   const handleGeocode = (lat: number, lng: number) => {
+      setLat(lat);
+      setLng(lng);
+      setError(null);
+      //setFetchJoke((prev) => !prev);
+      //setAddressSubmitted(true);
+   };
 
-  const handleError = (errorMessage: string) => {
-    console.error('Error from AddressInput:', errorMessage); // Log error message
-    setError(errorMessage);
-    setCoordinates(null);
-  };
+   const handleGeocodeError = (errorMessage: string) => {
+      setError(errorMessage);
+      setLat(null);
+      setLng(null);
+   };
 
-  return (
-    <div className="min-h-screen bg-[#FEF4F1]">
-      <AddressInput 
-        onGeocode={handleGeocode} 
-        onError={handleError}
-      />
+   return (
+      <div className="p-4 bg-custom-bg min-h-screen">
+         <div className="max-w-screen-xl mx-auto">
+            {/*!addressSubmitted && (
+               <div className="instructions bg-[#E4602F] text-white p-4 rounded-md mb-4">
+                  <p>
+                     Enter an address to see local traffic departures, traffic
+                     information, and weather updates.
+                  </p>
+               </div>
+            )*/}
 
-      {error && (
-        <div className="max-w-md mx-auto mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
+            <AddressInput
+               onGeocode={handleGeocode}
+               onError={handleGeocodeError}
+            />
 
-      {coordinates && !error && (
-        <div className="container mx-auto px-4 py-6">
-          <div className="md:col-span-2">
-            <TrafficSituation coordinates={coordinates} />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+            {lat && lng && (
+               <div className="flex flex-col md:flex-row md:flex-wrap lg:flex-wrap mt-6 md:space-y-8 space-y-6">
+                  {/* First Row: Departures and Local Weather */}
+                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full lg:w-full">
+                     <div className="flex-1 mb-4 md:mb-0 lg:pt-0 md:pt-0"> 
+                        {/* <Departures lat={lat} lng={lng} /> */}
+                     </div>
+
+                     <div className="flex-1 mb-4 md:mb-0">
+                        <div className="p-4 border-2 border-[#E4602F] rounded-md bg-white">
+                           <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
+                              Local Weather
+                           </h2>
+                           {/* Replace with actual Weather component */}
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Second Row: Dad Jokes and Traffic Updates */}
+                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full">
+                     <div className="md:basis-1/3 flex-1 mb-4 md:mb-0">
+                        {/* <Joke fetchNewJoke={fetchJoke} /> */}
+                     </div>
+
+                     <div className="md:basis-2/3 flex-1 mb-4 md:mb-0">
+                        <TrafficSituation coordinates={{ lat, lng }} />
+                     </div>
+                  </div>
+               </div>
+            )}
+
+            {error && <p className="text-red-500 mt-4">{error}</p>}
+         </div>
+      </div>
+   );
 }
 
 export default App;
