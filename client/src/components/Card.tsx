@@ -1,8 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudRain, faSun, faTemperatureLow, faTemperatureHigh } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain, faSun } from '@fortawesome/free-solid-svg-icons';
 
-// Definimos los tipos de los props
 interface Weather {
     main: {
         temp_max: number;
@@ -26,68 +25,65 @@ interface Forecast {
 interface CardProps {
     loadingData: boolean;
     showData: boolean;
-    weather: Weather | null; // Puede ser null si no hay datos
-    forecast: Forecast | null; // Puede ser null si no hay datos
+    weather: Weather | null;
+    forecast: Forecast | null;
 }
 
-// Función para obtener los nombres de los días de la semana, empezando por el día actual
 const getWeekDays = (): string[] => {
     const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    const today = new Date().getDay();
-    const orderedDays = [...daysOfWeek.slice(today), ...daysOfWeek.slice(0, today)];
-    orderedDays[0] = 'Today'; // Renombrar el primer día a 'Today'
-    return orderedDays;
+    const todayIndex = new Date().getDay(); // 0 es domingo, 1 es lunes, ..., 6 es sábado
+
+    // Comienza con el día actual como "Today"
+    const orderedDays = [daysOfWeek[todayIndex]];
+
+    // Añade los días restantes, empezando desde el día siguiente al actual
+    for (let i = 1; i < 7; i++) {
+        orderedDays.push(daysOfWeek[(todayIndex + i) % 7]);
+    }
+
+    return orderedDays.map((day, index) => (index === 0 ? 'Today' : day)); // Cambia el primer día a 'Today'
 };
 
-// Función para convertir la temperatura de Kelvin a Celsius
 const toCelsius = (kelvin: number): string => (kelvin - 273.15).toFixed(1);
 
 const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast }) => {
-    // Verificar si los datos están cargando o no están disponibles
     if (loadingData || !showData || !forecast || !weather) {
-        return null; // No mostramos nada si no hay datos
+        return null;
     }
 
-    const weekDays = getWeekDays(); // Obtener los nombres de los días de la semana
-    const forecastData = forecast.list.slice(0, 7); // Solo tomamos los primeros 7 días
+    const weekDays = getWeekDays();
+    const forecastData = forecast.list.slice(0, 7);
 
     return (
         <div className="mt-5 flex justify-center">
-            <div className="bg-white border-2 border-black rounded-lg p-5 shadow-lg w-[449px] h-[313px]">
-                <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-black text-2xl font-bold">Local Weather</h4>
-                    <div className="flex flex-col text-gray-800 text-sm">
-                        <p>Max: {toCelsius(weather.main.temp_max)}ºC</p>
-                        <p>Min: {toCelsius(weather.main.temp_min)}ºC</p>
-                    </div>
-                </div>
+            <div className="bg-white border-[1px] border-[#E4602F] rounded-lg p-2 shadow-md w-[450px]">
+                <h4 className="text-orange-600 text-[14px] font-semibold mb-2">Local Weather</h4>
 
                 <div className="flex">
-                    {/* Días de la semana */}
-                    <div className="flex flex-col justify-between w-1/4 mr-4">
+                    {/* Columna de días de la semana alineada a la izquierda */}
+                    <div className="flex flex-col w-1/4 text-left">
                         {weekDays.map((day, index) => (
-                            <div key={index} className="text-left text-lg font-semibold border-b border-black py-2">
+                            <div key={index} className="text-gray-800 font-medium border-b border-gray-200 py-1">
                                 {day}
                             </div>
                         ))}
                     </div>
 
-                    {/* Datos del clima para cada día */}
-                    <div className="flex flex-col justify-between w-3/4">
+                    {/* Columna de íconos de clima y temperaturas */}
+                    <div className="flex flex-col w-3/4">
                         {forecastData.map((forecastItem, index) => {
-                            // Determinar qué ícono mostrar basado en la condición del clima
-                            const icon = forecastItem.weather[0].icon.includes('01d') ? faSun : faCloudRain; // Ejemplo simple
-
+                            const icon = forecastItem.weather[0].icon.includes('01d') ? faSun : faCloudRain;
                             return (
-                                <div key={index} className="flex justify-between items-center border-b border-black py-2">
-                                    <div className="flex items-center mr-2">
-                                        {/* Usar FontAwesomeIcon en lugar de la imagen */}
-                                        <FontAwesomeIcon icon={icon} className="w-8 h-8 text-black" />
-                                        <p className="ml-2 text-sm text-black">{(forecastItem.pop * 100).toFixed(0)}%</p>
+                                <div key={index} className="flex justify-between items-center border-b border-gray-200 py-1">
+                                    {/* Centrar ícono de clima y porcentaje de precipitación */}
+                                    <div className="flex items-center justify-center gap-1 text-[14px] w-1/2">
+                                        <FontAwesomeIcon icon={icon} className="w-4 h-4 text-gray-700" />
+                                        <span className="text-gray-600">{(forecastItem.pop * 100).toFixed(0)}%</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-sm text-black">
-                                        <p className="text-black">↓ {toCelsius(forecastItem.main.temp_min)}ºC</p>
-                                        <p className="text-black">↑ {toCelsius(forecastItem.main.temp_max)}ºC</p>
+                                    {/* Temperaturas mínima y máxima */}
+                                    <div className="flex items-center gap-2 text-[14px] text-gray-700 w-1/2 justify-end">
+                                        <span>↓ {toCelsius(forecastItem.main.temp_min)}ºC</span>
+                                        <span>↑ {toCelsius(forecastItem.main.temp_max)}ºC</span>
                                     </div>
                                 </div>
                             );
@@ -100,4 +96,3 @@ const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast })
 };
 
 export default Card;
-
