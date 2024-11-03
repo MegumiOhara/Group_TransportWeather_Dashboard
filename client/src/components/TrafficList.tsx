@@ -50,24 +50,9 @@ const getIncidentIcon = (type: string) => {
     case 'avstängning':
       return <FontAwesomeIcon icon={faRoadCircleXmark} className="text-xl" />;
     case 'väder':
-      return <FontAwesomeIcon icon={faCloud} className="text-xl" />;
+      return <FontAwesomeIcon icon={faCloud} className="text-lg" />;
     default:
       return <FontAwesomeIcon icon={faExclamationTriangle} className="text-xl" />;
-  }
-};
-
-const getSeverityColor = (severity: string) => {
-  switch (severity) {
-    case 'Mycket stor påverkan':
-      return 'bg-red-500';
-    case 'Stor påverkan':
-      return 'bg-orange-500';
-    case 'Liten påverkan':
-      return 'bg-green-500';
-    case 'Planerat arbete':
-      return 'bg-blue-500';
-    default:
-      return 'bg-gray-500';
   }
 };
 
@@ -96,54 +81,68 @@ const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
     );
   }
 
+  const getSeverityStyles = (severity: string) => {
+    switch (severity) {
+      case 'Mycket stor påverkan':
+        return 'bg-red-500/10 border-red-500 text-red-700';
+      case 'Stor påverkan':
+        return 'bg-orange-500/10 border-orange-500 text-orange-700';
+      case 'Liten påverkan':
+        return 'bg-green-500/10 border-green-500 text-green-700';
+      case 'Planerat arbete':
+        return 'bg-blue-500/10 border-blue-500 text-blue-700';
+      default:
+        return 'bg-gray-500/10 border-gray-500 text-gray-700';
+    }
+  };
+
   return (
     <div className="space-y-4">
       {currentIncidents.map((incident: TrafficIncident) => (
-        <div key={incident.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          {/* Header section with type and icon */}
-          <div className="p-3 border-b border-gray-100 flex items-center justify-between bg-gray-200">
-            <div className="flex items-center space-x-2">
-              <div className={`p-2 rounded-full ${getSeverityColor(incident.severity)} text-white`}>
+        <div 
+          key={incident.id} 
+          className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
+        >
+          {/* Header with Icon and Type */}
+          <div className="p-3 flex items-center justify-between border-b border-gray-100 bg-[#DEDBD4]">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-gray-100 text-gray-700">
                 {getIncidentIcon(incident.type)}
               </div>
-              <span className="font-bold text-gray-800">{incident.type}</span>
+              <h3 className="font-bold text-gray-900">{incident.type}</h3>
             </div>
-            
-            {/* Severity badge */}
-            {incident.severity !== 'Unknown' && (
-              <span className={`px-3 py-1 rounded-full text-xs font-medium text-white ${getSeverityColor(incident.severity)}`}>
-                {incident.severity}
-              </span>
-            )}
+            <div className="flex items-center text-xs text-gray-900">
+              <FontAwesomeIcon icon={faClock} className="mr-1" />
+              <span>Uppdaterad: {incident.modifiedTime}</span>
+            </div>
           </div>
 
-          {/* Main content */}
-          <div className="p-3 space-y-2">
-            <p className="text-sm font-medium text-gray-800">{incident.description}</p>
-            <p className="text-sm text-gray-600">{incident.title}</p>
-            
-            {/* Time information */}
-            <div className="pt-2 border-t border-gray-100 mt-2 space-y-1">
-              <div className="flex items-center text-xs text-gray-500">
-                <FontAwesomeIcon icon={faClock} className="mr-1" />
-                <span>Uppdaterad: {incident.modifiedTime}</span>
-              </div>
-              <div className="flex flex-wrap gap-2 text-xs text-gray-500">
-                <span>Starttid: {incident.startTime}</span>
-                {incident.endTime && (
-                  <>
-                    <span className="hidden sm:inline">•</span>
-                    <span>Sluttid: {incident.endTime}</span>
-                  </>
+          {/* Content Section */}
+          <div className="p-4 space-y-3">
+            {/* Severity and Description */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-900">{incident.description}</p>
+                {incident.severity !== 'Unknown' && (
+                  <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ml-2 whitespace-nowrap ${getSeverityStyles(incident.severity)}`}>
+                    {incident.severity}
+                  </span>
                 )}
               </div>
+              <p className="text-sm text-gray-600">{incident.title}</p>
+            </div>
+
+            {/* Time Information */}
+            <div className="flex flex-wrap justify-between items-center pt-2 text-xs font-semibold border-t border-gray-100">
+              <span>Starttid: {incident.startTime}</span>
+              {incident.endTime && <span>Sluttid: {incident.endTime}</span>}
             </div>
           </div>
         </div>
       ))}
       
       {(!incidents || incidents.length === 0) && (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
           <p className="text-gray-500 font-lato">
             No traffic incidents reported in this area
           </p>
@@ -152,15 +151,15 @@ const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
 
       {/* Pagination */}
       {incidents.length > incidentsPerPage && (
-        <div className="flex justify-center space-x-1 mt-6">
+        <div className="flex justify-center space-x-2 mt-6">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
             <button
               key={pageNumber}
               onClick={() => handlePageChange(pageNumber)}
-              className={`px-3 py-1 rounded-md transition-colors duration-150 ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 ${
                 currentPage === pageNumber
-                  ? 'bg-[#D13C1D] text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-[#D13C1D] text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
               {pageNumber}
