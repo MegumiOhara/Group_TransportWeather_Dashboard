@@ -49,7 +49,7 @@ function App() {
             <>
                {/*<Weather lat={lat} lng={lng}/>*/}
                <Departures lat={lat} lng={lng} />
-               <TrafficStatusUpdates lat={lat} lng={lng} />
+               <TrafficSituation lat={lat} lng={lng} />
                <Joke fetchNewJoke={fetchJoke} />
             </>
          )}
