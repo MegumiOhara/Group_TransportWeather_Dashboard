@@ -104,14 +104,14 @@ const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
           className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
         >
           {/* Header with Icon and Type */}
-          <div className="p-2 flex items-center justify-between border-b border-gray-100 bg-custom-bg">
+          <div className="p-1 flex items-center justify-between border-b border-gray-100 bg-[#DEDBD4]">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-white text-gray-700">
+              <div className="p-1 rounded-lg bg-white text-gray-700">
                 {getIncidentIcon(incident.type)}
               </div>
               <h3 className="font-bold text-gray-900">{incident.type}</h3>
             </div>
-            <div className="flex items-center text-xs text-gray-900">
+            <div className="flex items-center text-xs font-semibold">
               {/*<FontAwesomeIcon icon={faClock} className="mr-1" />*/}
               <span>Uppdaterad: {incident.modifiedTime}</span>
             </div>

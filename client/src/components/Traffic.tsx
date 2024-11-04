@@ -76,7 +76,7 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
   }
   
   return (
-    <div className="max-w-full mx-auto p-4 border border-[#D13C1D] rounded-md bg-white">
+    <div className="max-w-full mx-auto p-4 border-2 border-[#E4602F] rounded-md bg-white">
       <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
         Traffic Updates
       </h2>
