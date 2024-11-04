@@ -1,41 +1,26 @@
 import { useState } from "react";
 import AddressInput from "./components/Address";
-//import Departures from "./components/Departures";
-// import Weather from "./components/Weather";
+import Departures from "./components/Departures";
+//import Weather from "./components/Weather";
 import TrafficSituation from "./components/Traffic";
-//import Joke from "./components/Joke";
+import Joke from "./components/Joke";
 
 function App() {
    //state to store latitude and longitude. Initially set to null.
    const [lat, setLat] = useState<number | null>(null);
    const [lng, setLng] = useState<number | null>(null);
    const [error, setError] = useState<string | null>(null); //stores potential error messages
-   //const [fetchJoke, setFetchJoke] = useState<boolean>(false);
-   //const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
-
-   const handleGeocode = (lat: number, lng: number) => {
-   //logic that handles the geocodeAPI request to parent component API.tsx
-   //so that lat and lng state can be passed to other components.
-
-   //state to store latitude and longitude. Initially set to null.
-   const [lat, setLat] = useState<number | null>(null);
-   const [lng, setLng] = useState<number | null>(null);
-   const [error, setError] = useState<string | null>(null); //stores potential error messages
-   ////New state for triggering jokes.initally set to false
    const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
-   //Function will be passed to the AddressInput component.
-   //it will update the lat/lng state when geocoding is successful
    const handleGeocode = (lat: number, lng: number) => {
       setLat(lat);
       setLng(lng);
       setError(null); //clear any previous error when success.
-      //toggle the joke fetch state to trigger a new joke
-      //prev ensures the last value of fetchJoke is used
-      setFetchJoke((prev) => !prev);
+      setFetchJoke((prev) => !prev); //toggle the joke fetch state to trigger a new joke
+      setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
    };
 
-   //Function to handle geocoding errors
    const handleGeocodeError = (errorMessage: string) => {
       setError(errorMessage);
       setLat(null);
@@ -45,14 +30,14 @@ function App() {
    return (
       <div className="p-4 bg-custom-bg min-h-screen">
          <div className="max-w-screen-xl mx-auto">
-            {/*!addressSubmitted && (
+            {!addressSubmitted && (
                <div className="instructions bg-[#E4602F] text-white p-4 rounded-md mb-4">
                   <p>
                      Enter an address to see local traffic departures, traffic
                      information, and weather updates.
                   </p>
                </div>
-            )*/}
+            )}
 
             <AddressInput
                onGeocode={handleGeocode}
@@ -63,8 +48,8 @@ function App() {
                <div className="flex flex-col md:flex-row md:flex-wrap lg:flex-wrap mt-6 md:space-y-8 space-y-6">
                   {/* First Row: Departures and Local Weather */}
                   <div className="flex flex-col md:flex-row md:space-x-4 md:w-full lg:w-full">
-                     <div className="flex-1 mb-4 md:mb-0 lg:pt-0 md:pt-0"> 
-                        {/* <Departures lat={lat} lng={lng} /> */}
+                     <div className="flex-1 mb-4 md:mb-0 lg:pt-0 md:pt-0">
+                        <Departures lat={lat} lng={lng} />
                      </div>
 
                      <div className="flex-1 mb-4 md:mb-0">
@@ -80,7 +65,7 @@ function App() {
                   {/* Second Row: Dad Jokes and Traffic Updates */}
                   <div className="flex flex-col md:flex-row md:space-x-4 md:w-full">
                      <div className="md:basis-1/3 flex-1 mb-4 md:mb-0">
-                        {/* <Joke fetchNewJoke={fetchJoke} /> */}
+                        <Joke fetchNewJoke={fetchJoke} />
                      </div>
 
                      <div className="md:basis-2/3 flex-1 mb-4 md:mb-0">

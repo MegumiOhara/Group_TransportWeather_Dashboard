@@ -8,7 +8,7 @@ import {
   faExclamationTriangle,
   faCloud,
   faRoadCircleXmark,
-  faClock
+  //faClock
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Location {
