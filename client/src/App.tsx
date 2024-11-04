@@ -2,7 +2,7 @@ import { useState } from "react";
 import AddressInput from "./components/Address";
 import TrafficSituation from "./components/Traffic";
 import Departures from "./components/Departures";
-import Joke from "./components/Joke";
+//import Joke from "./components/Joke";
 
 function App() {
    //logic that handles the geocodeAPI request to parent component API.tsx
