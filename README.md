@@ -4,7 +4,7 @@ Welcome to the Local Traffic and Weather Dashboard! This dahsboard will show Swe
 ## Getting Started 
 To set up the and run the project: 
 - Open the VS code - terminal. The first terminal - cd client - npm run dev. Click the localhost link.
-- Open a second terminal - cd server - npm run dev.
+- Open a second terminal - cd server - npm run dev or nodemon server.js if you have installed nodemon globall (npm install -g nodemon)
 - Add the address in the input field to start using! 
 
 ## Documentation 
