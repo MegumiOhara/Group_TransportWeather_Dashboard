@@ -1,12 +1,10 @@
 import express from "express";
 import cors from "cors";
-import addressApi from "./routes/addressApi.js";
-import departureApi from "./routes/departureApi.js";
-import weatherApi from "./routes/weatherApi.js";
-import trafficApi from "./routes/trafficApi.js";
-import jokeApi from "./routes/jokeApi.js";
 import dotenv from "dotenv";
-
+import departuresApi from "./routes/departuresApi.js";
+import addressApi from "./routes/addressApi.js";
+import jokeApi from "./routes/jokeApi.js";
+import trafficApi from "./routes/trafficApi.js";
 
 dotenv.config();
 
@@ -15,24 +13,24 @@ const port = 3000;
 
 // CORS configuration
 const corsOptions = {
-    origin: ["http://localhost:5173"],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"]
+   origin: ["http://localhost:5173"],
+   methods: ["GET", "POST", "PUT", "DELETE"],
+   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Test route to verify server is working
-app.get("/test", (req, res) => {
-    res.json({ message: "Server is working" });
+app.use((req, res, next) => {
+   console.log(`${req.method} ${req.url}`);
+   next();
 });
 
-// API Routes
+// Use the departures API routes
+app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
-app.use("/api/departure", departureApi);
-app.use("/api/weather", weatherApi);
+app.use("/api/joke", jokeApi);
 app.use("/api/traffic", trafficApi);
 app.use("/api/joke", jokeApi);
 
