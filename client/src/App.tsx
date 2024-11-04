@@ -2,7 +2,7 @@ import { useState } from "react";
 //import axios from "axios";
 //import { useEffect } from "react";
 import AddressInput from "./components/Address";
-import TrafficStatusUpdates from "./components/Traffic";
+import TrafficSituation from "./components/Traffic";
 import Departures from "./components/Departures";
 import Joke from "./components/Joke";
 
@@ -49,7 +49,7 @@ function App() {
             <>
                {/*<Weather lat={lat} lng={lng}/>*/}
                <Departures lat={lat} lng={lng} />
-               <TrafficStatusUpdates lat={lat} lng={lng} />
+               <TrafficSituation lat={lat} lng={lng} />
                <Joke fetchNewJoke={fetchJoke} />
             </>
          )}
