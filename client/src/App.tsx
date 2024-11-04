@@ -1,6 +1,4 @@
 import { useState } from "react";
-//import axios from "axios";
-//import { useEffect } from "react";
 import AddressInput from "./components/Address";
 import TrafficSituation from "./components/Traffic";
 import Departures from "./components/Departures";
@@ -14,8 +12,8 @@ function App() {
    const [lat, setLat] = useState<number | null>(null);
    const [lng, setLng] = useState<number | null>(null);
    const [error, setError] = useState<string | null>(null); //stores potential error messages
-   ////New state for triggering jokes.initally set to false
-   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   //New state for triggering jokes.initally set to false
+   //const [fetchJoke, setFetchJoke] = useState<boolean>(false);
 
    //Function will be passed to the AddressInput component.
    //it will update the lat/lng state when geocoding is successful
@@ -25,7 +23,7 @@ function App() {
       setError(null); //clear any previous error when success.
       //toggle the joke fetch state to trigger a new joke
       //prev ensures the last value of fetchJoke is used
-      setFetchJoke((prev) => !prev);
+      //setFetchJoke((prev) => !prev);
    };
 
    //Function to handle geocoding errors
@@ -35,8 +33,6 @@ function App() {
       setLng(null);
    };
 
-   // const response= await axios.get("http://localhost:3000/api");
-   //console.log(response);
 
    return (
       <div>
@@ -50,7 +46,7 @@ function App() {
                {/*<Weather lat={lat} lng={lng}/>*/}
                <Departures lat={lat} lng={lng} />
                <TrafficSituation lat={lat} lng={lng} />
-               <Joke fetchNewJoke={fetchJoke} />
+               {/*<Joke fetchNewJoke={fetchJoke} />*/}
             </>
          )}
 
