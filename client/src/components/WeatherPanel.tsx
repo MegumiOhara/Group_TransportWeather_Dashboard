@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Card from './Card';
 
-const WeatherPanel: React.FC = () => {
+interface WeatherPanelProps {
+    lat: number;
+    lng: number;
+}
+
+const WeatherPanel: React.FC<WeatherPanelProps> = ({ lat, lng }) => {
     const apiKey = "182a20365632cbbb6415b782c8fe08c5";
     const [weather, setWeather] = useState<any>(null);
     const [forecast, setForecast] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [show, setShow] = useState<boolean>(false);
 
-    const getLocationByCoords = async (lat: number, lon: number) => {
-        const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&lat=${lat}&lon=${lon}&lang=es`;
-        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${apiKey}&lat=${lat}&lon=${lon}&lang=es`;
+    const getLocationByCoords = useCallback(async () => {
+        const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&lat=${lat}&lon=${lng}&lang=es`;
+        const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${apiKey}&lat=${lat}&lon=${lng}&lang=es`;
 
         try {
             const weatherResponse = await fetch(urlWeather);
@@ -30,34 +35,18 @@ const WeatherPanel: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }
-
-    const getLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    getLocationByCoords(latitude, longitude);
-                },
-                (error) => {
-                    console.error("Geolocation error:", error);
-                    setLoading(false);
-                }
-            );
-        } else {
-            console.error("Geolocation is not supported by this browser.");
-            setLoading(false);
-        }
-    };
+    }, [lat, lng]); // Dependencias de lat y lng
 
     useEffect(() => {
-        getLocation(); // call the function to obtain the location when obtain the component
-    }, []);
+        if (lat !== null && lng !== null) {
+            getLocationByCoords(); // Llama a la función solo si lat y lng son válidos
+        }
+    }, [lat, lng, getLocationByCoords]); // Incluye getLocationByCoords en las dependencias
 
     return (
         <React.Fragment>
             {loading ? (
-                <p>Loading...</p> // Messages when is loading
+                <p>Loading...</p>
             ) : (
                 <Card showData={show} loadingData={loading} weather={weather} forecast={forecast} />
             )}
