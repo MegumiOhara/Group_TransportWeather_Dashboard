@@ -43,11 +43,11 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
       <div className="w-full h-full pb-2 bg-custom-bg .box-border flex flex-col items-center overflow-x-hidden">
          <div className="w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly sm:justify-normal sm:p-3 md:grid grid-cols-6">
             <img
-               className="w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
+               className="w-[45px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
                src={mapImg}
                alt="logo"
             />
-            <h1 className="text-[20px] md:text-[32px] text-slate-950 font-bold w-[223px] h-[28px] md:col-start-3 justify-self-end md:mr-5 ">
+            <h1 className="text-[18px] text-slate-950 font-bold w-[223px] h-[28px] md:text-[32px] md:col-start-3 justify-self-end md:mr-5">
                <span className="block sm:hidden">Local Traffic & Weather</span>
                <span className="hidden sm:block w-[513px] h-[45px]">
                   {" "}
@@ -72,6 +72,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                <input
                   className="w-full text-xs rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline border bg-white border-transparent"
                   type="text"
+                  name= "address"
                   value={address}
                   onChange={handleAddressChange} //handle user input changes.
                   placeholder="Enter your address..."
