@@ -39,7 +39,7 @@ router.get("/location", async (req, res) => {
     const xmlData = `
     <REQUEST>
       <LOGIN authenticationkey="${API_KEY}"/>
-      <QUERY objecttype="Situation" schemaversion="1.2" limit="50">
+      <QUERY objecttype="Situation" schemaversion="1.2" limit="25">
         <FILTER>
         <NEAR name="Deviation.Geometry.WGS84" value="${lng} ${lat}"/>
         <GT name="Deviation.CreationTime" value="${creationTime}"/>

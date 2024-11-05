@@ -8,7 +8,7 @@ import {
   faExclamationTriangle,
   faCloud,
   faRoadCircleXmark,
-  //faClock
+  faClock
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Location {
@@ -59,7 +59,7 @@ const getIncidentIcon = (type: string) => {
 const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const incidentsPerPage = 5;
-
+  // Get current incidents based on the current page and incidents per page.
   const indexOfLastIncident = currentPage * incidentsPerPage;
   const indexOfFirstIncident = indexOfLastIncident - incidentsPerPage;
   const currentIncidents = incidents.slice(indexOfFirstIncident, indexOfLastIncident);
@@ -111,8 +111,8 @@ const TrafficList: React.FC<TrafficListProps> = ({ incidents, isLoading }) => {
               </div>
               <h3 className="font-bold text-gray-900">{incident.type}</h3>
             </div>
-            <div className="flex items-center text-xs font-semibold">
-              {/*<FontAwesomeIcon icon={faClock} className="mr-1" />*/}
+            <div className="flex items-center text-sm font-semibold">
+              <FontAwesomeIcon icon={faClock} className="mr-1" />
               <span>Uppdaterad: {incident.modifiedTime}</span>
             </div>
           </div>

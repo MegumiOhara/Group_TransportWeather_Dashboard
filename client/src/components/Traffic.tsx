@@ -28,11 +28,13 @@ interface TrafficProps {
   coordinates: Location;
 }
 
+// Component to display traffic incidents on a map and a list of incidents
 const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
   const [data, setData] = useState<{ incidents: TrafficIncident[] }>({ incidents: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch traffic data from the API and update the state when necessary
   useEffect(() => {
     const fetchTrafficData = async () => {
       try {
@@ -41,12 +43,14 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
           params: coordinates,
         });
         
+        // Filter out incidents without valid location data
         const validIncidents = response.data.incidents.filter((incident: TrafficIncident) => 
           incident.location && 
           typeof incident.location.lat === 'number' && 
           typeof incident.location.lng === 'number'
         );
-        
+      
+        // Update the state with the valid incidents
         setData({ incidents: validIncidents });
         setError(null);
       } catch (error) {
@@ -61,7 +65,7 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
     const intervalId = setInterval(fetchTrafficData, 300000);
     return () => clearInterval(intervalId);
   }, [coordinates]);
-
+   
   if (error) {
     return (
       <div className="max-w-full mx-auto p-4 border border-[#D13C1D] rounded-md bg-white">
@@ -75,15 +79,20 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
     );
   }
   
+  // Render the map and list of traffic incidents
   return (
     <div className="max-w-full mx-auto p-4 border-2 border-[#E4602F] rounded-md bg-white">
       <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
         Traffic Updates
       </h2>
   
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TrafficList incidents={data.incidents} isLoading={isLoading} />
-        <MapDisplay coordinates={coordinates} incidents={data.incidents} />
+      <div className="flex flex-col gap-y-6">
+        <div className="w-full h-[400px]">
+          <MapDisplay coordinates={coordinates} incidents={data.incidents} />
+        </div>
+        <div className="w-full">
+          <TrafficList incidents={data.incidents} isLoading={isLoading} />
+        </div>  
       </div>
     </div>
   );

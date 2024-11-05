@@ -3,7 +3,7 @@ import AddressInput from "./components/Address";
 import Departures from "./components/Departures";
 //import Weather from "./components/Weather";
 import TrafficSituation from "./components/Traffic";
-import Joke from "./components/Joke";
+//import Joke from "./components/Joke";
 
 function App() {
    //state to store latitude and longitude. Initially set to null.
@@ -63,15 +63,12 @@ function App() {
                   </div>
 
                   {/* Second Row: Dad Jokes and Traffic Updates */}
-                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full">
-                     <div className="md:basis-1/3 flex-1 mb-4 md:mb-0">
-                        <Joke fetchNewJoke={fetchJoke} />
-                     </div>
-
-                     <div className="md:basis-2/3 flex-1 mb-4 md:mb-0">
-                        <TrafficSituation coordinates={{ lat, lng }} />
-                     </div>
+                  <div className="flex flex-col w-full">
+                    <div className="flex-1">
+                      <TrafficSituation coordinates={{ lat, lng }} />
+                    </div>
                   </div>
+
                </div>
             )}
 

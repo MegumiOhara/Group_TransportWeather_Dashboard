@@ -34,14 +34,16 @@ const markerIcons = {
   'default': '../Assets/warning-icon.svg',
 };
 
+// Get the marker icon based on the incident type
 const getMarkerIcon = (type: string): string => {
   const iconType = type.toLowerCase();
   return markerIcons[iconType as keyof typeof markerIcons] || markerIcons.default;
 };
-
+// End of getMarkerIcon function
 const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
   const [activeMarker, setActiveMarker] = React.useState<string | null>(null);
-
+  
+  // Handle info window close event
   const mapOptions = {
     disableDefaultUI: false,
     clickableIcons: false,
@@ -49,6 +51,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
   };
 
   return (
+    // Render a Google Map with markers for each traffic incident
     <div className="h-[400px] rounded-lg overflow-hidden border border-gray-200">
       <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
@@ -64,6 +67,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
             }
 
             return (
+              // Render a marker for each incident with a custom icon based on the incident type
               <Marker
                 key={incident.id}
                 position={{
@@ -77,6 +81,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
                   anchor: new window.google.maps.Point(16, 16)
                 }}
               >
+                {/*Show info window when the marker is clicked*/}
                 {activeMarker === incident.id && (
                   <InfoWindow onCloseClick={() => setActiveMarker(null)}>
                     <div className="p-2 font-lato">
