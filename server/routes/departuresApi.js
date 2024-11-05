@@ -80,9 +80,8 @@ const getDepartureBoard = async (stationId) => {
       format: "json",
       duration: 60, // Get departures for the next hour
       maxJourneys: 5, // Limit to 5 departures
-      passlist: 1, // Include passlist to get arrival times
+      passlist: 1, // Passlist to get arrival times
       lang: "en",
-      //products: 0,
    };
 
    const data = await fetchDataFromResRobot(departureBoardApiUrl, params);
@@ -156,7 +155,7 @@ const getDepartureBoard = async (stationId) => {
          departureStation: departure.stop,
          arrivalStation: departure.direction,
          departureTime: formattedDepartureTime,
-         arrivalTime, // Only time part
+         arrivalTime,
          duration,
          vehicleType,
          vehicleIcon,
@@ -187,13 +186,21 @@ router.post("/location", async (req, res) => {
 
       // 1. Check if any stations ID were found
       if (!nearestStation) {
-         return res.status(400).json({ message: "No stations found nearby" });
+         return res.status(200).json({
+            message:
+               "No stations found nearby. Please try a different location.",
+         });
       }
       // 2. Fetch departures for nearest station
       const departures = await getDepartureBoard(nearestStation.id);
 
       if (!departures) {
-         return res.status(400).json({ message: "No departures found" });
+         return res
+            .status(200)
+            .json({
+               message:
+                  "No departures found at this time. Please try again later.",
+            });
       }
 
       // Send station info and departures as response
