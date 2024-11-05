@@ -17,7 +17,9 @@ function App() {
       setLat(lat);
       setLng(lng);
       setError(null); //clear any previous error when success.
-      setFetchJoke((prev) => !prev); //toggle the joke fetch state to trigger a new joke
+      //toggle the joke fetch state to trigger a new joke
+      //prev ensures the last value of fetchJoke is used
+      setFetchJoke((prev) => !prev);
       setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
    };
 

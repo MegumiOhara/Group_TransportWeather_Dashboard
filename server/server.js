@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
 import jokeApi from "./routes/jokeApi.js";
-import trafficApi from "./routes/trafficApi.js";
+//import trafficApi from "./routes/trafficApi.js";
 
 dotenv.config();
 
@@ -31,21 +31,10 @@ app.use((req, res, next) => {
 app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
 app.use("/api/joke", jokeApi);
-app.use("/api/traffic", trafficApi);
-app.use("/api/joke", jokeApi);
+//app.use("/api/traffic", trafficApi);
 
-// Health check endpoint
-app.get("/api/traffic/health", (req, res) => {
-    res.json({ 
-        status: "ok",
-        timestamp: new Date().toISOString()
-    });
-});
-
-// Error handling
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: err.message });
+app.get("/api", (req, res) => {
+   res.json({ comment: ["example response"] });
 });
 
 // Start server
