@@ -40,7 +40,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
    };
 
    return (
-      <div className="w-full h-full pb-2 bg-custom-bg .box-border flex flex-col items-center overflow-x-hidden">
+      <div className="w-full h-full pb-2 .box-border flex flex-col items-center overflow-x-hidden">
          <div className="w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly sm:justify-normal sm:p-3 md:grid grid-cols-6">
             <img
                className="w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
@@ -54,7 +54,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   Local Traffic & Weather Dashboard
                </span>
             </h1>
-         </div>
+         </div> 
          <div>
             <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
             <form

@@ -1,83 +1,99 @@
 import { useState } from "react";
 import AddressInput from "./components/Address";
 import Departures from "./components/Departures";
-//import Weather from "./components/Weather";
 import TrafficSituation from "./components/Traffic";
-//import Joke from "./components/Joke";
+import DashboardLayout from "./components/DashboardLayout";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faTrain,
+  faCloud,
+  faTrafficLight 
+} from '@fortawesome/free-solid-svg-icons';
 
 function App() {
-   //state to store latitude and longitude. Initially set to null.
-   const [lat, setLat] = useState<number | null>(null);
-   const [lng, setLng] = useState<number | null>(null);
-   const [error, setError] = useState<string | null>(null); //stores potential error messages
-   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
-   const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
-   const handleGeocode = (lat: number, lng: number) => {
-      setLat(lat);
-      setLng(lng);
-      setError(null); //clear any previous error when success.
-      //toggle the joke fetch state to trigger a new joke
-      //prev ensures the last value of fetchJoke is used
-      setFetchJoke((prev) => !prev);
-      setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
-   };
+  const handleGeocode = (lat: number, lng: number) => {
+    setLat(lat);
+    setLng(lng);
+    setError(null);
+    setAddressSubmitted(true);
+  };
 
-   const handleGeocodeError = (errorMessage: string) => {
-      setError(errorMessage);
-      setLat(null);
-      setLng(null);
-   };
+  const handleGeocodeError = (errorMessage: string) => {
+    setError(errorMessage);
+    setLat(null);
+    setLng(null);
+  };
 
-   return (
-      <div className="p-4 bg-custom-bg min-h-screen">
-         <div className="max-w-screen-xl mx-auto">
-            {!addressSubmitted && (
-               <div className="instructions bg-[#E4602F] text-white p-4 rounded-md mb-4">
-                  <p>
-                     Enter an address to see local traffic departures, traffic
-                     information, and weather updates.
-                  </p>
-               </div>
+  return (
+    <DashboardLayout>
+      {/* Address Section */}
+      <AddressInput
+        onGeocode={handleGeocode}
+        onError={handleGeocodeError}
+      />
+
+      {/* Dashboard Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
+        {/* Transport Card */}
+        <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+            <FontAwesomeIcon icon={faTrain} className="mr-2 text-[#E4602F]" />
+            Transport Departures
+          </h2>
+          <div className="min-h-[200px]">
+            {!addressSubmitted ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                Enter an address to see nearby transport options
+              </div>
+            ) : (
+              <Departures lat={lat!} lng={lng!} />
             )}
+          </div>
+        </div>
 
-            <AddressInput
-               onGeocode={handleGeocode}
-               onError={handleGeocodeError}
-            />
-
-            {lat && lng && (
-               <div className="flex flex-col md:flex-row md:flex-wrap lg:flex-wrap mt-6 md:space-y-8 space-y-6">
-                  {/* First Row: Departures and Local Weather */}
-                  <div className="flex flex-col md:flex-row md:space-x-4 md:w-full lg:w-full">
-                     <div className="flex-1 mb-4 md:mb-0 lg:pt-0 md:pt-0">
-                        <Departures lat={lat} lng={lng} />
-                     </div>
-
-                     <div className="flex-1 mb-4 md:mb-0">
-                        <div className="p-4 border-2 border-[#E4602F] rounded-md bg-white">
-                           <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
-                              Local Weather
-                           </h2>
-                           {/* Replace with actual Weather component */}
-                        </div>
-                     </div>
-                  </div>
-
-                  {/* Second Row: Dad Jokes and Traffic Updates */}
-                  <div className="flex flex-col w-full">
-                    <div className="flex-1">
-                      <TrafficSituation coordinates={{ lat, lng }} />
-                    </div>
-                  </div>
-
-               </div>
+        {/* Weather Card */}
+        <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+            <FontAwesomeIcon icon={faCloud} className="mr-2 text-[#E4602F]" />
+            Local Weather
+          </h2>
+          <div className="min-h-[200px]">
+            {!addressSubmitted ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                Enter an address to see local weather
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-600">
+                Weather information will be displayed here
+              </div>
             )}
+          </div>
+        </div>
 
-            {error && <p className="text-red-500 mt-4">{error}</p>}
-         </div>
+        {/* Traffic Updates - Full Width */}
+        <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+            <FontAwesomeIcon icon={faTrafficLight} className="mr-2 text-[#E4602F]" />
+            Traffic Updates
+          </h2>
+          <div className="min-h-[200px]">
+            {!addressSubmitted ? (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                Enter an address to see traffic updates
+              </div>
+            ) : (
+              <TrafficSituation coordinates={{ lat: lat!, lng: lng! }} />
+            )}
+          </div>
+        </div>
       </div>
-   );
+    </DashboardLayout>
+  );
 }
 
 export default App;
