@@ -31,11 +31,15 @@ interface DepartureProps {
 function Departures({ lat, lng }: DepartureProps) {
    const [departures, setDepartures] = useState<Departure[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
+   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
    const [error, setError] = useState<string | null>(null);
 
    useEffect(() => {
       const fetchDepartures = async () => {
          setLoading(true); // Start Loading
+         setError(null); // Reset error state
+         setNoDataMessage(null); // Reset no data message state
+
          try {
             const response = await axios.post(
                "http://localhost:3000/api/location",
@@ -44,7 +48,14 @@ function Departures({ lat, lng }: DepartureProps) {
                   longitude: lng,
                }
             );
-            setDepartures(response.data.departures);
+
+            if (response.data.message) {
+               // If there is a message (like no station found or nor departures found)
+               setNoDataMessage(response.data.message);
+               setDepartures([]);
+            } else {
+               setDepartures(response.data.departures);
+            }
          } catch (error) {
             console.error("Error fetching departures:", error);
             setError("Error fetching departures.");
@@ -131,6 +142,10 @@ function Departures({ lat, lng }: DepartureProps) {
 
    if (error) {
       return <p>{error}</p>;
+   }
+
+   if (noDataMessage) {
+      return <p>{noDataMessage}</p>;
    }
 
    return (
