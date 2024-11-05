@@ -1,250 +1,217 @@
 import express from "express";
-//import cors from "cors";
 import axios from "axios";
-//require("dotenv").config();
 import dotenv from "dotenv";
 
 // Load environment variables from .env file
 dotenv.config();
-
-// Initialize the Express app
-//const app = express();
-
-// Router instead of app
 const router = express.Router();
+const apiKey = process.env.RESROBOT_API_KEY;
 
-// Set the port
-//const PORT = 3000;
+// Base URL's
+const nearbyStopsApiUrl = `https://api.resrobot.se/v2.1/location.nearbystops`;
+const departureBoardApiUrl = `https://api.resrobot.se/v2.1/departureBoard`;
 
-// Middleware to handle CORS
-//app.use(cors());
-//app.use(express.json());
+// Mapping of vehicle types to Font Awesome icons
+const vehicleTypeIcons = {
+   BLT: { type: "Regional Bus", icon: "fa-bus" },
+   BXB: { type: "Express Bus", icon: "fa-bus-alt" },
+   BAX: { type: "Airport Express Bus", icon: "fa-bus-alt" },
+   BRE: { type: "Regional Bus", icon: "fa-bus" },
+   BBL: { type: "Train Replacement Bus", icon: "fa-bus" },
+   ULT: { type: "Metro", icon: "fa-train-subway" },
+   JAX: { type: "Airport Express Train", icon: "fa-train" },
+   JEX: { type: "Express Train", icon: "fa-train" },
+   JIC: { type: "InterCity Train", icon: "fa-train" },
+   JLT: { type: "Local Train", icon: "fa-train" },
+   JPT: { type: "PågaTåg", icon: "fa-train" },
+   JST: { type: "High-speed Train", icon: "fa-train" },
+   JRE: { type: "Regional Train", icon: "fa-train" },
+   SLT: { type: "Tram", icon: "fa-train-tram" },
+   FLT: { type: "Local Ferry", icon: "fa-ferry" },
+   FUT: { type: "International Ferry", icon: "fa-ferry" },
+};
 
-// API-key
-const apiKey = process.env.TRAFIKVERKET_API_KEY;
+// Function to get nearest station ID based on coordinates
+const getNearestStationId = async (latitude, longitude) => {
+   try {
+      const response = await axios.get(nearbyStopsApiUrl, {
+         params: {
+            format: "json",
+            accessId: apiKey,
+            originCoordLat: latitude,
+            originCoordLong: longitude,
+            lang: "en",
+            maxNo: 1,
+         },
+      });
 
-// TrainAnnouncement = för realtidsdata om tåg
-// TrainMessage : för meddelanden om trafikstörningar eller annan viktig information för tågtrafiken
-// FerryAnnouncement: för tidtabeller och status för färjor
+      // Handle response
+      if (
+         response.data.stopLocationOrCoordLocation &&
+         response.data.stopLocationOrCoordLocation.length > 0
+      ) {
+         // Return nearest station object
+         return response.data.stopLocationOrCoordLocation[0].StopLocation;
+      } else {
+         return null; // No station found
+      }
+   } catch (error) {
+      console.error("Error fetching nearest station:", error);
+      throw new Error("Error fetching nearest station");
+   }
+};
 
-// Kombinera detta med Google Geocoding API för att hämta platsdata beroende på användarens position, vilket kan användas för att dynamiskt ställa in "LocationSignature" för den närmaste stationen eller färjeplatsen.
+// Common function for making API request to Resrobot
+const fetchDataFromResRobot = async (url, params) => {
+   try {
+      const response = await axios.get(url, { params });
+      return response.data;
+   } catch (error) {
+      console.error(`Error fetching data from ${url}`, error);
+      throw new Error(`Error fetching data from ${url}`);
+   }
+};
 
-// Route to fetch train departures
-router.get("/train-departures", async (req, res) => {
-   const requestBody = `
-     <REQUEST>
-       <LOGIN authenticationkey="${apiKey}" />
-       <QUERY sseurl="true" objecttype="TrainAnnouncement" schemaversion="1.9" limit="10">
-         <FILTER>
-         </FILTER>
-        <INCLUDE>ActivityType</INCLUDE>
-        <INCLUDE>AdvertisedTrainIdent</INCLUDE>
-        <INCLUDE>AdvertisedTimeAtLocation</INCLUDE>
-        <INCLUDE>ToLocation</INCLUDE>
-        <INCLUDE>FromLocation</INCLUDE>
-        <INCLUDE>InformationOwner</INCLUDE>
-        <INCLUDE>ProductInformation</INCLUDE>
-        <INCLUDE>LocationSignature</INCLUDE>
-        <INCLUDE>EstimatedTimeAtLocation</INCLUDE>
-        <INCLUDE>TrackAtLocation</INCLUDE>
-        <INCLUDE>Canceled</INCLUDE>
-        <INCLUDE>Deviation</INCLUDE>
-        <INCLUDE>ToLocation</INCLUDE>
-       </QUERY>
-     </REQUEST>
-     `;
+// Function to fetch departure from the nearest station
+const getDepartureBoard = async (stationId) => {
+   const params = {
+      accessId: apiKey,
+      id: stationId,
+      format: "json",
+      duration: 60, // Get departures for the next hour
+      maxJourneys: 5, // Limit to 5 departures
+      passlist: 1, // Passlist to get arrival times
+      lang: "en",
+   };
 
-   console.log("Sending XML request to Trafikverket API:");
-   console.log(requestBody);
+   const data = await fetchDataFromResRobot(departureBoardApiUrl, params);
+
+   console.log("Departure data:", data); // Log the data for debugging
+
+   if (!data.Departure || data.Departure.length === 0) {
+      return null;
+   }
+
+   // Extract information for each departure
+   const departures = data.Departure.map((departure) => {
+      const product = departure.ProductAtStop || {};
+
+      console.log("Product at Stop:", product);
+
+      const vehicleCode = product.catOut || product.catOutS || "Unknown";
+
+      console.log("Vehicle Code:", vehicleCode);
+
+      let vehicleType = "Unknown";
+      let vehicleIcon = "fa-circle-question";
+
+      // Map vehicle code to type and icon
+      if (vehicleCode !== "Unknown") {
+         const matchingType = vehicleTypeIcons[vehicleCode.toUpperCase()];
+         if (matchingType) {
+            vehicleType = matchingType.type;
+            vehicleIcon = matchingType.icon;
+         } else {
+            console.log(`No match found for vehicle code: ${vehicleCode}`);
+         }
+      }
+
+      // Extract arrival time and calculate journey duration
+      let arrivalTime = "Unknown";
+      let duration = "Unknown";
+
+      if (departure.Stops && departure.Stops.Stop) {
+         const stops = departure.Stops.Stop;
+         const lastStop = stops[stops.length - 1];
+
+         if (lastStop && lastStop.arrTime && lastStop.arrDate) {
+            arrivalTime = lastStop.arrTime.slice(0, 5); // Only time part
+
+            // Calculate duration
+            const departureDateTime = new Date(
+               `${departure.date}T${departure.time}`
+            );
+            const arrivalDateTime = new Date(
+               `${lastStop.arrDate}T${lastStop.arrTime}`
+            );
+
+            if (!isNaN(departureDateTime) && !isNaN(arrivalDateTime)) {
+               const diffMs = arrivalDateTime - departureDateTime;
+               const diffMins = Math.round(diffMs / 60000);
+               const hours = Math.floor(diffMins / 60);
+               const minutes = diffMins % 60;
+               if (hours > 0) {
+                  duration = `${hours} h ${minutes} min`;
+               } else {
+                  duration = `${minutes} min`;
+               }
+            }
+         }
+      }
+
+      const formattedDepartureTime = departure.time.slice(0, 5); // Only hours and minutes
+
+      return {
+         departureStation: departure.stop,
+         arrivalStation: departure.direction,
+         departureTime: formattedDepartureTime,
+         arrivalTime,
+         duration,
+         vehicleType,
+         vehicleIcon,
+         displayNumber: product.displayNumber || product.num || "Unknown",
+         operator: product.operator || "Unknown",
+      };
+   });
+
+   return departures;
+};
+
+// Route to handle departures based on coordinates
+router.post("/location", async (req, res) => {
+   console.log("Request received for departures", req.body);
+
+   // Extract latitude and longitude from request body
+   const { latitude, longitude } = req.body;
+
+   if (!latitude || !longitude) {
+      return res
+         .status(400)
+         .json({ message: "Latitude and longitude are required" });
+   }
 
    try {
-      // Fetch station map dynamically
-      const stationResponse = await axios.get(
-         "http://localhost:8080/api/stations"
-      );
-      const stationMap = stationResponse.data;
+      // Fetch nearest station
+      const nearestStation = await getNearestStationId(latitude, longitude);
 
-      // Send POST-req to Trafikverket's API
-      const response = await axios.post(
-         "https://api.trafikinfo.trafikverket.se/v2/data.json",
-         requestBody,
-         {
-            headers: {
-               "Content-Type": "application/xml",
-            },
-         }
-      );
+      // 1. Check if any stations ID were found
+      if (!nearestStation) {
+         return res.status(200).json({
+            message:
+               "No stations found nearby. Please try a different location.",
+         });
+      }
+      // 2. Fetch departures for nearest station
+      const departures = await getDepartureBoard(nearestStation.id);
 
-      // Replace LocationSignature with full station names
-      const trainData = response.data.RESPONSE.RESULT[0].TrainAnnouncement.map(
-         (announcement) => {
-            // Replace FromLocation and ToLocation signatures with full names if available
-            if (announcement.FromLocation) {
-               announcement.FromLocation = announcement.FromLocation.map(
-                  (location) => {
-                     return (
-                        stationMap[location.LocationName] ||
-                        location.LocationName
-                     );
-                  }
-               );
-            }
+      if (!departures) {
+         return res
+            .status(200)
+            .json({
+               message:
+                  "No departures found at this time. Please try again later.",
+            });
+      }
 
-            if (announcement.ToLocation) {
-               announcement.ToLocation = announcement.ToLocation.map(
-                  (location) => {
-                     return (
-                        stationMap[location.LocationName] ||
-                        location.LocationName
-                     );
-                  }
-               );
-            }
-
-            // Replace LocationSignature with full name
-            if (announcement.LocationSignature) {
-               announcement.LocationSignature =
-                  stationMap[announcement.LocationSignature] ||
-                  announcement.LocationSignature;
-            }
-
-            return announcement;
-         }
-      );
-
-      // Send back data to front end
-      res.json(response.data);
-   } catch (error) {
-      console.error("Error fetching data:", error);
-      res.status(500).json({
-         message: "Error fetching data from Trafikverket",
+      // Send station info and departures as response
+      return res.json({
+         station: nearestStation.name,
+         departures: departures,
       });
+   } catch (error) {
+      console.error("Error fetching location data", error);
+      return res.status(500).json({ message: "Error fetching location data" });
    }
 });
-
-// Route to fetch all station names and their signatures
-router.get("/stations", async (req, res) => {
-   const requestBody = `
-   <REQUEST>
-       <LOGIN authenticationkey="${apiKey}" />
-       <QUERY objecttype="TrainStation" namespace="rail.infrastructure" schemaversion="1.5">
-       <INCLUDE>AdvertisedLocationName</INCLUDE>
-       <INCLUDE>Geometry</INCLUDE>
-       <INCLUDE>LocationSignature</INCLUDE>
-       </QUERY>
-     </REQUEST>
-   `;
-
-   try {
-      const response = await axios.post(
-         "https://api.trafikinfo.trafikverket.se/v2/data.json",
-         requestBody,
-         {
-            headers: {
-               "Content-Type": "application/xml",
-            },
-         }
-      );
-      console.log(
-         "Trafikverkets API reponse:",
-         JSON.stringify(response.data, null, 2)
-      );
-      // Process the response to create a mapping of LocationsSignature to full station name
-      const stations = response.data.RESPONSE.RESULT[0].TrainStation;
-
-      const stationMap = {};
-
-      // Iterate over stations and create a map
-      stations.forEach((station) => {
-         stationMap[station.LocationSignature] = station.AdvertisedLocationName;
-      });
-
-      // Send back the mapping to the client or store it
-      res.json(stationMap);
-   } catch (error) {
-      console.error("Error fetching station data", error);
-      res.status(500).json({
-         message: "Error fetching data from Trafikverket",
-      });
-   }
-});
-
-// Route to fetch train traffic messages (disruptions)
-// router.get("/train-messages", async (req, res) => {
-//    const requestBody = `
-//        <REQUEST>
-//          <LOGIN authenticationkey="${apiKey}" />
-//          <QUERY objecttype="TrainMessage" schemaversion="1.7" limit="10">
-//            <FILTER>
-//            </FILTER>
-//            <INCLUDE>ExternalDescription</INCLUDE>
-//            <INCLUDE>ReasonCodeText</INCLUDE>
-//            <INCLUDE>TrafficImpact</INCLUDE>
-//            <INCLUDE>AffectedLocation</INCLUDE>
-//          </QUERY>
-//        </REQUEST>
-//        `;
-
-//    try {
-//       // Send POST-req to Trafikverket's API
-//       const response = await axios.post(
-//          "https://api.trafikinfo.trafikverket.se/v2/data.json",
-//          requestBody,
-//          {
-//             headers: {
-//                "Content-Type": "application/xml",
-//             },
-//          }
-//       );
-
-//       // Send back data to front end
-//       res.json(response.data);
-//    } catch (error) {
-//       console.error("Error fetching tågtrafikstörningar:", error);
-//       res.status(500).json({
-//          message: "Error fetching data from Trafikverket",
-//       });
-//    }
-// });
-
-// Route to fetch ferry departures
-router.get("/ferry-departures", async (req, res) => {
-   const requestBody = `
-      <REQUEST>
-        <LOGIN authenticationkey="${apiKey}" />
-        <QUERY objecttype="FerryAnnouncement" namespace="ferry.trafficinfo" schemaversion="1.2" limit="10">
-          <FILTER> 
-          </FILTER>
-          <INCLUDE>DepartureTime</INCLUDE>
-          <INCLUDE>FromHarbor</INCLUDE>
-          <INCLUDE>ToHarbor</INCLUDE>
-        </QUERY>
-      </REQUEST>
-      `;
-
-   try {
-      const response = await axios.post(
-         "https://api.trafikinfo.trafikverket.se/v2/data.json",
-         requestBody,
-         {
-            headers: {
-               "Content-Type": "application/xml",
-            },
-         }
-      );
-
-      res.json(response.data);
-   } catch (error) {
-      console.error("Fel vid hämtning av färjedata:", error);
-      res.status(500).json({
-         message: "Error fetching data from Trafikverket",
-      });
-   }
-});
-
-// Start the express server
-// app.listen(PORT, () => {
-//    console.log(`Server running on port ${PORT}`);
-// });
 
 export default router;

@@ -24,7 +24,7 @@ const generateXmlData = (latitude, longitude) => `
             </FILTER>
         </QUERY>
     </REQUEST>
-`;      
+`;
 
 //Define the route for fetching situation requests
 
@@ -33,7 +33,7 @@ router.post("/traffic", async (req, res) => {
     console.log('Incoming request:', req.body);
 
     // Ensure latititude and longitude are provided.
-    if (!lat ||!lng) {
+    if (!lat || !lng) {
         return res.status(400).json({ error: "Latitude and longitude are required" });
     }
 
@@ -41,7 +41,7 @@ router.post("/traffic", async (req, res) => {
         // Generate XML request with the specified coordinates.
         const xmlData = generateXmlData(lat, lng);
         console.log('Generated XML Data:', xmlData); // Log XML data
-        
+
         // Send the XML request to the API
         const response = await axios.post(
             API_URL,
@@ -67,16 +67,16 @@ router.post("/traffic", async (req, res) => {
             creationTime: situation.CreationTime,
             location: situation.Geometry?.Point?.[0] || null, // Access the first Point if available
         }));
-        
-          // Send the formatted data back to the frontend
-          res.json({ updates: formattedData, timestamp: new Date().toISOString() });
-        } catch (error) {
-            console.error("Error fetching traffic situation data:", error.response?.data || error.message);
-            res.status(500).json({
-                message: "Error fetching data from Trafikverket",
-            });
-        }
-    });
+
+        // Send the formatted data back to the frontend
+        res.json({ updates: formattedData, timestamp: new Date().toISOString() });
+    } catch (error) {
+        console.error("Error fetching traffic situation data:", error.response?.data || error.message);
+        res.status(500).json({
+            message: "Error fetching data from Trafikverket",
+        });
+    }
+});
 
 
 export default router;

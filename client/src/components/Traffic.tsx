@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -76,3 +77,6 @@ const TrafficStatusUpdates: React.FC<TrafficProps> = ({ lat, lng }) => {
 };
 
 export default TrafficStatusUpdates;
+=======
+
+>>>>>>> 41854c3de7e26b73537ba233b86f427e719b2883
