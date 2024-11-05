@@ -118,13 +118,10 @@ function Departures({ lat, lng }: DepartureProps) {
    if (loading) {
       return (
          <div className="w-full max-w-[297px] sm:max-w-[449px] md:max-w-[669px] lg:max-w-[669px] xl:max-w-[669px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
-            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px] bg-white">
-               Transport Departures
-            </h2>
-            <p className="text-black bg-white font-lato text-sm font-bold mb-[12px]">
-               {formattedDate}
-            </p>
-
+            {/* Skeleton loader for the heading */}
+            <SkeletonLoader width="w-1/2" height="h-6" className="mb-[11px]" />
+            {/* Skeleton loader for the date */}
+            <SkeletonLoader width="w-1/3" height="h-4" className="mb-[12px]" />
             <div>
                {[...Array(5)].map((_, i) => (
                   <div
