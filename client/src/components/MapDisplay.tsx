@@ -56,7 +56,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
       <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           center={coordinates}
-          zoom={13}
+          zoom={10}
           mapContainerStyle={{ height: '100%', width: '100%' }}
           options={mapOptions}
         >
