@@ -78,9 +78,9 @@ const getDepartureBoard = async (stationId) => {
       accessId: apiKey,
       id: stationId,
       format: "json",
-      duration: 60, // Get departures for the next hour
+      //duration: 60, // Get departures for the next hour
       maxJourneys: 5, // Limit to 5 departures
-      passlist: 1, // Passlist to get arrival times
+      passlist: 1, // Passlist (list of stops along the route) to get arrival times
       lang: "en",
    };
 
@@ -117,8 +117,8 @@ const getDepartureBoard = async (stationId) => {
       }
 
       // Extract arrival time and calculate journey duration
-      let arrivalTime = "Unknown";
-      let duration = "Unknown";
+      let arrivalTime = "XX.XX";
+      let duration = "";
 
       if (departure.Stops && departure.Stops.Stop) {
          const stops = departure.Stops.Stop;
@@ -127,23 +127,29 @@ const getDepartureBoard = async (stationId) => {
          if (lastStop && lastStop.arrTime && lastStop.arrDate) {
             arrivalTime = lastStop.arrTime.slice(0, 5); // Only time part
 
-            // Calculate duration
+            // Calculate duration with between departure and arrival times (ISO Format)
             const departureDateTime = new Date(
                `${departure.date}T${departure.time}`
             );
             const arrivalDateTime = new Date(
                `${lastStop.arrDate}T${lastStop.arrTime}`
             );
-
+            // Check if both Date objects are valid
             if (!isNaN(departureDateTime) && !isNaN(arrivalDateTime)) {
                const diffMs = arrivalDateTime - departureDateTime;
+
+               // Convert milliseconds to total minutes
                const diffMins = Math.round(diffMs / 60000);
-               const hours = Math.floor(diffMins / 60);
-               const minutes = diffMins % 60;
+
+               // Convert total minutes to hours and remaining minutes
+               const hours = Math.floor(diffMins / 60); // Get the whole number of hours
+               const minutes = diffMins % 60; // Get the remaining minutes
+
+               // Format the duration string depending on wheter the trip is longer than one hour
                if (hours > 0) {
-                  duration = `${hours} h ${minutes} min`;
+                  duration = `${hours} h ${minutes} min`; // If there are hours, include both hours and minutes
                } else {
-                  duration = `${minutes} min`;
+                  duration = `${minutes} min`; // Otherwise, only show minutes
                }
             }
          }
@@ -151,6 +157,7 @@ const getDepartureBoard = async (stationId) => {
 
       const formattedDepartureTime = departure.time.slice(0, 5); // Only hours and minutes
 
+      // Create and return a new object for each departure, containing all relevant fields for easier use in the frontend.
       return {
          departureStation: departure.stop,
          arrivalStation: departure.direction,
@@ -195,12 +202,10 @@ router.post("/location", async (req, res) => {
       const departures = await getDepartureBoard(nearestStation.id);
 
       if (!departures) {
-         return res
-            .status(200)
-            .json({
-               message:
-                  "No departures found at this time. Please try again later.",
-            });
+         return res.status(200).json({
+            message:
+               "No departures found at this time. Please try again later.",
+         });
       }
 
       // Send station info and departures as response
