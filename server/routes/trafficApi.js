@@ -35,7 +35,7 @@ router.get("/location", async (req, res) => {
   try {
     const creationTime = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  // Create XML request to fetch location data
+    // Create XML request to fetch location data
     const xmlData = `
     <REQUEST>
       <LOGIN authenticationkey="${API_KEY}"/>
@@ -63,12 +63,12 @@ router.get("/location", async (req, res) => {
     // Parse and transform the response
     const situations = response.data?.RESPONSE?.RESULT[0]?.Situation || [];
     console.log('Found situations:', situations.length);
-    
+
     const incidents = situations
       .filter(situation => situation?.Deviation?.[0])
       .map(situation => {
         const dev = situation.Deviation[0];
-        
+
         let coordinates = { lat: null, lng: null };
         try {
           if (dev.Geometry?.WGS84) {
@@ -81,7 +81,7 @@ router.get("/location", async (req, res) => {
         } catch (e) {
           console.error('Error parsing coordinates:', e);
         }
-      
+
         return {
           id: dev.Id || situation.Id,
           type: dev.MessageType || 'Unknown',
@@ -90,7 +90,7 @@ router.get("/location", async (req, res) => {
           location: coordinates,
           severity: dev.SeverityText || 'Unknown',
           startTime: formatDate(dev.StartTime),
-          endTime: dev.EndTime ? formatDate(dev.EndTime) :null,
+          endTime: dev.EndTime ? formatDate(dev.EndTime) : null,
           roadNumber: dev.RoadNumber || '',
           messageTypeValue: dev.MessageTypeValue,
           temporaryLimit: dev.TemporaryLimit,
@@ -103,7 +103,7 @@ router.get("/location", async (req, res) => {
 
     console.log('Processed incidents:', incidents);
 
-  // Send the formatted incidents back to the client
+    // Send the formatted incidents back to the client
     res.json({
       success: true,
       count: incidents.length,
@@ -113,7 +113,7 @@ router.get("/location", async (req, res) => {
     });
 
 
-  // Handle errors
+    // Handle errors
   } catch (error) {
     console.error("Request failed:", {
       message: error.message,

@@ -42,14 +42,14 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
         const response = await axios.get(`http://localhost:3000/api/traffic/location`, {
           params: coordinates,
         });
-        
+
         // Filter out incidents without valid location data
-        const validIncidents = response.data.incidents.filter((incident: TrafficIncident) => 
-          incident.location && 
-          typeof incident.location.lat === 'number' && 
+        const validIncidents = response.data.incidents.filter((incident: TrafficIncident) =>
+          incident.location &&
+          typeof incident.location.lat === 'number' &&
           typeof incident.location.lng === 'number'
         );
-      
+
         // Update the state with the valid incidents
         setData({ incidents: validIncidents });
         setError(null);
@@ -65,7 +65,7 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
     const intervalId = setInterval(fetchTrafficData, 300000);
     return () => clearInterval(intervalId);
   }, [coordinates]);
-   
+
   if (error) {
     return (
       <div className="max-w-full mx-auto p-4 border border-[#D13C1D] rounded-md bg-white">
@@ -78,21 +78,21 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
       </div>
     );
   }
-  
+
   // Render the map and list of traffic incidents
   return (
     <div className="max-w-full mx-auto rounded-md bg-white">
-     {/* <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
+      {/* <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
         Traffic Updates
       </h2> */}
-  
+
       <div className="flex flex-col gap-y-6">
         <div className="w-full h-[400px]">
           <MapDisplay coordinates={coordinates} incidents={data.incidents} />
         </div>
         <div className="w-full">
           <TrafficList incidents={data.incidents} isLoading={isLoading} />
-        </div>  
+        </div>
       </div>
     </div>
   );

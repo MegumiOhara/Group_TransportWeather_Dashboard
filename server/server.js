@@ -37,9 +37,9 @@ app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
 });
 
-// Start server
+// Start Server
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-    //console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
-    //console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
+   console.log(`Server is running on port ${port}`);
+   //console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
+   //console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
 });
