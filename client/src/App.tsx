@@ -40,7 +40,6 @@ const App: React.FC = () => {
    //console.log(response);
 
    return (
-      return (
       <div className="p-4 bg-custom-bg min-h-screen">
          <div className="max-w-screen-xl mx-auto">
             {/* Show instructional message until the user submits an address */}
@@ -76,6 +75,7 @@ const App: React.FC = () => {
                               Local Weather
                            </h2>
                            {/* Replace with actual Weather component */}
+                           <WeatherPanel lat={lat} lng={lng} />
                         </div>
                      </div>
                   </div>
