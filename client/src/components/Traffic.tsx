@@ -99,3 +99,4 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
 }
 
 export default TrafficSituation;
+

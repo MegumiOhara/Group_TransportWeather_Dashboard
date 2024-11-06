@@ -40,7 +40,7 @@ function App() {
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
         {/* Transport Card */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+        <div className="bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
           <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
             <FontAwesomeIcon icon={faTrain} className="mr-2 text-[#E4602F]" />
             Transport Departures
@@ -57,7 +57,7 @@ function App() {
         </div>
 
         {/* Weather Card */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+        <div className="bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
           <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
             <FontAwesomeIcon icon={faCloud} className="mr-2 text-[#E4602F]" />
             Local Weather
@@ -76,7 +76,7 @@ function App() {
         </div>
 
         {/* Traffic Updates - Full Width */}
-        <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
+        <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
           <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
             <FontAwesomeIcon icon={faTrafficLight} className="mr-2 text-[#E4602F]" />
             Traffic Updates

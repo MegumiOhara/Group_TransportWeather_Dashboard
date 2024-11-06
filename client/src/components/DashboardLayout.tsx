@@ -1,10 +1,4 @@
 import React, { ReactNode } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faGithub, 
-  faLinkedin, 
-  faTwitter 
-} from '@fortawesome/free-brands-svg-icons';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -27,17 +21,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <p className="text-gray-500 text-sm text-center sm:text-left">
               © 2024 Traffic & Weather Dashboard. All rights reserved.
             </p>
-            <div className="flex space-x-6">
-              <a href="#" className="text-[#E4602F] hover:text-[#D13C1D]">
-                <FontAwesomeIcon icon={faGithub} className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-[#E4602F] hover:text-[#D13C1D]">
-                <FontAwesomeIcon icon={faTwitter} className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-[#E4602F] hover:text-[#D13C1D]">
-                <FontAwesomeIcon icon={faLinkedin} className="h-6 w-6" />
-              </a>
-            </div>
           </div>
         </div>
       </footer>
