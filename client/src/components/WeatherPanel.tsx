@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Card from "./Card";
+import SkeletonLoader from "./SkeletonLoader";
+import axios from "axios";
 
 interface WeatherPanelProps {
    lat: number;
@@ -7,15 +9,10 @@ interface WeatherPanelProps {
 }
 
 interface Weather {
-   main: {
-      temp: number;
-      temp_max: number;
-      temp_min: number;
-   };
-   weather: Array<{
-      icon: string;
-      description: string;
-   }>;
+   city: string;
+   temperature: number;
+   condition: string;
+   forecast: ForecastItem[];
 }
 
 interface ForecastItem {
@@ -29,34 +26,24 @@ interface ForecastItem {
    pop: number;
 }
 
-interface Forecast {
-   list: ForecastItem[];
-}
-
 const WeatherPanel: React.FC<WeatherPanelProps> = ({ lat, lng }) => {
-   const apiKey = "182a20365632cbbb6415b782c8fe08c5";
    const [weather, setWeather] = useState<Weather | null>(null);
-   const [forecast, setForecast] = useState<Forecast | null>(null);
    const [loading, setLoading] = useState<boolean>(true);
    const [show, setShow] = useState<boolean>(false);
 
    const getLocationByCoords = useCallback(async () => {
-      const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&lat=${lat}&lon=${lng}&lang=es`;
-      const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${apiKey}&lat=${lat}&lon=${lng}&lang=es`;
-
       try {
-         const weatherResponse = await fetch(urlWeather);
-         if (!weatherResponse.ok)
-            throw new Error("Error fetching weather data");
-         const weatherData = await weatherResponse.json();
-         setWeather(weatherData);
+         setLoading(true);
+         // Fetch weather data from your server
+         const response = await axios.post(
+            "http://localhost:3000/api/weather",
+            {
+               lat,
+               lng,
+            }
+         );
 
-         const forecastResponse = await fetch(urlForecast);
-         if (!forecastResponse.ok)
-            throw new Error("Error fetching forecast data");
-         const forecastData = await forecastResponse.json();
-         setForecast(forecastData);
-
+         setWeather(response.data);
          setShow(true);
       } catch (error) {
          console.error("API Error:", error);
@@ -64,25 +51,50 @@ const WeatherPanel: React.FC<WeatherPanelProps> = ({ lat, lng }) => {
       } finally {
          setLoading(false);
       }
-   }, [lat, lng]); // Dependencias de lat y lng
+   }, [lat, lng]);
 
    useEffect(() => {
       if (lat !== null && lng !== null) {
-         getLocationByCoords(); // Call the function only if lat and lng are valid
+         getLocationByCoords();
       }
-   }, [lat, lng, getLocationByCoords]); // Incluye getLocationByCoords en las dependencias
+   }, [lat, lng, getLocationByCoords]);
 
    return (
       <React.Fragment>
          {loading ? (
-            <p>Loading...</p>
+            // Skeleton Loader to indicate loading status
+            <div className="flex justify-center p-4">
+               <div className="bg-white border-2 border-[#E4602F] rounded-lg p-4 w-[449px]">
+                  <SkeletonLoader
+                     width="w-1/2"
+                     height="h-6"
+                     className="mb-[11px]"
+                  />
+                  <SkeletonLoader
+                     width="w-full"
+                     height="h-4"
+                     className="mb-[12px]"
+                  />
+                  {[...Array(5)].map((_, index) => (
+                     <div
+                        key={index}
+                        className="flex justify-between items-center mb-3">
+                        <SkeletonLoader width="w-1/4" height="h-4" />
+                        <SkeletonLoader width="w-1/4" height="h-4" />
+                        <SkeletonLoader width="w-1/4" height="h-4" />
+                     </div>
+                  ))}
+               </div>
+            </div>
          ) : (
-            <Card
-               showData={show}
-               loadingData={loading}
-               weather={weather}
-               forecast={forecast}
-            />
+            weather && (
+               <Card
+                  showData={show}
+                  loadingData={loading}
+                  weather={weather}
+                  forecast={{ list: weather.forecast }} // Ensure `forecast` matches the expected structure
+               />
+            )
          )}
       </React.Fragment>
    );
