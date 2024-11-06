@@ -78,8 +78,8 @@ function App() {
             )}
 
             {/* Traffic Updates - Full Width */}
-            <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
-               <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+            <div className="md:col-span-2 bg-white rounded-lg p-2 border-2 border-[#E4602F]">
+               <h2 className="flex items-center text-base font-semibold text-[#D13C1D] font-lato mb-[11px]">
                   <FontAwesomeIcon
                      icon={faTrafficLight}
                      className="mr-2 text-[#E4602F]"

@@ -1,10 +1,4 @@
-import React, { ReactNode } from "react";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import {
-//   faGithub,
-//   faLinkedin,
-//   faTwitter
-// } from '@fortawesome/free-brands-svg-icons';
+import React, { ReactNode } from 'react';
 
 interface DashboardLayoutProps {
    children: ReactNode;

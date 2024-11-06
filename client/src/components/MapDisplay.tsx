@@ -102,3 +102,6 @@ const MapDisplay: React.FC<MapDisplayProps> = ({ coordinates, incidents }) => {
 };
 
 export default MapDisplay;
+
+
+

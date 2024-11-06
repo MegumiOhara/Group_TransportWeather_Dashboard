@@ -67,63 +67,38 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
          }
       };
 
-      fetchTrafficData();
-      const intervalId = setInterval(fetchTrafficData, 300000);
-      return () => clearInterval(intervalId);
-   }, [coordinates]);
-
-   if (error) {
-      return (
-         <div className="max-w-full mx-auto p-4 border border-[#D13C1D] rounded-md bg-white">
-            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
-               Traffic Updates
-            </h2>
-            <div className="text-red-600 p-4 rounded-md bg-red-50">{error}</div>
-         </div>
-      );
-   }
-
-   //  if (isLoading) {
-   //     // Render skeleton loaders while the data is loading
-   //     return (
-   //        <div className="max-w-full mx-auto rounded-md bg-white p-4">
-   //           <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
-   //              <SkeletonLoader width="w-1/2" height="h-6" />
-   //           </h2>
-   //           <SkeletonLoader
-   //              width="w-full"
-   //              height="h-[400px]"
-   //              className="mb-4"
-   //           />{" "}
-   //           {/* Map Skeleton */}
-   //           <SkeletonLoader width="w-full" height="h-6" />{" "}
-   //           {/* List Title Skeleton */}
-   //           <SkeletonLoader width="w-full" height="h-6" className="mt-2" />
-   //           <SkeletonLoader width="w-full" height="h-6" className="mt-2" />
-   //        </div>
-   //     );
-   //  }
-
-   // Render the map and list of traffic incidents
-   return (
-      <div className="max-w-full mx-auto rounded-md bg-white">
-         {/* <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
-        Traffic Updates
-      </h2> */}
-
-         <div className="flex flex-col gap-y-6">
-            <div className="w-full h-[400px]">
-               <MapDisplay
-                  coordinates={coordinates}
-                  incidents={data.incidents}
-               />
-            </div>
-            <div className="w-full">
-               <TrafficList incidents={data.incidents} isLoading={isLoading} />
-            </div>
-         </div>
+    fetchTrafficData();
+    const intervalId = setInterval(fetchTrafficData, 300000);
+    return () => clearInterval(intervalId);
+  }, [coordinates]);
+   
+  if (error) {
+    return (
+      <div className="max-w-full mx-auto p-2 border-2 border-[#D13C1D] rounded-md bg-white">
+        <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
+          Traffic Updates
+        </h2>
+        <div className="text-red-600 p-4 rounded-md bg-red-50">
+          {error}
+        </div>
       </div>
-   );
-};
+    );
+  }
+  
+  // Render the map and list of traffic incidents
+  return (
+    <div className="max-w-full mx-auto rounded-md bg-white">
+      <div className="flex flex-col gap-y-6">
+        <div className="w-full h-[400px]">
+          <MapDisplay coordinates={coordinates} incidents={data.incidents} />
+        </div>
+        <div className="w-full">
+          <TrafficList incidents={data.incidents} isLoading={isLoading} />
+        </div>  
+      </div>
+    </div>
+  );
+}
 
 export default TrafficSituation;
+
