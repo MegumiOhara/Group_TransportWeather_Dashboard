@@ -76,7 +76,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                <input
                   className="bg-white appearance-none border-2 border-gray-200 w-full
                    text-xs rounded py-2 px-3 leading-tight md:text-[21px] 
-                   border-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-200 "
+                   border-none focus:outline-none focus:border-orange-500 md:focus:ring-1 focus:ring-orange-200 "
                   type="text"
                   id="address"
                   value={address}
