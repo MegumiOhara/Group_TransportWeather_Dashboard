@@ -17,19 +17,15 @@ function App() {
    const [error, setError] = useState<string | null>(null);
    const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
-   //Function will be passed to the AddressInput component.
-   //it will update the lat/lng state when geocoding is successful
+   // Function to update the lat/lng state when geocoding is successful
    const handleGeocode = (lat: number, lng: number) => {
       setLat(lat);
       setLng(lng);
-      setError(null); //clear any previous error when success.
-      //toggle the joke fetch state to trigger a new joke
-      //prev ensures the last value of fetchJoke is used
-      //setFetchJoke((prev) => !prev);
-      setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
+      setError(null); // Clear any previous error on success
+      setAddressSubmitted(true); // Set address submitted to true
    };
 
-   //Function to handle geocoding errors
+   // Function to handle geocoding errors
    const handleGeocodeError = (errorMessage: string) => {
       setError(errorMessage);
       setLat(null);
@@ -46,46 +42,40 @@ function App() {
          {/* Dashboard Grid */}
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
             {/* Transport Card */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
-               <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
-                  <FontAwesomeIcon
-                     icon={faTrain}
-                     className="mr-2 text-[#E4602F]"
-                  />
-                  Transport Departures
-               </h2>
-               <div className="min-h-[200px]">
-                  {!addressSubmitted ? (
-                     <div className="flex items-center justify-center h-full text-gray-500">
-                        Enter an address to see nearby transport options
-                     </div>
-                  ) : (
-                     <Departures lat={lat!} lng={lng!} />
-                  )}
+            {!addressSubmitted ? (
+               <div className="w-full max-w-[769px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
+                  <h2 className="flex items-center text-base font-semibold text-[#D13C1D] font-lato mb-[11px]">
+                     <FontAwesomeIcon
+                        icon={faTrain}
+                        className="mr-2 text-[#D13C1D]"
+                     />
+                     Transport Departures
+                  </h2>
+                  <div className="flex items-center justify-center h-[200px] md:h-[400px] text-gray-500">
+                     Enter an address to see nearby transport options
+                  </div>
                </div>
-            </div>
+            ) : (
+               <Departures lat={lat!} lng={lng!} />
+            )}
 
             {/* Weather Card */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
-               <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
-                  <FontAwesomeIcon
-                     icon={faCloud}
-                     className="mr-2 text-[#E4602F]"
-                  />
-                  Local Weather
-               </h2>
-               <div className="min-h-[200px]">
-                  {!addressSubmitted ? (
-                     <div className="flex items-center justify-center h-full text-gray-500">
-                        Enter an address to see local weather
-                     </div>
-                  ) : (
-                     <div className="flex items-center justify-center h-full text-gray-600">
-                        <WeatherPanel lat={lat!} lng={lng!} />
-                     </div>
-                  )}
+            {!addressSubmitted ? (
+               <div className="w-full max-w-[769px] mx-auto p-2 border-2 border-[#E4602F] rounded-lg bg-white">
+                  <h2 className="flex items-center text-base font-semibold text-[#D13C1D] font-lato mb-[11px]">
+                     <FontAwesomeIcon
+                        icon={faCloud}
+                        className="mr-2 text-[#D13C1D]"
+                     />
+                     Local Weather
+                  </h2>
+                  <div className="flex items-center justify-center h-[200px] md:h-[400px] text-gray-500">
+                     Enter an address to see local weather
+                  </div>
                </div>
-            </div>
+            ) : (
+               <WeatherPanel lat={lat!} lng={lng!} />
+            )}
 
             {/* Traffic Updates - Full Width */}
             <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-t-4 border-[#E4602F]">
@@ -102,8 +92,6 @@ function App() {
                         Enter an address to see traffic updates
                      </div>
                   ) : (
-                     // destructure the props directly in the function parameters for clarity
-                     //<TrafficSituation lat={lat!} lng={lng!} />
                      <TrafficSituation coordinates={{ lat: lat!, lng: lng! }} />
                   )}
                </div>

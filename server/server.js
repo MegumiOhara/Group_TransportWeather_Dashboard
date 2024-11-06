@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import departuresApi from "./routes/departuresApi.js";
 import addressApi from "./routes/addressApi.js";
+import departuresApi from "./routes/departuresApi.js";
+import weatherApi from "./routes/weatherApi.js";
 import jokeApi from "./routes/jokeApi.js";
 import trafficApi from "./routes/trafficApi.js";
 
@@ -35,10 +36,11 @@ app.use((req, res, next) => {
 });
 
 // API routes
-app.use("/api", departuresApi);
 app.use("/api/address", addressApi);
-app.use("/api/joke", jokeApi);
+app.use("/api/", departuresApi);
+app.use("/api/", weatherApi);
 app.use("/api/traffic", trafficApi);
+app.use("/api/joke", jokeApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
