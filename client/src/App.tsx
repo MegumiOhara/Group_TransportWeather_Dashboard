@@ -1,20 +1,20 @@
-import { useState } from "react";
+
 import AddressInput from "./components/Address";
+import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
-// import Weather from "/.components/Weather";
-//import TrafficStatusUpdates from "./components/Traffic";
-import Joke from "./components/Joke";
+import TrafficSituation from "./components/Traffic";
+import DashboardLayout from "./components/DashboardLayout";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+   faTrain,
+   faCloud,
+   faTrafficLight
+} from '@fortawesome/free-solid-svg-icons';
 
 function App() {
-   //logic that handles the geocodeAPI request to parent component API.tsx
-   //so that lat and lng state can be passed to other components.
-
-   //state to store latitude and longitude. Initially set to null.
    const [lat, setLat] = useState<number | null>(null);
    const [lng, setLng] = useState<number | null>(null);
-   const [error, setError] = useState<string | null>(null); //stores potential error messages
-   ////New state for triggering jokes.initally set to false
-   const [fetchJoke, setFetchJoke] = useState<boolean>(false);
+   const [error, setError] = useState<string | null>(null);
    const [addressSubmitted, setAddressSubmitted] = useState<boolean>(false);
 
    //Function will be passed to the AddressInput component.
@@ -35,6 +35,9 @@ function App() {
       setLat(null);
       setLng(null);
    };
+
+   // const response= await axios.get("http://localhost:3000/api");
+   //console.log(response);
 
    return (
       <div className="p-4 bg-custom-bg min-h-screen">
@@ -72,6 +75,7 @@ function App() {
                               Local Weather
                            </h2>
                            {/* Replace with actual Weather component */}
+                           <WeatherPanel lat={lat} lng={lng} />
                         </div>
                      </div>
                   </div>
@@ -96,11 +100,10 @@ function App() {
                </div>
             )}
 
-            {/* Display any errors */}
-            {error && <p className="text-red-500 mt-4">{error}</p>}
          </div>
       </div>
    );
 }
 
 export default App;
+

@@ -6,16 +6,19 @@ import addressApi from "./routes/addressApi.js";
 import jokeApi from "./routes/jokeApi.js";
 //import trafficApi from "./routes/trafficApi.js";
 
-dotenv.config(); //Load env variables from .env file
+dotenv.config();
 
 const app = express();
 const port = 3000;
+
+// CORS configuration
 const corsOptions = {
    origin: ["http://localhost:5173"],
    methods: ["GET", "POST", "PUT", "DELETE"],
    allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+// Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -34,7 +37,9 @@ app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });
 });
 
-// Start server
+// Start Server
 app.listen(port, () => {
    console.log(`Server is running on port ${port}`);
+   //console.log(`- Health check: http://localhost:${port}/api/traffic/health`);
+   //console.log(`- Traffic data: http://localhost:${port}/api/traffic/location`);
 });
