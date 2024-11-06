@@ -68,8 +68,8 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
    
   if (error) {
     return (
-      <div className="max-w-full mx-auto p-4 border border-[#D13C1D] rounded-md bg-white">
-        <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
+      <div className="max-w-full mx-auto p-2 border-2 border-[#D13C1D] rounded-md bg-white">
+        <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
           Traffic Updates
         </h2>
         <div className="text-red-600 p-4 rounded-md bg-red-50">
@@ -82,10 +82,6 @@ const TrafficSituation: React.FC<TrafficProps> = ({ coordinates }) => {
   // Render the map and list of traffic incidents
   return (
     <div className="max-w-full mx-auto rounded-md bg-white">
-     {/* <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-2">
-        Traffic Updates
-      </h2> */}
-  
       <div className="flex flex-col gap-y-6">
         <div className="w-full h-[400px]">
           <MapDisplay coordinates={coordinates} incidents={data.incidents} />

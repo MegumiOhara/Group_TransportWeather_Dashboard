@@ -40,8 +40,8 @@ function App() {
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
         {/* Transport Card */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
-          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white rounded-lg shadow-sm p-2 p-2 border-2 border-[#E4602F]">
+          <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
             <FontAwesomeIcon icon={faTrain} className="mr-2 text-[#E4602F]" />
             Transport Departures
           </h2>
@@ -57,8 +57,8 @@ function App() {
         </div>
 
         {/* Weather Card */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
-          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-white rounded-lg shadow-sm p-2 border-2 border-[#E4602F]">
+          <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
             <FontAwesomeIcon icon={faCloud} className="mr-2 text-[#E4602F]" />
             Local Weather
           </h2>
@@ -76,14 +76,14 @@ function App() {
         </div>
 
         {/* Traffic Updates - Full Width */}
-        <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-6 border-[#E4602F]">
-          <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
+        <div className="md:col-span-2 bg-white rounded-lg shadow-sm p-2 border-2 border-[#E4602F]">
+          <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px]">
             <FontAwesomeIcon icon={faTrafficLight} className="mr-2 text-[#E4602F]" />
             Traffic Updates
           </h2>
           <div className="min-h-[200px]">
             {!addressSubmitted ? (
-              <div className="flex items-center justify-center h-full text-gray-500">
+              <div className="flex items-center justify-center p-6 h-full text-gray-500">
                 Enter an address to see traffic updates
               </div>
             ) : (
