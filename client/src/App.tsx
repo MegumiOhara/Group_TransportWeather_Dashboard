@@ -41,8 +41,9 @@ function App() {
          {/* Display error message if there is an error */}
          {error && <p className="text-red-500">{error}</p>}
          {/* Address Section */}
-         <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError} />
-
+        <AddressInput onGeocode={handleGeocode} onError={handleGeocodeError} />
+        
+        
          {/* Dashboard Grid */}
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8">
             {/* Transport Card */}
@@ -110,6 +111,7 @@ function App() {
             </div>
          </div>
       </DashboardLayout>
+      
    );
 }
 

@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
-//import { useState } from "react";
 import searchImg from "../images/magnifying-glass-solid.svg";
 import mapImg from "../images/map-location-dot-solid.svg";
 
@@ -40,17 +39,19 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
    };
 
    return (
-      <div className="w-full h-full pb-2 .box-border flex flex-col items-center overflow-x-hidden">
-         <div className="w-full box-border font-lato px-5 pt-4 flex content-evenly items-center justify-evenly sm:justify-normal sm:p-3 md:grid grid-cols-6">
+      <div className="bg-custom-bg w-full h-full pb-2 .box-border flex flex-col items-center overflow-x-hidden">
+         <div className="w-full box-border font-lato px-5 pt-4 flex content-evenly items-center 
+            justify-evenly sm:justify-normal sm:p-3 md:grid grid-cols-6">
             <img
-               className="w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 justify-self-end md:mt-5"
+               className="w-[50px] h-[44px] mr-3 md:w-[105px] md:h-[93px] md:col-start-1 
+               justify-self-end md:mt-5"
                src={mapImg}
                alt="logo"
             />
-            <h1 className="text-[20px] md:text-[32px] text-slate-950 font-bold w-[223px] h-[28px] md:col-start-3 justify-self-end md:mr-5 ">
+            <h1 className="text-[20px] md:text-[32px] text-slate-950 font-bold w-[223px] h-[28px] 
+               md:col-start-3 justify-self-end md:mr-5 ">
                <span className="block sm:hidden">Local Traffic & Weather</span>
                <span className="hidden sm:block w-[513px] h-[45px]">
-                  {" "}
                   Local Traffic & Weather Dashboard
                </span>
             </h1>
@@ -58,7 +59,9 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
          <div>
             <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
             <form
-               className="m-auto .box-border w-[287px] h-[40px] md:w-[449px] md:h-[40px] bg-white flex border rounded hover:border-orange-200 transition-colors duration-300"
+               className="bg-white appearance-none border-2 border-gray-200 m-auto box-border w-[287px]
+               h-[40px] md:w-[449px] md:h-[45px] flex border-none rounded hover:border-solid border-2 
+               border-orange-200 transition-colors duration-300 focus:bg-orange-200 transition-all duration-300"
                onSubmit={handleFormSubmit}>
                <button
                   className="m-auto h-[40px] w-[40px] cursor-pointer"
@@ -70,8 +73,11 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   />
                </button>
                <input
-                  className="w-full text-xs rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline border bg-white border-transparent"
+                  className="bg-white appearance-none border-2 border-gray-200 w-full
+                   text-xs rounded py-2 px-3 leading-tight md:text-[21px] 
+                   border-none focus:outline-none"
                   type="text"
+                  id="address"
                   value={address}
                   onChange={handleAddressChange} //handle user input changes.
                   placeholder="Enter your address..."
