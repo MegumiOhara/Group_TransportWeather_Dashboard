@@ -61,7 +61,8 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
             <form
                className="bg-white appearance-none border-2 border-gray-200 m-auto box-border w-[287px]
                h-[40px] md:w-[449px] md:h-[45px] flex border-none rounded hover:border-solid border-2 
-               border-orange-200 transition-colors duration-300 focus:bg-orange-200 transition-all duration-300"
+               border-orange-200 transition-colors duration-300 active:border-orange-300 transition-all duration-300
+               "
                onSubmit={handleFormSubmit}>
                <button
                   className="m-auto h-[40px] w-[40px] cursor-pointer"
@@ -75,7 +76,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                <input
                   className="bg-white appearance-none border-2 border-gray-200 w-full
                    text-xs rounded py-2 px-3 leading-tight md:text-[21px] 
-                   border-none focus:outline-none"
+                   border-none focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-200 "
                   type="text"
                   id="address"
                   value={address}
