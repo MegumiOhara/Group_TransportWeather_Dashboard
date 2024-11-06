@@ -9,6 +9,7 @@ module.exports = {
             lato: ["Lato", "sans-serif"], // Lägg till Lato som font
          },
          screens: {
+            "custom-729": "729px",
             sm: "481px",
             //=> @media (min-width: 481px) for tablet
 
