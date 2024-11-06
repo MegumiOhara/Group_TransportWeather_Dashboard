@@ -1,8 +1,10 @@
 
+import { useState } from "react";
 import AddressInput from "./components/Address";
 import TrafficStatusUpdates from "./components/Traffic";
 import Departures from "./components/Departures";
 import TrafficSituation from "./components/Traffic";
+import WeatherPanel from "./components/WeatherPanel";
 import DashboardLayout from "./components/DashboardLayout";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,7 +27,7 @@ function App() {
       setError(null); //clear any previous error when success.
       //toggle the joke fetch state to trigger a new joke
       //prev ensures the last value of fetchJoke is used
-      setFetchJoke((prev) => !prev);
+      //setFetchJoke((prev) => !prev);
       setAddressSubmitted(true); // Set address submitted to true when the user inputs an address
    };
 
@@ -84,7 +86,7 @@ function App() {
                   <div className="flex flex-col md:flex-row md:space-x-4 md:w-full">
                      {/* Dad Jokes Component */}
                      <div className="flex-1 mb-4 md:mb-0">
-                        <Joke fetchNewJoke={fetchJoke} />
+                       {/* <Joke fetchNewJoke={fetchJoke} />*/}
                      </div>
 
                      {/* Placeholder for Traffic Updates Component */}
