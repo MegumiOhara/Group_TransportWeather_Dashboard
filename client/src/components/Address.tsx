@@ -54,7 +54,7 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   Local Traffic & Weather Dashboard
                </span>
             </h1>
-         </div> 
+         </div>
          <div>
             <hr className="block sm:hidden left-0 w-screen border-t border-zinc-800 my-4 mx-auto" />
             <form
@@ -70,10 +70,12 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   />
                </button>
                <input
-                  className="w-full text-xs rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline border bg-white border-transparent"
+                  className="w-full text-xs rounded py-2 px-3 leading-tight 
+                  focus:outline-none focus:shadow-outline border bg-white border-transparent"
                   type="text"
                   value={address}
                   onChange={handleAddressChange} //handle user input changes.
+
                   placeholder="Enter your address..."
                />
             </form>
