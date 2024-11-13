@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useRef } from "react";
+import { Autocomplete } from "@react-google-maps/api";
 import axios from "axios";
 import searchImg from "../images/magnifying-glass-solid.svg";
 import mapImg from "../images/map-location-dot-solid.svg";
@@ -13,6 +14,8 @@ interface AddressInputProps {
 function AddressInput({ onGeocode, onError }: AddressInputProps) {
    //local state to store the user-inputted address.
    const [address, setAddress] = useState<string>("");
+   // Ref for storing the Autocomplete instance
+   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
    //handle changes in the input field when typed.
    const handleAddressChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -35,6 +38,25 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
       } catch (error) {
          console.error("Error fetching location:", error);
          onError("Error fetching location. Please try again");
+      }
+   };
+   //Event handler for when a place is selected from the autocompelte suggestions 
+   const handlePlaceChanged = () => {
+      if (autocompleteRef.current) {
+         const place = autocompleteRef.current.getPlace();
+         if (place && place.geometry &&place.geometry.location) {
+            const lat = place.geometry.location?.lat();
+            const lng = place.geometry.location?.lng();
+
+            if(lat !== undefined && lng !== undefined){
+            onGeocode(lat, lng); //Send lat/lng to parent component
+            setAddress(place.formatted_address || "");//Set the select address
+         }else{
+            onError("Could not retrieve coordinated for the selected address")
+         }
+      } else {
+         onError("Selected place does not have geometry information")
+      }
       }
    };
 
@@ -73,16 +95,21 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                      alt="search"
                   />
                </button>
-               <input
-                  className="bg-white appearance-none border-2 border-gray-200 w-full
-                   text-xs rounded py-2 px-3 leading-tight md:text-[21px] 
-                   border-none focus:outline-none focus:border-orange-500 md:focus:ring-1 focus:ring-orange-200 "
-                  type="text"
-                  id="address"
-                  value={address}
-                  onChange={handleAddressChange} //handle user input changes.
-                  placeholder="Enter your address..."
-               />
+               <Autocomplete
+                  onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                  onPlaceChanged={handlePlaceChanged}>
+                  <input
+                     className="bg-white appearance-none border-2 border-gray-200 w-full
+                     text-xs rounded py-2 px-3 leading-tight md:text-[21px] 
+                     border-none focus:outline-none focus:border-orange-500 md:focus:ring-1 focus:ring-orange-200 "
+                     type="text"
+                     id="address"
+                     value={address}
+                     onChange={handleAddressChange} //handle user input changes.
+                     placeholder="Enter your address..."
+                  />
+               </Autocomplete>
+               
             </form>
             <hr className="hidden sm:block left-0 w-screen border-t border-zinc-600 my-4" />
          </div>
