@@ -1,98 +1,165 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudRain, faSun } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+   faCloudRain,
+   faSun,
+   faCloud,
+   faSnowflake,
+   faBolt,
+   faArrowUp,
+   faArrowDown,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Weather {
-    main: {
-        temp_max: number;
-        temp_min: number;
-    };
+   city: string;
+   temperature: number;
+   condition: string;
+   forecast: ForecastItem[];
 }
 
 interface ForecastItem {
-    main: {
-        temp_max: number;
-        temp_min: number;
-    };
-    weather: { icon: string }[];
-    pop: number;
+   main: {
+      temp_max: number;
+      temp_min: number;
+   };
+   weather: { icon: string }[];
+   pop: number;
 }
 
 interface Forecast {
-    list: ForecastItem[];
+   list: ForecastItem[];
 }
 
 interface CardProps {
-    loadingData: boolean;
-    showData: boolean;
-    weather: Weather | null;
-    forecast: Forecast | null;
+   loadingData: boolean;
+   showData: boolean;
+   weather: Weather | null;
+   forecast: Forecast | null;
 }
 
 const getWeekDays = (): string[] => {
-    const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    const todayIndex = new Date().getDay(); // 0 es domingo, 1 es lunes, ..., 6 es sábado
+   const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+   const todayIndex = new Date().getDay();
 
-    // Comienza con el día actual como "Today"
-    const orderedDays = [daysOfWeek[todayIndex]];
+   const orderedDays = [daysOfWeek[todayIndex]];
 
-    // Añade los días restantes, empezando desde el día siguiente al actual
-    for (let i = 1; i < 7; i++) {
-        orderedDays.push(daysOfWeek[(todayIndex + i) % 7]);
-    }
+   for (let i = 1; i < 7; i++) {
+      orderedDays.push(daysOfWeek[(todayIndex + i) % 7]);
+   }
 
-    return orderedDays.map((day, index) => (index === 0 ? 'Today' : day)); // Cambia el primer día a 'Today'
+   return orderedDays.map((day, index) => (index === 0 ? "Today" : day));
 };
 
-const toCelsius = (kelvin: number): string => (kelvin - 273.15).toFixed(1);
+const getWeatherIcon = (condition: string) => {
+   switch (condition.toLowerCase()) {
+      case "clear":
+         return faSun;
+      case "clouds":
+         return faCloud;
+      case "rain":
+         return faCloudRain;
+      case "thunderstorm":
+         return faBolt;
+      case "snow":
+         return faSnowflake;
+      default:
+         return faCloud; // Fallback icon
+   }
+};
 
-const Card: React.FC<CardProps> = ({ loadingData, showData, weather, forecast }) => {
-    if (loadingData || !showData || !forecast || !weather) {
-        return null;
-    }
+const Card: React.FC<CardProps> = ({
+   loadingData,
+   showData,
+   weather,
+   forecast,
+}) => {
+   if (loadingData || !showData || !forecast || !weather) {
+      return null;
+   }
 
-    const weekDays = getWeekDays();
-    const forecastData = forecast.list.slice(0, 7);
+   const weekDays = getWeekDays();
+   const forecastData = forecast.list.slice(0, 7);
 
-    return (
-        <div className="mt-5 flex justify-center">
-            <div className="bg-white border-[1px] border-[#E4602F] rounded-lg p-2 shadow-md w-[450px]">
-                <h4 className="text-orange-600 text-[14px] font-semibold mb-2">Local Weather</h4>
+   return (
+      <div className="flex justify-center md:justify-end">
+         <div className="w-full bg-white border-2 border-[#E4602F] rounded-lg p-2">
+            <h2 className="text-[#D13C1D] font-lato text-base font-semibold mb-[11px] border-b border-gray-200 pb-[16px]">
+               <FontAwesomeIcon
+                  icon={faCloud}
+                  className="mr-2 text-[#D13C1D]"
+               />
+               Local Weather - {weather.city}
+            </h2>
 
-                <div className="flex">
-                    {/*of icons and weather  */}
-                    <div className="flex flex-col w-1/4 text-left">
-                        {weekDays.map((day, index) => (
-                            <div key={index} className="text-gray-800 font-medium border-b border-gray-200 py-1">
-                                {day}
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Columna of icons and weather  */}
-                    <div className="flex flex-col w-3/4">
-                        {forecastData.map((forecastItem, index) => {
-                            const icon = forecastItem.weather[0].icon.includes('01d') ? faSun : faCloudRain;
-                            return (
-                                <div key={index} className="flex justify-between items-center border-b border-gray-200 py-1">
-                                    {/* icons in the center */}
-                                    <div className="flex items-center justify-center gap-1 text-[14px] w-1/2">
-                                        <FontAwesomeIcon icon={icon} className="w-4 h-4 text-gray-700" />
-                                        <span className="text-gray-600">{(forecastItem.pop * 100).toFixed(0)}%</span>
-                                    </div>
-                                    {/* Tempeture mínimun y máximun*/}
-                                    <div className="flex items-center gap-2 text-[14px] text-gray-700 w-1/2 justify-end">
-                                        <span>↓ {toCelsius(forecastItem.main.temp_min)}ºC</span>
-                                        <span>↑ {toCelsius(forecastItem.main.temp_max)}ºC</span>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
+            {/* Current Weather */}
+            <div className="flex flex-row items-center justify-between border-b border-gray-200 py-2">
+               <span className="w-1/4 text-left text-gray-800 font-medium">
+                  Today
+               </span>
+               <div className="w-1/4 flex items-center justify-center text-gray-800 text-[14px]">
+                  <FontAwesomeIcon
+                     icon={getWeatherIcon(weather.condition)}
+                     className="w-5 h-5 mr-1"
+                  />
+                  <span>{weather.condition}</span>
+               </div>
+               <div className="w-1/2 flex items-center justify-end text-gray-800 text-[14px]">
+                  <span>{Math.round(weather.temperature)}°C</span>
+               </div>
             </div>
-        </div>
-    );
+
+            {/* 7-Day Forecast */}
+            {forecastData.map((forecastItem, index) => {
+               const weatherIconType = forecastItem.weather[0].icon;
+               const icon = getWeatherIcon(weatherIconType);
+
+               return (
+                  <div
+                     key={index}
+                     className="flex flex-row items-center justify-between border-b border-gray-200 py-2 md:flex-row sm:flex-col sm:gap-2">
+                     {/* Day */}
+                     <span className="w-1/4 text-left text-gray-800 font-medium sm:w-full">
+                        {weekDays[index]}
+                     </span>
+
+                     {/* Weather Icon and Precipitation Chance */}
+                     <div className="w-1/4 flex items-center justify-center text-gray-800 text-[14px] sm:w-full sm:justify-start">
+                        <FontAwesomeIcon
+                           icon={icon}
+                           className="w-5 h-5 mr-1 sm:w-4 sm:h-4"
+                        />
+                        <span className="sm:text-sm">
+                           {(forecastItem.pop * 100).toFixed(0)}%
+                        </span>
+                     </div>
+
+                     {/* Temperature Min and Max combined */}
+                     <div className="w-1/2 flex items-center justify-end text-gray-800 text-[14px]">
+                        <div className="flex items-center sm:text-sm">
+                           <FontAwesomeIcon
+                              icon={faArrowDown}
+                              className="w-3 h-3 mr-1 text-blue-600 sm:w-2 sm:h-2"
+                           />
+                           <span>
+                              {Math.round(forecastItem.main.temp_min)}°
+                           </span>
+                        </div>
+                        <div className="flex items-center sm:text-sm ml-2">
+                           <FontAwesomeIcon
+                              icon={faArrowUp}
+                              className="w-3 h-3 mr-1 text-red-600 sm:w-2 sm:h-2"
+                           />
+                           <span>
+                              {Math.round(forecastItem.main.temp_max)}°
+                           </span>
+                        </div>
+                     </div>
+                  </div>
+               );
+            })}
+         </div>
+      </div>
+   );
 };
 
 export default Card;
