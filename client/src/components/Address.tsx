@@ -105,14 +105,18 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   value={address}
                   onChange={handleAddressChange} //handle user input changes.
                   placeholder="Enter your address..."
-               />
+               /> 
             </form>
             <ul>
-               {suggestions.map((suggestion, index) => (
-                  <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-                     {suggestion}
-                  </li>
-               ))}
+                  {suggestions.map((suggestion, index) => (
+                     <li
+                     className="bg-white appearance-none border-2 border-gray-200 m-auto box-border w-[287px]
+                     h-[40px] md:w-[449px] md:h-[45px] flex border-none rounded hover:border-solid border-2 
+                     border-orange-200 transition-colors duration-300 active:border-orange-300 transition-all duration-300"
+                      key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                        {suggestion}
+                     </li>
+                  ))}
             </ul>
             <hr className="hidden sm:block left-0 w-screen border-t border-zinc-600 my-4" />
          </div>

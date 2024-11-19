@@ -27,7 +27,7 @@ router.post("/", async (req,res) => {
         const response = await axios.get(
             `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
                 input
-           )}&types=address&components=country:SE&key=${API_PLACES_KEY}`
+           )}&types=(cities)&components=country:SE&key=${API_PLACES_KEY}`
            
         );
         console.log("Google API response:", response.data);
