@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useState, useRef } from "react";
-import { Autocomplete } from "@react-google-maps/api";
+import React, { ChangeEvent, useState, FormEvent } from "react";
 import axios from "axios";
 import searchImg from "../images/magnifying-glass-solid.svg";
 import mapImg from "../images/map-location-dot-solid.svg";
@@ -14,11 +13,35 @@ interface AddressInputProps {
 function AddressInput({ onGeocode, onError }: AddressInputProps) {
    //local state to store the user-inputted address.
    const [address, setAddress] = useState<string>("");
+   //local state for suggestions 
+   const [suggestions, setSuggestions] = useState<string[]>([]);
+
    //handle changes in the input field when typed.
-   const handleAddressChange = (e: ChangeEvent<HTMLInputElement>): void => {
-      setAddress(e.target.value);
+   const handleAddressChange = async (e: ChangeEvent<HTMLInputElement>) => {
+      const input = e.target.value;
+      setAddress(input);
+
+      if (input.length > 2){
+         console.log("Sending input:", input)
+         try {
+            const response = await axios.post("http://localhost:3000/api/autocomplete", 
+               {input,});
+            setSuggestions(response.data.map((suggestion:any) => 
+            suggestion.description));
+         } catch (error) {
+            console.error("Error fetching autocomplete suggestions", error)
+            setSuggestions([]);
+         } 
+      } else{
+         setSuggestions([]);
+      }
    };
 
+   const handleSuggestionClick = (suggestion: string) => {
+      setAddress(suggestion);
+      setSuggestions([]);
+   }
+   
    //handle form submission to trigger geocoding.
    const handleFormSubmit = async (e: React.FormEvent): Promise<void> => {
       e.preventDefault(); //prevents page regresn on form submit.
@@ -84,6 +107,13 @@ function AddressInput({ onGeocode, onError }: AddressInputProps) {
                   placeholder="Enter your address..."
                />
             </form>
+            <ul>
+               {suggestions.map((suggestion, index) => (
+                  <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                     {suggestion}
+                  </li>
+               ))}
+            </ul>
             <hr className="hidden sm:block left-0 w-screen border-t border-zinc-600 my-4" />
          </div>
       </div>

@@ -6,6 +6,7 @@ import departuresApi from "./routes/departuresApi.js";
 import weatherApi from "./routes/weatherApi.js";
 import jokeApi from "./routes/jokeApi.js";
 import trafficApi from "./routes/trafficApi.js";
+import autoApi from "./routes/autoApi.js";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/", departuresApi);
 app.use("/api/", weatherApi);
 app.use("/api/traffic", trafficApi);
 app.use("/api/joke", jokeApi);
+app.use("/api/autocomplete", autoApi);
 
 app.get("/api", (req, res) => {
    res.json({ comment: ["example response"] });

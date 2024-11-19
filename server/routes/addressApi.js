@@ -45,22 +45,6 @@ router.post("/", async (req,res) =>{
     }
 });
 
-//autocomplete
-router.post("/autocomplete", async (req,res) => {
-    const {input} = req.body;
-    const API_PLACES_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
-    try {
-        const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-                input
-            )}&types=address&key=${API_PLACES_KEY}`
-        );
-        res.json(response.data.predictions);
-    } catch (error) {
-        console.error("Error fetching autocompelte suggestions:", error);
-        res.status(500).json({ error: "Error fetching autocomplete suggestions"});
-    }
-}) 
 
 export default router;
